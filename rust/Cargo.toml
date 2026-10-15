@@ -1,0 +1,32 @@
+[package]
+name = "studio_core"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+pdfium-render = { version = "=0.9.4", default-features = false, features = ["pdfium_latest", "image_025"] }
+rusqlite = { version = "=0.40.2", features = ["bundled"] }
+flutter_rust_bridge = "=2.13.0"
+image = { version = "=0.25.10", default-features = false, features = ["jpeg", "png"] }
+lopdf = { version = "=0.38.0", default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tempfile = "3"
+zip = { version = "4", default-features = false, features = ["deflate"] }
+sha2 = "0.10"
+
+[dev-dependencies]
+
+# Avoid zero-length object output observed with LLVM 23 parallel code generation.
+[profile.dev]
+codegen-units = 1
+[profile.test]
+codegen-units = 1
+
+[profile.release]
+codegen-units = 1

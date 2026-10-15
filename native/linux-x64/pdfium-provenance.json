@@ -1,0 +1,15 @@
+{
+  "major": 156,
+  "minor": 0,
+  "build": 8076,
+  "patch": 0,
+  "n_commits": 0,
+  "hash": null,
+  "origin": "pdfium-binaries",
+  "flags": [],
+  "sha256": "fd4de9f91f183476d04b1bc3fd17dacd95aba349c55d2c376512d95e082b441e",
+  "source": "https://github.com/bblanchon/pdfium-binaries/releases/tag/chromium%2F8076",
+  "redistribution_notices": "third_party/pdfium-linux-x64",
+  "v8_or_xfa_enabled": false,
+  "origin_package": "pypdfium2 5.14.0 runtime installation"
+}

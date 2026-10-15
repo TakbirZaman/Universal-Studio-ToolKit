@@ -1,0 +1,3 @@
+00:00 +0: loading /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/native_bridge_test.dart
+00:00 +0: real Rust bridge processes, validates and safely saves output
+00:00 +1: All tests passed!

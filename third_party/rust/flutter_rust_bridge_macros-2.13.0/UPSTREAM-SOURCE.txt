@@ -1,0 +1,1 @@
+https://raw.githubusercontent.com/fzyzcjy/flutter_rust_bridge/8631db91a90c699439c9ce2a1fb4164ae8661da9/LICENSE

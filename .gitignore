@@ -1,0 +1,12 @@
+/target/
+/rust/target/
+/build/
+.dart_tool/
+.flutter-plugins-dependencies
+*.jks
+*.keystore
+key.properties
+.idea/
+*.iml
+/dist/
+android/local.properties

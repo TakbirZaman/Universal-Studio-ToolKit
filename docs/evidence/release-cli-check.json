@@ -1,0 +1,21 @@
+{
+  "output": {
+    "format": "pdf",
+    "bytes": 149868,
+    "width": null,
+    "height": null,
+    "pages": 4,
+    "quality": null,
+    "findings": [
+      {
+        "advisory": false,
+        "code": "pdf_reopened",
+        "message": "PDF reopened and page count verified. This is structural validation, not a visual comparison.",
+        "passed": true
+      }
+    ]
+  },
+  "unicode_filename": true,
+  "overwrite_refused": true,
+  "original_hashes_unchanged": true
+}

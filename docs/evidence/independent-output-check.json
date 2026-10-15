@@ -1,0 +1,98 @@
+{
+  "print-sheet.pdf": {
+    "pages": 1,
+    "boxes": [
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ]
+    ],
+    "rotations": [
+      0
+    ]
+  },
+  "reordered-rotated.pdf": {
+    "pages": 3,
+    "boxes": [
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ],
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ],
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ]
+    ],
+    "rotations": [
+      90,
+      90,
+      90
+    ]
+  },
+  "three-page-scan.pdf": {
+    "pages": 3,
+    "boxes": [
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ],
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ],
+      [
+        0.0,
+        0.0,
+        595.2756,
+        841.8898
+      ]
+    ],
+    "rotations": [
+      0,
+      0,
+      0
+    ]
+  },
+  "photo-300x300.jpg": {
+    "size": [
+      300,
+      300
+    ],
+    "format": "JPEG",
+    "bytes": 38036
+  },
+  "signature.png": {
+    "size": [
+      300,
+      100
+    ],
+    "format": "PNG",
+    "bytes": 6202
+  },
+  "application-pack.zip": {
+    "entries": [
+      "photo.jpg",
+      "signature.png",
+      "certificate.pdf",
+      "manifest.json",
+      "validation.txt"
+    ],
+    "hashes_match": true
+  }
+}

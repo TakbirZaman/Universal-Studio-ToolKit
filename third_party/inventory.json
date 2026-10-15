@@ -1,0 +1,2820 @@
+[
+  {
+    "ecosystem": "rust",
+    "name": "addr2line",
+    "version": "0.25.1",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/gimli-rs/addr2line",
+    "files": [
+      "third_party/rust/addr2line-0.25.1/LICENSE-APACHE",
+      "third_party/rust/addr2line-0.25.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "adler2",
+    "version": "2.0.1",
+    "declared_license": "0BSD OR MIT OR Apache-2.0",
+    "repository": "https://github.com/oyvindln/adler2",
+    "files": [
+      "third_party/rust/adler2-2.0.1/LICENSE-APACHE",
+      "third_party/rust/adler2-2.0.1/LICENSE-MIT",
+      "third_party/rust/adler2-2.0.1/LICENSE-0BSD"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "aes",
+    "version": "0.8.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/block-ciphers",
+    "files": [
+      "third_party/rust/aes-0.8.4/LICENSE-APACHE",
+      "third_party/rust/aes-0.8.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "aho-corasick",
+    "version": "1.1.5",
+    "declared_license": "Unlicense OR MIT",
+    "repository": "https://github.com/BurntSushi/aho-corasick",
+    "files": [
+      "third_party/rust/aho-corasick-1.1.5/COPYING",
+      "third_party/rust/aho-corasick-1.1.5/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "allo-isolate",
+    "version": "0.1.27",
+    "declared_license": null,
+    "repository": "https://github.com/sunshine-protocol/allo-isolate",
+    "files": [
+      "third_party/rust/allo-isolate-0.1.27/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "android_log-sys",
+    "version": "0.3.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-mobile/android_log-sys-rs",
+    "files": [
+      "third_party/rust/android_log-sys-0.3.2/LICENSE-APACHE",
+      "third_party/rust/android_log-sys-0.3.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "android_logger",
+    "version": "0.15.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-mobile/android_logger-rs",
+    "files": [
+      "third_party/rust/android_logger-0.15.1/LICENSE-APACHE",
+      "third_party/rust/android_logger-0.15.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "android_system_properties",
+    "version": "0.1.6",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/nical/android_system_properties",
+    "files": [
+      "third_party/rust/android_system_properties-0.1.6/LICENSE-APACHE",
+      "third_party/rust/android_system_properties-0.1.6/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "anyhow",
+    "version": "1.0.104",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/anyhow",
+    "files": [
+      "third_party/rust/anyhow-1.0.104/LICENSE-APACHE",
+      "third_party/rust/anyhow-1.0.104/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "arbitrary",
+    "version": "1.5.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-fuzz/arbitrary/",
+    "files": [
+      "third_party/rust/arbitrary-1.5.0/LICENSE-APACHE",
+      "third_party/rust/arbitrary-1.5.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "atomic",
+    "version": "0.5.3",
+    "declared_license": "Apache-2.0/MIT",
+    "repository": "https://github.com/Amanieu/atomic-rs",
+    "files": [
+      "third_party/rust/atomic-0.5.3/LICENSE-APACHE",
+      "third_party/rust/atomic-0.5.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "autocfg",
+    "version": "1.5.1",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/cuviper/autocfg",
+    "files": [
+      "third_party/rust/autocfg-1.5.1/LICENSE-APACHE",
+      "third_party/rust/autocfg-1.5.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "backtrace",
+    "version": "0.3.76",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/backtrace-rs",
+    "files": [
+      "third_party/rust/backtrace-0.3.76/LICENSE-APACHE",
+      "third_party/rust/backtrace-0.3.76/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "bitflags",
+    "version": "2.13.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/bitflags/bitflags",
+    "files": [
+      "third_party/rust/bitflags-2.13.2/LICENSE-APACHE",
+      "third_party/rust/bitflags-2.13.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "block-buffer",
+    "version": "0.10.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/utils",
+    "files": [
+      "third_party/rust/block-buffer-0.10.4/LICENSE-APACHE",
+      "third_party/rust/block-buffer-0.10.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "block-padding",
+    "version": "0.3.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/utils",
+    "files": [
+      "third_party/rust/block-padding-0.3.3/LICENSE-APACHE",
+      "third_party/rust/block-padding-0.3.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "build-target",
+    "version": "0.4.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/OpenByteDev/build-target",
+    "files": [
+      "third_party/rust/build-target-0.4.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "bumpalo",
+    "version": "3.20.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/fitzgen/bumpalo",
+    "files": [
+      "third_party/rust/bumpalo-3.20.3/LICENSE-APACHE",
+      "third_party/rust/bumpalo-3.20.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "bytecount",
+    "version": "0.6.9",
+    "declared_license": "Apache-2.0/MIT",
+    "repository": "https://github.com/llogiq/bytecount",
+    "files": [
+      "third_party/rust/bytecount-0.6.9/LICENSE.MIT",
+      "third_party/rust/bytecount-0.6.9/LICENSE.Apache2"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "bytemuck",
+    "version": "1.25.2",
+    "declared_license": "Zlib OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/Lokathor/bytemuck",
+    "files": [
+      "third_party/rust/bytemuck-1.25.2/LICENSE-APACHE",
+      "third_party/rust/bytemuck-1.25.2/LICENSE-MIT",
+      "third_party/rust/bytemuck-1.25.2/LICENSE-ZLIB"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "byteorder",
+    "version": "1.5.0",
+    "declared_license": "Unlicense OR MIT",
+    "repository": "https://github.com/BurntSushi/byteorder",
+    "files": [
+      "third_party/rust/byteorder-1.5.0/COPYING",
+      "third_party/rust/byteorder-1.5.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "byteorder-lite",
+    "version": "0.1.0",
+    "declared_license": "Unlicense OR MIT",
+    "repository": "https://github.com/image-rs/byteorder-lite",
+    "files": [
+      "third_party/rust/byteorder-lite-0.1.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "bytes",
+    "version": "1.12.1",
+    "declared_license": "MIT",
+    "repository": "https://github.com/tokio-rs/bytes",
+    "files": [
+      "third_party/rust/bytes-1.12.1/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "cbc",
+    "version": "0.1.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/block-modes",
+    "files": [
+      "third_party/rust/cbc-0.1.2/LICENSE-APACHE",
+      "third_party/rust/cbc-0.1.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "cc",
+    "version": "1.8.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/cc-rs",
+    "files": [
+      "third_party/rust/cc-1.8.0/LICENSE-APACHE",
+      "third_party/rust/cc-1.8.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "cfg-if",
+    "version": "1.0.5",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/cfg-if",
+    "files": [
+      "third_party/rust/cfg-if-1.0.5/LICENSE-APACHE",
+      "third_party/rust/cfg-if-1.0.5/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "chrono",
+    "version": "0.4.45",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/chronotope/chrono",
+    "files": [
+      "third_party/rust/chrono-0.4.45/LICENSE.txt"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "cipher",
+    "version": "0.4.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/traits",
+    "files": [
+      "third_party/rust/cipher-0.4.4/LICENSE-APACHE",
+      "third_party/rust/cipher-0.4.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "console_error_panic_hook",
+    "version": "0.1.7",
+    "declared_license": "Apache-2.0/MIT",
+    "repository": "https://github.com/rustwasm/console_error_panic_hook",
+    "files": [
+      "third_party/rust/console_error_panic_hook-0.1.7/LICENSE-APACHE",
+      "third_party/rust/console_error_panic_hook-0.1.7/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "console_log",
+    "version": "1.1.0",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/iamcodemaker/console_log",
+    "files": [
+      "third_party/rust/console_log-1.1.0/LICENSE-APACHE",
+      "third_party/rust/console_log-1.1.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "core-foundation-sys",
+    "version": "0.8.7",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/servo/core-foundation-rs",
+    "files": [
+      "third_party/rust/core-foundation-sys-0.8.7/LICENSE-APACHE",
+      "third_party/rust/core-foundation-sys-0.8.7/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "core_detect",
+    "version": "1.0.0",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/thomcc/core_detect",
+    "files": [
+      "third_party/rust/core_detect-1.0.0/LICENSE-APACHE",
+      "third_party/rust/core_detect-1.0.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "cpufeatures",
+    "version": "0.2.17",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/utils",
+    "files": [
+      "third_party/rust/cpufeatures-0.2.17/LICENSE-APACHE",
+      "third_party/rust/cpufeatures-0.2.17/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "crc32fast",
+    "version": "1.5.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/srijs/rust-crc32fast",
+    "files": [
+      "third_party/rust/crc32fast-1.5.2/LICENSE-APACHE",
+      "third_party/rust/crc32fast-1.5.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "crypto-common",
+    "version": "0.1.7",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/traits",
+    "files": [
+      "third_party/rust/crypto-common-0.1.7/LICENSE-APACHE",
+      "third_party/rust/crypto-common-0.1.7/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "dart-sys",
+    "version": "4.1.5",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dart-sys/dart-sys",
+    "files": [
+      "third_party/rust/dart-sys-4.1.5/UPSTREAM-LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "dashmap",
+    "version": "5.5.3",
+    "declared_license": "MIT",
+    "repository": "https://github.com/xacrimon/dashmap",
+    "files": [
+      "third_party/rust/dashmap-5.5.3/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "delegate-attr",
+    "version": "0.3.1",
+    "declared_license": "MIT",
+    "repository": "https://github.com/upsuper/delegate-attr",
+    "files": [
+      "third_party/rust/delegate-attr-0.3.1/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "derive_arbitrary",
+    "version": "1.5.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-fuzz/arbitrary",
+    "files": [
+      "third_party/rust/derive_arbitrary-1.5.0/LICENSE-APACHE",
+      "third_party/rust/derive_arbitrary-1.5.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "digest",
+    "version": "0.10.7",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/traits",
+    "files": [
+      "third_party/rust/digest-0.10.7/LICENSE-APACHE",
+      "third_party/rust/digest-0.10.7/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "ecb",
+    "version": "0.1.2",
+    "declared_license": "MIT",
+    "repository": "https://github.com/magic-akari/ecb",
+    "files": [
+      "third_party/rust/ecb-0.1.2/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "either",
+    "version": "1.19.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rayon-rs/either",
+    "files": [
+      "third_party/rust/either-1.19.0/LICENSE-APACHE",
+      "third_party/rust/either-1.19.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "encoding_rs",
+    "version": "0.8.42",
+    "declared_license": "(Apache-2.0 OR MIT) AND BSD-3-Clause",
+    "repository": "https://github.com/hsivonen/encoding_rs",
+    "files": [
+      "third_party/rust/encoding_rs-0.8.42/LICENSE-APACHE",
+      "third_party/rust/encoding_rs-0.8.42/LICENSE-MIT",
+      "third_party/rust/encoding_rs-0.8.42/LICENSE-WHATWG",
+      "third_party/rust/encoding_rs-0.8.42/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "env_filter",
+    "version": "0.1.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-cli/env_logger",
+    "files": [
+      "third_party/rust/env_filter-0.1.4/LICENSE-APACHE",
+      "third_party/rust/env_filter-0.1.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "equivalent",
+    "version": "1.0.3",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/indexmap-rs/equivalent",
+    "files": [
+      "third_party/rust/equivalent-1.0.3/LICENSE-APACHE",
+      "third_party/rust/equivalent-1.0.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "errno",
+    "version": "0.3.14",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/lambda-fairy/rust-errno",
+    "files": [
+      "third_party/rust/errno-0.3.14/LICENSE-APACHE",
+      "third_party/rust/errno-0.3.14/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "fallible-iterator",
+    "version": "0.3.0",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/sfackler/rust-fallible-iterator",
+    "files": [
+      "third_party/rust/fallible-iterator-0.3.0/LICENSE-APACHE",
+      "third_party/rust/fallible-iterator-0.3.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "fallible-streaming-iterator",
+    "version": "0.1.9",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/sfackler/fallible-streaming-iterator",
+    "files": [
+      "third_party/rust/fallible-streaming-iterator-0.1.9/LICENSE-APACHE",
+      "third_party/rust/fallible-streaming-iterator-0.1.9/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "fastrand",
+    "version": "2.5.0",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/smol-rs/fastrand",
+    "files": [
+      "third_party/rust/fastrand-2.5.0/LICENSE-APACHE",
+      "third_party/rust/fastrand-2.5.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "fdeflate",
+    "version": "0.3.7",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/image-rs/fdeflate",
+    "files": [
+      "third_party/rust/fdeflate-0.3.7/LICENSE-APACHE",
+      "third_party/rust/fdeflate-0.3.7/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "find-msvc-tools",
+    "version": "0.1.14",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/cc-rs",
+    "files": [
+      "third_party/rust/find-msvc-tools-0.1.14/LICENSE-APACHE",
+      "third_party/rust/find-msvc-tools-0.1.14/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "flate2",
+    "version": "1.1.10",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/flate2-rs",
+    "files": [
+      "third_party/rust/flate2-1.1.10/LICENSE-APACHE",
+      "third_party/rust/flate2-1.1.10/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "flutter_rust_bridge",
+    "version": "2.13.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/fzyzcjy/flutter_rust_bridge",
+    "files": [
+      "third_party/rust/flutter_rust_bridge-2.13.0/UPSTREAM-LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "flutter_rust_bridge_macros",
+    "version": "2.13.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/fzyzcjy/flutter_rust_bridge",
+    "files": [
+      "third_party/rust/flutter_rust_bridge_macros-2.13.0/UPSTREAM-LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "foldhash",
+    "version": "0.2.0",
+    "declared_license": "Zlib",
+    "repository": "https://github.com/orlp/foldhash",
+    "files": [
+      "third_party/rust/foldhash-0.2.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-channel",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-channel-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-channel-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-core",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-core-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-core-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-executor",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-executor-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-executor-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-io",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-io-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-io-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-macro",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-macro-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-macro-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-sink",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-sink-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-sink-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-task",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-task-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-task-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "futures-util",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "files": [
+      "third_party/rust/futures-util-0.3.34/LICENSE-APACHE",
+      "third_party/rust/futures-util-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "generic-array",
+    "version": "0.14.7",
+    "declared_license": "MIT",
+    "repository": "https://github.com/fizyk20/generic-array.git",
+    "files": [
+      "third_party/rust/generic-array-0.14.7/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "getrandom",
+    "version": "0.3.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-random/getrandom",
+    "files": [
+      "third_party/rust/getrandom-0.3.4/LICENSE-APACHE",
+      "third_party/rust/getrandom-0.3.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "getrandom",
+    "version": "0.4.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-random/getrandom",
+    "files": [
+      "third_party/rust/getrandom-0.4.3/LICENSE-APACHE",
+      "third_party/rust/getrandom-0.4.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "gimli",
+    "version": "0.32.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/gimli-rs/gimli",
+    "files": [
+      "third_party/rust/gimli-0.32.3/LICENSE-APACHE",
+      "third_party/rust/gimli-0.32.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "hashbrown",
+    "version": "0.14.5",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/hashbrown",
+    "files": [
+      "third_party/rust/hashbrown-0.14.5/LICENSE-APACHE",
+      "third_party/rust/hashbrown-0.14.5/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "hashbrown",
+    "version": "0.16.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/hashbrown",
+    "files": [
+      "third_party/rust/hashbrown-0.16.1/LICENSE-APACHE",
+      "third_party/rust/hashbrown-0.16.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "hashbrown",
+    "version": "0.17.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/hashbrown",
+    "files": [
+      "third_party/rust/hashbrown-0.17.1/LICENSE-APACHE",
+      "third_party/rust/hashbrown-0.17.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "hashlink",
+    "version": "0.12.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/djc/hashlink",
+    "files": [
+      "third_party/rust/hashlink-0.12.2/LICENSE-APACHE",
+      "third_party/rust/hashlink-0.12.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "hermit-abi",
+    "version": "0.5.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/hermit-os/hermit-rs",
+    "files": [
+      "third_party/rust/hermit-abi-0.5.3/LICENSE-APACHE",
+      "third_party/rust/hermit-abi-0.5.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "hex",
+    "version": "0.4.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/KokaKiwi/rust-hex",
+    "files": [
+      "third_party/rust/hex-0.4.3/LICENSE-APACHE",
+      "third_party/rust/hex-0.4.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "iana-time-zone",
+    "version": "0.1.65",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/strawlab/iana-time-zone",
+    "files": [
+      "third_party/rust/iana-time-zone-0.1.65/LICENSE-APACHE",
+      "third_party/rust/iana-time-zone-0.1.65/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "iana-time-zone-haiku",
+    "version": "0.1.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/strawlab/iana-time-zone",
+    "files": [
+      "third_party/rust/iana-time-zone-haiku-0.1.2/LICENSE-APACHE",
+      "third_party/rust/iana-time-zone-haiku-0.1.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "image",
+    "version": "0.25.10",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/image-rs/image",
+    "files": [
+      "third_party/rust/image-0.25.10/LICENSE-APACHE",
+      "third_party/rust/image-0.25.10/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "indexmap",
+    "version": "2.14.2",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/indexmap-rs/indexmap",
+    "files": [
+      "third_party/rust/indexmap-2.14.2/LICENSE-APACHE",
+      "third_party/rust/indexmap-2.14.2/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "inout",
+    "version": "0.1.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/utils",
+    "files": [
+      "third_party/rust/inout-0.1.4/LICENSE-APACHE",
+      "third_party/rust/inout-0.1.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "itertools",
+    "version": "0.15.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-itertools/itertools",
+    "files": [
+      "third_party/rust/itertools-0.15.0/LICENSE-APACHE",
+      "third_party/rust/itertools-0.15.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "itoa",
+    "version": "1.0.18",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/itoa",
+    "files": [
+      "third_party/rust/itoa-1.0.18/LICENSE-APACHE",
+      "third_party/rust/itoa-1.0.18/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "js-sys",
+    "version": "0.3.106",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/js-sys",
+    "files": [
+      "third_party/rust/js-sys-0.3.106/LICENSE-APACHE",
+      "third_party/rust/js-sys-0.3.106/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "lazy_static",
+    "version": "1.5.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang-nursery/lazy-static.rs",
+    "files": [
+      "third_party/rust/lazy_static-1.5.1/LICENSE-APACHE",
+      "third_party/rust/lazy_static-1.5.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "libc",
+    "version": "0.2.190",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/libc",
+    "files": [
+      "third_party/rust/libc-0.2.190/LICENSE-APACHE",
+      "third_party/rust/libc-0.2.190/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "libloading",
+    "version": "0.9.0",
+    "declared_license": "ISC",
+    "repository": "https://github.com/nagisa/rust_libloading/",
+    "files": [
+      "third_party/rust/libloading-0.9.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "libsqlite3-sys",
+    "version": "0.38.2",
+    "declared_license": "MIT",
+    "repository": "https://github.com/rusqlite/rusqlite",
+    "files": [
+      "third_party/rust/libsqlite3-sys-0.38.2/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "linux-raw-sys",
+    "version": "0.12.1",
+    "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/sunfishcode/linux-raw-sys",
+    "files": [
+      "third_party/rust/linux-raw-sys-0.12.1/LICENSE-APACHE",
+      "third_party/rust/linux-raw-sys-0.12.1/LICENSE-Apache-2.0_WITH_LLVM-exception",
+      "third_party/rust/linux-raw-sys-0.12.1/LICENSE-MIT",
+      "third_party/rust/linux-raw-sys-0.12.1/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "lock_api",
+    "version": "0.4.14",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/Amanieu/parking_lot",
+    "files": [
+      "third_party/rust/lock_api-0.4.14/LICENSE-APACHE",
+      "third_party/rust/lock_api-0.4.14/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "log",
+    "version": "0.4.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/log",
+    "files": [
+      "third_party/rust/log-0.4.34/LICENSE-APACHE",
+      "third_party/rust/log-0.4.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "lopdf",
+    "version": "0.38.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/J-F-Liu/lopdf.git",
+    "files": [
+      "third_party/rust/lopdf-0.38.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "maybe-owned",
+    "version": "0.3.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rustonaut/maybe-owned",
+    "files": [
+      "third_party/rust/maybe-owned-0.3.4/LICENSE-APACHE",
+      "third_party/rust/maybe-owned-0.3.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "md-5",
+    "version": "0.10.6",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/hashes",
+    "files": [
+      "third_party/rust/md-5-0.10.6/LICENSE-APACHE",
+      "third_party/rust/md-5-0.10.6/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "memchr",
+    "version": "2.8.3",
+    "declared_license": "Unlicense OR MIT",
+    "repository": "https://github.com/BurntSushi/memchr",
+    "files": [
+      "third_party/rust/memchr-2.8.3/COPYING",
+      "third_party/rust/memchr-2.8.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "miniz_oxide",
+    "version": "0.8.9",
+    "declared_license": "MIT OR Zlib OR Apache-2.0",
+    "repository": "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide",
+    "files": [
+      "third_party/rust/miniz_oxide-0.8.9/LICENSE-MIT.md",
+      "third_party/rust/miniz_oxide-0.8.9/LICENSE-ZLIB.md",
+      "third_party/rust/miniz_oxide-0.8.9/LICENSE-APACHE.md",
+      "third_party/rust/miniz_oxide-0.8.9/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "miniz_oxide",
+    "version": "0.9.1",
+    "declared_license": "MIT OR Zlib OR Apache-2.0",
+    "repository": "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide",
+    "files": [
+      "third_party/rust/miniz_oxide-0.9.1/LICENSE-MIT.md",
+      "third_party/rust/miniz_oxide-0.9.1/LICENSE-ZLIB.md",
+      "third_party/rust/miniz_oxide-0.9.1/LICENSE-APACHE.md",
+      "third_party/rust/miniz_oxide-0.9.1/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "moxcms",
+    "version": "0.8.1",
+    "declared_license": "BSD-3-Clause OR Apache-2.0",
+    "repository": "https://github.com/awxkee/moxcms.git",
+    "files": [
+      "third_party/rust/moxcms-0.8.1/LICENSE.md",
+      "third_party/rust/moxcms-0.8.1/LICENSE-APACHE.md"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "multiversion_no_op",
+    "version": "1.0.0",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/hsivonen/multiversion_no_op",
+    "files": [
+      "third_party/rust/multiversion_no_op-1.0.0/LICENSE-APACHE",
+      "third_party/rust/multiversion_no_op-1.0.0/LICENSE-MIT",
+      "third_party/rust/multiversion_no_op-1.0.0/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "nom",
+    "version": "8.0.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/rust-bakery/nom",
+    "files": [
+      "third_party/rust/nom-8.0.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "nom_locate",
+    "version": "5.0.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/fflorent/nom_locate",
+    "files": [
+      "third_party/rust/nom_locate-5.0.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "num-traits",
+    "version": "0.2.19",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-num/num-traits",
+    "files": [
+      "third_party/rust/num-traits-0.2.19/LICENSE-APACHE",
+      "third_party/rust/num-traits-0.2.19/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "num_cpus",
+    "version": "1.17.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/seanmonstar/num_cpus",
+    "files": [
+      "third_party/rust/num_cpus-1.17.0/LICENSE-APACHE",
+      "third_party/rust/num_cpus-1.17.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "object",
+    "version": "0.37.3",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/gimli-rs/object",
+    "files": [
+      "third_party/rust/object-0.37.3/LICENSE-APACHE",
+      "third_party/rust/object-0.37.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "once_cell",
+    "version": "1.21.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/matklad/once_cell",
+    "files": [
+      "third_party/rust/once_cell-1.21.4/LICENSE-APACHE",
+      "third_party/rust/once_cell-1.21.4/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "oslog",
+    "version": "0.2.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/steven-joruk/oslog",
+    "files": [
+      "third_party/rust/oslog-0.2.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "parking_lot_core",
+    "version": "0.9.12",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/Amanieu/parking_lot",
+    "files": [
+      "third_party/rust/parking_lot_core-0.9.12/LICENSE-APACHE",
+      "third_party/rust/parking_lot_core-0.9.12/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "pdfium-render",
+    "version": "0.9.4",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/ajrcarey/pdfium-render",
+    "files": [
+      "third_party/rust/pdfium-render-0.9.4/LICENSE.md"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "pin-project-lite",
+    "version": "0.2.17",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/taiki-e/pin-project-lite",
+    "files": [
+      "third_party/rust/pin-project-lite-0.2.17/LICENSE-APACHE",
+      "third_party/rust/pin-project-lite-0.2.17/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "piston-float",
+    "version": "1.0.1",
+    "declared_license": "MIT",
+    "repository": "https://github.com/pistondevelopers/float.git",
+    "files": [
+      "third_party/rust/piston-float-1.0.1/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "pkg-config",
+    "version": "0.3.34",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/pkg-config-rs",
+    "files": [
+      "third_party/rust/pkg-config-0.3.34/LICENSE-APACHE",
+      "third_party/rust/pkg-config-0.3.34/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "png",
+    "version": "0.18.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/image-rs/image-png",
+    "files": [
+      "third_party/rust/png-0.18.1/LICENSE-APACHE",
+      "third_party/rust/png-0.18.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "portable-atomic",
+    "version": "1.15.0",
+    "declared_license": "Apache-2.0 OR MIT",
+    "repository": "https://github.com/taiki-e/portable-atomic",
+    "files": [
+      "third_party/rust/portable-atomic-1.15.0/LICENSE-APACHE",
+      "third_party/rust/portable-atomic-1.15.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "ppv-lite86",
+    "version": "0.2.21",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/cryptocorrosion/cryptocorrosion",
+    "files": [
+      "third_party/rust/ppv-lite86-0.2.21/LICENSE-APACHE",
+      "third_party/rust/ppv-lite86-0.2.21/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "proc-macro2",
+    "version": "1.0.107",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/proc-macro2",
+    "files": [
+      "third_party/rust/proc-macro2-1.0.107/LICENSE-APACHE",
+      "third_party/rust/proc-macro2-1.0.107/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "pxfm",
+    "version": "0.1.30",
+    "declared_license": "BSD-3-Clause OR Apache-2.0",
+    "repository": "https://github.com/awxkee/pxfm",
+    "files": [
+      "third_party/rust/pxfm-0.1.30/LICENSE.md",
+      "third_party/rust/pxfm-0.1.30/LICENSE-APACHE.md"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "quote",
+    "version": "1.0.47",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/quote",
+    "files": [
+      "third_party/rust/quote-1.0.47/LICENSE-APACHE",
+      "third_party/rust/quote-1.0.47/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "r-efi",
+    "version": "5.3.0",
+    "declared_license": "MIT OR Apache-2.0 OR LGPL-2.1-or-later",
+    "repository": "https://github.com/r-efi/r-efi",
+    "files": [
+      "third_party/rust/r-efi-5.3.0/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "r-efi",
+    "version": "6.0.0",
+    "declared_license": "MIT OR Apache-2.0 OR LGPL-2.1-or-later",
+    "repository": "https://github.com/r-efi/r-efi",
+    "files": [
+      "third_party/rust/r-efi-6.0.0/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rand",
+    "version": "0.9.5",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-random/rand",
+    "files": [
+      "third_party/rust/rand-0.9.5/LICENSE-APACHE",
+      "third_party/rust/rand-0.9.5/LICENSE-MIT",
+      "third_party/rust/rand-0.9.5/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rand_chacha",
+    "version": "0.9.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-random/rand",
+    "files": [
+      "third_party/rust/rand_chacha-0.9.0/LICENSE-APACHE",
+      "third_party/rust/rand_chacha-0.9.0/LICENSE-MIT",
+      "third_party/rust/rand_chacha-0.9.0/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rand_core",
+    "version": "0.9.5",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-random/rand",
+    "files": [
+      "third_party/rust/rand_core-0.9.5/LICENSE-APACHE",
+      "third_party/rust/rand_core-0.9.5/LICENSE-MIT",
+      "third_party/rust/rand_core-0.9.5/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rangemap",
+    "version": "1.8.0",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/jeffparsons/rangemap",
+    "files": [
+      "third_party/rust/rangemap-1.8.0/LICENSE-APACHE",
+      "third_party/rust/rangemap-1.8.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "redox_syscall",
+    "version": "0.5.18",
+    "declared_license": "MIT",
+    "repository": "https://gitlab.redox-os.org/redox-os/syscall",
+    "files": [
+      "third_party/rust/redox_syscall-0.5.18/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "regex",
+    "version": "1.13.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/regex",
+    "files": [
+      "third_party/rust/regex-1.13.1/LICENSE-APACHE",
+      "third_party/rust/regex-1.13.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "regex-automata",
+    "version": "0.4.18",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/regex",
+    "files": [
+      "third_party/rust/regex-automata-0.4.18/LICENSE-APACHE",
+      "third_party/rust/regex-automata-0.4.18/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "regex-syntax",
+    "version": "0.8.11",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rust-lang/regex",
+    "files": [
+      "third_party/rust/regex-syntax-0.8.11/LICENSE-APACHE",
+      "third_party/rust/regex-syntax-0.8.11/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rsqlite-vfs",
+    "version": "0.1.1",
+    "declared_license": "MIT",
+    "repository": null,
+    "files": [
+      "third_party/rust/rsqlite-vfs-0.1.1/UPSTREAM-LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rusqlite",
+    "version": "0.40.2",
+    "declared_license": "MIT",
+    "repository": "https://github.com/rusqlite/rusqlite",
+    "files": [
+      "third_party/rust/rusqlite-0.40.2/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rustc-demangle",
+    "version": "0.1.28",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/rust-lang/rustc-demangle",
+    "files": [
+      "third_party/rust/rustc-demangle-0.1.28/LICENSE-APACHE",
+      "third_party/rust/rustc-demangle-0.1.28/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rustix",
+    "version": "1.1.5",
+    "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/bytecodealliance/rustix",
+    "files": [
+      "third_party/rust/rustix-1.1.5/LICENSE-APACHE",
+      "third_party/rust/rustix-1.1.5/LICENSE-Apache-2.0_WITH_LLVM-exception",
+      "third_party/rust/rustix-1.1.5/LICENSE-MIT",
+      "third_party/rust/rustix-1.1.5/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "rustversion",
+    "version": "1.0.23",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/rustversion",
+    "files": [
+      "third_party/rust/rustversion-1.0.23/LICENSE-APACHE",
+      "third_party/rust/rustversion-1.0.23/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "scopeguard",
+    "version": "1.2.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/bluss/scopeguard",
+    "files": [
+      "third_party/rust/scopeguard-1.2.0/LICENSE-APACHE",
+      "third_party/rust/scopeguard-1.2.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "serde",
+    "version": "1.0.229",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/serde-rs/serde",
+    "files": [
+      "third_party/rust/serde-1.0.229/LICENSE-APACHE",
+      "third_party/rust/serde-1.0.229/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "serde_core",
+    "version": "1.0.229",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/serde-rs/serde",
+    "files": [
+      "third_party/rust/serde_core-1.0.229/LICENSE-APACHE",
+      "third_party/rust/serde_core-1.0.229/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "serde_derive",
+    "version": "1.0.229",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/serde-rs/serde",
+    "files": [
+      "third_party/rust/serde_derive-1.0.229/LICENSE-APACHE",
+      "third_party/rust/serde_derive-1.0.229/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "serde_json",
+    "version": "1.0.154",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/serde-rs/json",
+    "files": [
+      "third_party/rust/serde_json-1.0.154/LICENSE-APACHE",
+      "third_party/rust/serde_json-1.0.154/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "sha2",
+    "version": "0.10.9",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/RustCrypto/hashes",
+    "files": [
+      "third_party/rust/sha2-0.10.9/LICENSE-APACHE",
+      "third_party/rust/sha2-0.10.9/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "shlex",
+    "version": "2.0.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/comex/rust-shlex",
+    "files": [
+      "third_party/rust/shlex-2.0.1/LICENSE-APACHE",
+      "third_party/rust/shlex-2.0.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "simd-adler32",
+    "version": "0.3.10",
+    "declared_license": "MIT",
+    "repository": "https://github.com/mcountryman/simd-adler32",
+    "files": [
+      "third_party/rust/simd-adler32-0.3.10/LICENSE.md"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "simdutf8",
+    "version": "0.1.5",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/rusticstuff/simdutf8",
+    "files": [
+      "third_party/rust/simdutf8-0.1.5/LICENSE-Apache",
+      "third_party/rust/simdutf8-0.1.5/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "slab",
+    "version": "0.4.12",
+    "declared_license": "MIT",
+    "repository": "https://github.com/tokio-rs/slab",
+    "files": [
+      "third_party/rust/slab-0.4.12/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "smallvec",
+    "version": "1.16.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/servo/rust-smallvec",
+    "files": [
+      "third_party/rust/smallvec-1.16.3/LICENSE-APACHE",
+      "third_party/rust/smallvec-1.16.3/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "sqlite-wasm-rs",
+    "version": "0.5.5",
+    "declared_license": "MIT",
+    "repository": "https://github.com/Spxg/sqlite-wasm-rs",
+    "files": [
+      "third_party/rust/sqlite-wasm-rs-0.5.5/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "stringprep",
+    "version": "0.1.5",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/sfackler/rust-stringprep",
+    "files": [
+      "third_party/rust/stringprep-0.1.5/LICENSE-APACHE",
+      "third_party/rust/stringprep-0.1.5/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "syn",
+    "version": "2.0.119",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/syn",
+    "files": [
+      "third_party/rust/syn-2.0.119/LICENSE-APACHE",
+      "third_party/rust/syn-2.0.119/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "syn",
+    "version": "3.0.9",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/syn",
+    "files": [
+      "third_party/rust/syn-3.0.9/LICENSE-APACHE",
+      "third_party/rust/syn-3.0.9/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "tempfile",
+    "version": "3.27.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/Stebalien/tempfile",
+    "files": [
+      "third_party/rust/tempfile-3.27.0/LICENSE-APACHE",
+      "third_party/rust/tempfile-3.27.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "thiserror",
+    "version": "2.0.21",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/thiserror",
+    "files": [
+      "third_party/rust/thiserror-2.0.21/LICENSE-APACHE",
+      "third_party/rust/thiserror-2.0.21/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "thiserror-impl",
+    "version": "2.0.21",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/dtolnay/thiserror",
+    "files": [
+      "third_party/rust/thiserror-impl-2.0.21/LICENSE-APACHE",
+      "third_party/rust/thiserror-impl-2.0.21/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "threadpool",
+    "version": "1.8.1",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/rust-threadpool/rust-threadpool",
+    "files": [
+      "third_party/rust/threadpool-1.8.1/LICENSE-APACHE",
+      "third_party/rust/threadpool-1.8.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "tinyvec",
+    "version": "1.13.3",
+    "declared_license": "Zlib OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/Lokathor/tinyvec",
+    "files": [
+      "third_party/rust/tinyvec-1.13.3/LICENSE-MIT.md",
+      "third_party/rust/tinyvec-1.13.3/LICENSE-ZLIB.md",
+      "third_party/rust/tinyvec-1.13.3/LICENSE-APACHE.md"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "tokio",
+    "version": "1.53.3",
+    "declared_license": "MIT",
+    "repository": "https://github.com/tokio-rs/tokio",
+    "files": [
+      "third_party/rust/tokio-1.53.3/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "ttf-parser",
+    "version": "0.25.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/harfbuzz/ttf-parser",
+    "files": [
+      "third_party/rust/ttf-parser-0.25.1/LICENSE-APACHE",
+      "third_party/rust/ttf-parser-0.25.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "typenum",
+    "version": "1.20.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/paholg/typenum",
+    "files": [
+      "third_party/rust/typenum-1.20.1/LICENSE-APACHE",
+      "third_party/rust/typenum-1.20.1/LICENSE-MIT",
+      "third_party/rust/typenum-1.20.1/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "unicode-bidi",
+    "version": "0.3.18",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/servo/unicode-bidi",
+    "files": [
+      "third_party/rust/unicode-bidi-0.3.18/LICENSE-APACHE",
+      "third_party/rust/unicode-bidi-0.3.18/LICENSE-MIT",
+      "third_party/rust/unicode-bidi-0.3.18/AUTHORS",
+      "third_party/rust/unicode-bidi-0.3.18/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "unicode-ident",
+    "version": "1.0.27",
+    "declared_license": "(MIT OR Apache-2.0) AND Unicode-3.0",
+    "repository": "https://github.com/dtolnay/unicode-ident",
+    "files": [
+      "third_party/rust/unicode-ident-1.0.27/LICENSE-APACHE",
+      "third_party/rust/unicode-ident-1.0.27/LICENSE-MIT",
+      "third_party/rust/unicode-ident-1.0.27/LICENSE-UNICODE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "unicode-normalization",
+    "version": "0.1.25",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/unicode-rs/unicode-normalization",
+    "files": [
+      "third_party/rust/unicode-normalization-0.1.25/LICENSE-APACHE",
+      "third_party/rust/unicode-normalization-0.1.25/LICENSE-MIT",
+      "third_party/rust/unicode-normalization-0.1.25/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "unicode-properties",
+    "version": "0.1.4",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/unicode-rs/unicode-properties",
+    "files": [
+      "third_party/rust/unicode-properties-0.1.4/LICENSE-APACHE",
+      "third_party/rust/unicode-properties-0.1.4/LICENSE-MIT",
+      "third_party/rust/unicode-properties-0.1.4/COPYRIGHT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "utf16string",
+    "version": "0.2.0",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/getsentry/utf16string",
+    "files": [
+      "third_party/rust/utf16string-0.2.0/LICENSE-APACHE",
+      "third_party/rust/utf16string-0.2.0/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "vcpkg",
+    "version": "0.2.15",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/mcgoo/vcpkg-rs",
+    "files": [
+      "third_party/rust/vcpkg-0.2.15/LICENSE-APACHE",
+      "third_party/rust/vcpkg-0.2.15/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "vecmath",
+    "version": "1.0.0",
+    "declared_license": "MIT",
+    "repository": "https://github.com/pistondevelopers/vecmath.git",
+    "files": [
+      "third_party/rust/vecmath-1.0.0/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "version_check",
+    "version": "0.9.5",
+    "declared_license": "MIT/Apache-2.0",
+    "repository": "https://github.com/SergioBenitez/version_check",
+    "files": [
+      "third_party/rust/version_check-0.9.5/LICENSE-APACHE",
+      "third_party/rust/version_check-0.9.5/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wasip2",
+    "version": "1.0.4+wasi-0.2.12",
+    "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/bytecodealliance/wasi-rs",
+    "files": [
+      "third_party/rust/wasip2-1.0.4+wasi-0.2.12/LICENSE-APACHE",
+      "third_party/rust/wasip2-1.0.4+wasi-0.2.12/LICENSE-Apache-2.0_WITH_LLVM-exception",
+      "third_party/rust/wasip2-1.0.4+wasi-0.2.12/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wasm-bindgen",
+    "version": "0.2.129",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen",
+    "files": [
+      "third_party/rust/wasm-bindgen-0.2.129/LICENSE-APACHE",
+      "third_party/rust/wasm-bindgen-0.2.129/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wasm-bindgen-futures",
+    "version": "0.4.79",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/futures",
+    "files": [
+      "third_party/rust/wasm-bindgen-futures-0.4.79/LICENSE-APACHE",
+      "third_party/rust/wasm-bindgen-futures-0.4.79/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wasm-bindgen-macro",
+    "version": "0.2.129",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/macro",
+    "files": [
+      "third_party/rust/wasm-bindgen-macro-0.2.129/LICENSE-APACHE",
+      "third_party/rust/wasm-bindgen-macro-0.2.129/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wasm-bindgen-macro-support",
+    "version": "0.2.129",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/main/crates/macro-support",
+    "files": [
+      "third_party/rust/wasm-bindgen-macro-support-0.2.129/LICENSE-APACHE",
+      "third_party/rust/wasm-bindgen-macro-support-0.2.129/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wasm-bindgen-shared",
+    "version": "0.2.129",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/shared",
+    "files": [
+      "third_party/rust/wasm-bindgen-shared-0.2.129/LICENSE-APACHE",
+      "third_party/rust/wasm-bindgen-shared-0.2.129/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "web-sys",
+    "version": "0.3.106",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/web-sys",
+    "files": [
+      "third_party/rust/web-sys-0.3.106/LICENSE-APACHE",
+      "third_party/rust/web-sys-0.3.106/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "weezl",
+    "version": "0.1.12",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/image-rs/weezl",
+    "files": [
+      "third_party/rust/weezl-0.1.12/LICENSE-APACHE",
+      "third_party/rust/weezl-0.1.12/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-core",
+    "version": "0.62.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-core-0.62.2/license-mit",
+      "third_party/rust/windows-core-0.62.2/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-implement",
+    "version": "0.60.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-implement-0.60.2/license-mit",
+      "third_party/rust/windows-implement-0.60.2/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-interface",
+    "version": "0.59.3",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-interface-0.59.3/license-mit",
+      "third_party/rust/windows-interface-0.59.3/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-link",
+    "version": "0.2.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-link-0.2.1/license-mit",
+      "third_party/rust/windows-link-0.2.1/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-result",
+    "version": "0.4.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-result-0.4.1/license-mit",
+      "third_party/rust/windows-result-0.4.1/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-strings",
+    "version": "0.5.1",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-strings-0.5.1/license-mit",
+      "third_party/rust/windows-strings-0.5.1/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "windows-sys",
+    "version": "0.61.2",
+    "declared_license": "MIT OR Apache-2.0",
+    "repository": "https://github.com/microsoft/windows-rs",
+    "files": [
+      "third_party/rust/windows-sys-0.61.2/license-mit",
+      "third_party/rust/windows-sys-0.61.2/license-apache-2.0"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "wit-bindgen",
+    "version": "0.57.1",
+    "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/bytecodealliance/wit-bindgen",
+    "files": [
+      "third_party/rust/wit-bindgen-0.57.1/LICENSE-APACHE",
+      "third_party/rust/wit-bindgen-0.57.1/LICENSE-Apache-2.0_WITH_LLVM-exception",
+      "third_party/rust/wit-bindgen-0.57.1/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zerocopy",
+    "version": "0.8.63",
+    "declared_license": "BSD-2-Clause OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/google/zerocopy",
+    "files": [
+      "third_party/rust/zerocopy-0.8.63/LICENSE-BSD",
+      "third_party/rust/zerocopy-0.8.63/LICENSE-APACHE",
+      "third_party/rust/zerocopy-0.8.63/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zerocopy-derive",
+    "version": "0.8.63",
+    "declared_license": "BSD-2-Clause OR Apache-2.0 OR MIT",
+    "repository": "https://github.com/google/zerocopy",
+    "files": [
+      "third_party/rust/zerocopy-derive-0.8.63/LICENSE-BSD",
+      "third_party/rust/zerocopy-derive-0.8.63/LICENSE-APACHE",
+      "third_party/rust/zerocopy-derive-0.8.63/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zip",
+    "version": "4.6.1",
+    "declared_license": "MIT",
+    "repository": "https://github.com/zip-rs/zip2.git",
+    "files": [
+      "third_party/rust/zip-4.6.1/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zlib-rs",
+    "version": "0.6.8",
+    "declared_license": "Zlib",
+    "repository": "https://github.com/trifectatechfoundation/zlib-rs",
+    "files": [
+      "third_party/rust/zlib-rs-0.6.8/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zmij",
+    "version": "1.0.23",
+    "declared_license": "MIT",
+    "repository": "https://github.com/dtolnay/zmij",
+    "files": [
+      "third_party/rust/zmij-1.0.23/LICENSE-MIT"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zopfli",
+    "version": "0.8.4",
+    "declared_license": "Apache-2.0",
+    "repository": "https://github.com/zopfli-rs/zopfli",
+    "files": [
+      "third_party/rust/zopfli-0.8.4/COPYING"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zune-core",
+    "version": "0.5.3",
+    "declared_license": "MIT OR Apache-2.0 OR Zlib",
+    "repository": "https://github.com/etemesi254/zune-image",
+    "files": [
+      "third_party/rust/zune-core-0.5.3/LICENSE-APACHE",
+      "third_party/rust/zune-core-0.5.3/LICENSE-MIT",
+      "third_party/rust/zune-core-0.5.3/LICENSE-ZLIB"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "rust",
+    "name": "zune-jpeg",
+    "version": "0.5.15",
+    "declared_license": "MIT OR Apache-2.0 OR Zlib",
+    "repository": "https://github.com/etemesi254/zune-image/tree/dev/crates/zune-jpeg",
+    "files": [
+      "third_party/rust/zune-jpeg-0.5.15/LICENSE-APACHE",
+      "third_party/rust/zune-jpeg-0.5.15/LICENSE-MIT",
+      "third_party/rust/zune-jpeg-0.5.15/LICENSE-ZLIB"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "args",
+    "files": [
+      "third_party/dart/args/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "async",
+    "files": [
+      "third_party/dart/async/LICENSE",
+      "third_party/dart/async/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "boolean_selector",
+    "files": [
+      "third_party/dart/boolean_selector/LICENSE",
+      "third_party/dart/boolean_selector/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "build_cli_annotations",
+    "files": [
+      "third_party/dart/build_cli_annotations/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "characters",
+    "files": [
+      "third_party/dart/characters/LICENSE",
+      "third_party/dart/characters/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "clock",
+    "files": [
+      "third_party/dart/clock/LICENSE",
+      "third_party/dart/clock/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "code_assets",
+    "files": [
+      "third_party/dart/code_assets/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "collection",
+    "files": [
+      "third_party/dart/collection/LICENSE",
+      "third_party/dart/collection/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "cross_file",
+    "files": [
+      "third_party/dart/cross_file/LICENSE",
+      "third_party/dart/cross_file/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "crypto",
+    "files": [
+      "third_party/dart/crypto/LICENSE",
+      "third_party/dart/crypto/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "fake_async",
+    "files": [
+      "third_party/dart/fake_async/LICENSE",
+      "third_party/dart/fake_async/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "ffi",
+    "files": [
+      "third_party/dart/ffi/LICENSE",
+      "third_party/dart/ffi/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector",
+    "files": [
+      "third_party/dart/file_selector/LICENSE",
+      "third_party/dart/file_selector/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_android",
+    "files": [
+      "third_party/dart/file_selector_android/LICENSE",
+      "third_party/dart/file_selector_android/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_ios",
+    "files": [
+      "third_party/dart/file_selector_ios/LICENSE",
+      "third_party/dart/file_selector_ios/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_linux",
+    "files": [
+      "third_party/dart/file_selector_linux/LICENSE",
+      "third_party/dart/file_selector_linux/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_macos",
+    "files": [
+      "third_party/dart/file_selector_macos/LICENSE",
+      "third_party/dart/file_selector_macos/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_platform_interface",
+    "files": [
+      "third_party/dart/file_selector_platform_interface/LICENSE",
+      "third_party/dart/file_selector_platform_interface/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_web",
+    "files": [
+      "third_party/dart/file_selector_web/LICENSE",
+      "third_party/dart/file_selector_web/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "file_selector_windows",
+    "files": [
+      "third_party/dart/file_selector_windows/LICENSE",
+      "third_party/dart/file_selector_windows/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "fixnum",
+    "files": [
+      "third_party/dart/fixnum/LICENSE",
+      "third_party/dart/fixnum/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "flutter",
+    "files": [
+      "third_party/dart/flutter/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "flutter_lints",
+    "files": [
+      "third_party/dart/flutter_lints/LICENSE",
+      "third_party/dart/flutter_lints/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "flutter_riverpod",
+    "files": [
+      "third_party/dart/flutter_riverpod/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "flutter_rust_bridge",
+    "files": [
+      "third_party/dart/flutter_rust_bridge/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "flutter_test",
+    "files": [
+      "third_party/dart/flutter_test/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "flutter_web_plugins",
+    "files": [
+      "third_party/dart/flutter_web_plugins/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "hooks",
+    "files": [
+      "third_party/dart/hooks/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "http",
+    "files": [
+      "third_party/dart/http/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "http_parser",
+    "files": [
+      "third_party/dart/http_parser/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "jni",
+    "files": [
+      "third_party/dart/jni/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "jni_flutter",
+    "files": [
+      "third_party/dart/jni_flutter/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "jni_util",
+    "files": [
+      "third_party/dart/jni_util/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "leak_tracker",
+    "files": [
+      "third_party/dart/leak_tracker/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "leak_tracker_flutter_testing",
+    "files": [
+      "third_party/dart/leak_tracker_flutter_testing/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "leak_tracker_testing",
+    "files": [
+      "third_party/dart/leak_tracker_testing/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "lints",
+    "files": [
+      "third_party/dart/lints/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "listen",
+    "files": [
+      "third_party/dart/listen/LICENSE",
+      "third_party/dart/listen/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "logging",
+    "files": [
+      "third_party/dart/logging/LICENSE",
+      "third_party/dart/logging/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "matcher",
+    "files": [
+      "third_party/dart/matcher/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "material_color_utilities",
+    "files": [
+      "third_party/dart/material_color_utilities/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "meta",
+    "files": [
+      "third_party/dart/meta/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "objective_c",
+    "files": [
+      "third_party/dart/objective_c/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "package_config",
+    "files": [
+      "third_party/dart/package_config/LICENSE",
+      "third_party/dart/package_config/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path",
+    "files": [
+      "third_party/dart/path/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path_provider",
+    "files": [
+      "third_party/dart/path_provider/LICENSE",
+      "third_party/dart/path_provider/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path_provider_android",
+    "files": [
+      "third_party/dart/path_provider_android/LICENSE",
+      "third_party/dart/path_provider_android/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path_provider_foundation",
+    "files": [
+      "third_party/dart/path_provider_foundation/LICENSE",
+      "third_party/dart/path_provider_foundation/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path_provider_linux",
+    "files": [
+      "third_party/dart/path_provider_linux/LICENSE",
+      "third_party/dart/path_provider_linux/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path_provider_platform_interface",
+    "files": [
+      "third_party/dart/path_provider_platform_interface/LICENSE",
+      "third_party/dart/path_provider_platform_interface/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "path_provider_windows",
+    "files": [
+      "third_party/dart/path_provider_windows/LICENSE",
+      "third_party/dart/path_provider_windows/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "platform",
+    "files": [
+      "third_party/dart/platform/LICENSE",
+      "third_party/dart/platform/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "plugin_platform_interface",
+    "files": [
+      "third_party/dart/plugin_platform_interface/LICENSE",
+      "third_party/dart/plugin_platform_interface/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "pub_semver",
+    "files": [
+      "third_party/dart/pub_semver/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "record_use",
+    "files": [
+      "third_party/dart/record_use/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "riverpod",
+    "files": [
+      "third_party/dart/riverpod/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "sky_engine",
+    "files": [
+      "third_party/dart/sky_engine/LICENSE",
+      "third_party/dart/sky_engine/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "source_span",
+    "files": [
+      "third_party/dart/source_span/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "stack_trace",
+    "files": [
+      "third_party/dart/stack_trace/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "state_notifier",
+    "files": [
+      "third_party/dart/state_notifier/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "stream_channel",
+    "files": [
+      "third_party/dart/stream_channel/LICENSE",
+      "third_party/dart/stream_channel/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "string_scanner",
+    "files": [
+      "third_party/dart/string_scanner/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "term_glyph",
+    "files": [
+      "third_party/dart/term_glyph/LICENSE",
+      "third_party/dart/term_glyph/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "test_api",
+    "files": [
+      "third_party/dart/test_api/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "typed_data",
+    "files": [
+      "third_party/dart/typed_data/LICENSE",
+      "third_party/dart/typed_data/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "uuid",
+    "files": [
+      "third_party/dart/uuid/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "vector_math",
+    "files": [
+      "third_party/dart/vector_math/LICENSE",
+      "third_party/dart/vector_math/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "vm_service",
+    "files": [
+      "third_party/dart/vm_service/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "web",
+    "files": [
+      "third_party/dart/web/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "xdg_directories",
+    "files": [
+      "third_party/dart/xdg_directories/LICENSE",
+      "third_party/dart/xdg_directories/AUTHORS"
+    ],
+    "review": "source license files collected; obligations require review"
+  },
+  {
+    "ecosystem": "dart",
+    "name": "yaml",
+    "files": [
+      "third_party/dart/yaml/LICENSE"
+    ],
+    "review": "source license files collected; obligations require review"
+  }
+]

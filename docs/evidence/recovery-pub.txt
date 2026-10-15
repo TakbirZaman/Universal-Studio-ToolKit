@@ -1,0 +1,12 @@
+[1/10] Material Fonts                                               7.3s
+[2/10] Gradle Wrapper                                               6.8s
+[3/10] Flutter SDK
+  ├─ [1/5] sky_engine                                               6.9s
+  ├─ [2/5] flutter_gpu                                              7.0s
+  ├─ [3/5] flutter_patched_sdk                                      7.1s
+  ├─ [4/5] flutter_patched_sdk_product                              6.9s
+  └─ [5/5] linux-x64                                                7.5s
+[10/10] linux-x64/font-subset                                      647ms
+[10/10] linux-x64/font-subset                                        1ms
+Failed to download https://storage.googleapis.com/flutter_infra_release/flutter/deb287481e3ce9468f3434937ced4240a70539ca/linux-x64/font-subset.zip. Ensure you have network connectivity and then try again.
+HttpException: Proxy failed to establish tunnel (403 Forbidden), uri = //storage.googleapis.com:443
