@@ -77,7 +77,12 @@ pub enum Fit {
 }
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct CropRect { pub x:u32, pub y:u32, pub width:u32, pub height:u32 }
+pub struct CropRect {
+    pub x: u32,
+    pub y: u32,
+    pub width: u32,
+    pub height: u32,
+}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PhotoOptions {

@@ -1,0 +1,10 @@
+00:00 +0: loading /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/studio_test.dart
+00:00 +0: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/native_bridge_test.dart: real Rust bridge processes, validates and safely saves output
+00:00 +1: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/native_bridge_test.dart: real Rust bridge processes, validates and safely saves output
+00:00 +2: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/native_bridge_test.dart: real Rust bridge processes, validates and safely saves output
+00:00 +3: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/studio_test.dart: home exposes first-use actions and search
+00:01 +4: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/visual_test.dart: render desktop home
+00:01 +5: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/studio_test.dart: mobile workspace validates missing file without calling engine
+00:01 +6: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/studio_test.dart: mobile workspace validates missing file without calling engine
+00:01 +7: /workspace/scratch/72c326c6fe81/universal-studio-toolkit/test/studio_test.dart: large text and dark theme retain usable home
+00:01 +8: All tests passed!

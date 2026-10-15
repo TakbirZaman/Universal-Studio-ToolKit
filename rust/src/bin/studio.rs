@@ -17,6 +17,11 @@ enum Request {
         pages: Option<Vec<u32>>,
         rotation: i32,
     },
+    OptimizePdf {
+        input: String,
+        directory: String,
+        filename: String,
+    },
     Scan {
         inputs: Vec<String>,
         directory: String,
@@ -83,6 +88,11 @@ fn run() -> Result<OutputInfo> {
             directory,
             filename,
         ),
+        Request::OptimizePdf {
+            input,
+            directory,
+            filename,
+        } => (pdf::optimize_lossless(&read(&input)?)?, directory, filename),
         Request::Scan {
             inputs,
             directory,

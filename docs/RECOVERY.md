@@ -1,3 +1,9 @@
-Workspace reset recovery in progress. The prior transient 27 Rust/13 Flutter test run and updated bundle were lost before Library upload. The durable baseline contains 23 Rust/6 Flutter tests and the earlier Linux bundle. Numeric crop and JSON recipe export have been reconstructed and require a fresh verification run. Recipe/batch UI, transparency preview and scan drafts are being recovered from the conversation. Do not claim the old bundled binary includes these reconstructed source changes until rebuilt.
+# Recovery and next actions
 
-Fresh recovery verification: 24 Rust tests passed, including reconstructed crop/recipe validation. Host Rust build passed. Flutter dependency setup is blocked by a proxy 403 downloading the official font-subset artifact; standalone analyzer cannot resolve missing packages and is not a valid code-quality result. Android ARM64 compilation is in progress.
+Current source is pushed to TakbirZaman/Universal-Studio-ToolKit. The previous transient scan-draft and transparency-preview additions were lost before checkpoint saving and remain to be reconstructed. The older Linux bundle does not contain the new recipe interface.
+
+Fresh checks: 24 Rust tests passed, including numeric crop, JSON recipe validation and three-page PDFium pixel comparisons for lossless optimization. Eight Flutter tests passed, including the real Rust bridge, home goldens, and batch retry/cancellation. Dart analyzer reports no issues. Android ARM64 Rust release compiled with NDK 28.2.13676358/API 24; APK packaging and device execution are pending.
+
+The temporary SDK download failure was resolved on a later normal retry; locked Dart dependencies are installed. No dependency versions were loosened.
+
+Next: package non-V8 Android PDFium and native core, build/test APK; restore scan drafts and transparency preview; continue the full requirements checklist. Some generated binary output/golden uploads were held by automatic review; do not treat their absence in GitHub as a passing fresh-checkout test. The PDF render and native bridge tests now generate their own synthetic pages. No real user documents were used in these tests.

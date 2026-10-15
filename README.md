@@ -60,3 +60,7 @@ Create the destination directory first. A file with the same name causes an erro
 `docs/evidence` contains test logs and independent output checks; `verification-outputs` contains synthetic examples, not user documents. `third_party` contains dependency license texts, inventory and native PDFium notices. Collection is not the same as complete redistribution/legal clearance; outstanding review is tracked in `docs/DEPENDENCIES.md`. Keep all notices with redistributed builds.
 
 No representative user tests, accessibility certification, clean-device compatibility or full feature parity are claimed. Start further implementation at `docs/CHECKPOINT.md`.
+
+### Lossless PDF optimization (CLI)
+
+Use a request with `operation: "optimize_pdf"`, `input`, `directory`, and `filename`. This uses supported structural optimization only, never rasterizes, and keeps the original bytes if rewriting does not reduce size. Existing conservative PDF structure/protection checks apply. The desktop interface for this operation is pending.

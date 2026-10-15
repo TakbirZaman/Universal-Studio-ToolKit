@@ -6,7 +6,32 @@ fn pdfium_renders_real_pages_and_exports_images() {
         std::env::var_os("UST_PDFIUM_LIBRARY").is_some(),
         "Set UST_PDFIUM_LIBRARY to the audited native PDFium binary"
     );
-    let input = std::fs::read("../verification-outputs/three-page-scan.pdf").unwrap();
+    // Generate synthetic pages locally so the test requires no private documents
+    // or committed output artifacts.
+    let sources: Vec<Vec<u8>> = (0..3)
+        .map(|index| {
+            let image = image::RgbImage::from_fn(80, 100, |x, y| {
+                image::Rgb([((x + index * 30) % 200) as u8, (y % 180) as u8, 150])
+            });
+            let mut encoded = std::io::Cursor::new(Vec::new());
+            image::DynamicImage::ImageRgb8(image)
+                .write_to(&mut encoded, image::ImageFormat::Png)
+                .unwrap();
+            encoded.into_inner()
+        })
+        .collect();
+    let input = pdf::images_to_pdf(&sources, &Default::default())
+        .unwrap()
+        .data;
+    let optimized = pdf::optimize_lossless(&input).unwrap();
+    assert!(optimized.data.len() <= input.len());
+    for index in 0..3 {
+        assert_eq!(
+            rendering::page(&input, index, 800).unwrap().data,
+            rendering::page(&optimized.data, index, 800).unwrap().data
+        );
+    }
+    studio_core::export::verify_output(&optimized).unwrap();
     let preview = rendering::page(&input, 0, 800).unwrap();
     let image = photo::decode(&preview.data).unwrap();
     assert!(image.width() <= 800 && image.height() <= 800);

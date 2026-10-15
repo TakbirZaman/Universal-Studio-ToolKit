@@ -176,10 +176,11 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
     if (!form.currentState!.validate()) return;
     await action(() async {
       final dir = ref.read(dataDirectoryProvider);
-      if (dir == null)
+      if (dir == null) {
         throw StateError(
           'Local recipe storage is unavailable. Export a recipe file instead.',
         );
+      }
       final json = document();
       await validate(json);
       final list = await core.listRecipes(directory: dir);
@@ -219,21 +220,25 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       ],
     );
     if (f == null) return;
-    if (await f.length() > 65536)
+    if (await f.length() > 65536) {
       throw const FormatException('Recipe exceeds 64 KiB.');
+    }
     final bytes = await f.readAsBytes();
-    if (bytes.length > 65536)
+    if (bytes.length > 65536) {
       throw const FormatException('Recipe exceeds 64 KiB.');
+    }
     final json = utf8.decode(bytes);
     await validate(json);
     if (mounted) populate(json);
   });
   Future<Uint8List> readPhoto(XFile file) async {
-    if (await file.length() > 64 * 1024 * 1024)
+    if (await file.length() > 64 * 1024 * 1024) {
       throw const FormatException('Photo exceeds 64 MiB.');
+    }
     final bytes = await file.readAsBytes();
-    if (bytes.length > 64 * 1024 * 1024)
+    if (bytes.length > 64 * 1024 * 1024) {
       throw const FormatException('Photo exceeds 64 MiB.');
+    }
     return bytes;
   }
 
@@ -245,12 +250,13 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
     final f = await openFile(acceptedTypeGroups: [imageType]);
     if (f == null) return;
     final bytes = await readPhoto(f);
-    if (mounted)
+    if (mounted) {
       setState(() {
         source = bytes;
         sourceName = f.name;
         output = null;
       });
+    }
   });
   Future<void> chooseBatch() async {
     if (!form.currentState!.validate()) return;
@@ -259,31 +265,36 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       await validate(json);
       final files = await openFiles(acceptedTypeGroups: [imageType]);
       if (files.isEmpty) return;
-      if (files.length > 100)
+      if (files.length > 100) {
         throw const FormatException('Choose at most 100 photos.');
+      }
       files.sort((a, b) => a.name.compareTo(b.name));
       final name = value('filename'), dot = value('filename').lastIndexOf('.');
       final items = <RecipeBatchItem>[];
       var total = 0;
       for (var i = 0; i < files.length; i++) {
-        if (total + await files[i].length() > 64 * 1024 * 1024)
+        if (total + await files[i].length() > 64 * 1024 * 1024) {
           throw const FormatException('Batch exceeds 64 MiB.');
+        }
         final bytes = await readPhoto(files[i]);
         total += bytes.length;
-        if (total > 64 * 1024 * 1024)
+        if (total > 64 * 1024 * 1024) {
           throw const FormatException('Batch exceeds 64 MiB.');
+        }
         final out =
             '${name.substring(0, dot)}-${(i + 1).toString().padLeft(3, '0')}${name.substring(dot)}';
-        if (utf8.encode(out).length > 180)
+        if (utf8.encode(out).length > 180) {
           throw const FormatException('Use a shorter output filename.');
+        }
         items.add(RecipeBatchItem(files[i].name, out, bytes));
       }
-      if (mounted)
+      if (mounted) {
         setState(() {
           batch = RecipeBatch(json, items);
           message =
               'Batch settings captured. Later edits do not change this batch.';
         });
+      }
     });
   }
 
@@ -513,8 +524,9 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                             jsonOutput(json),
                             'recipe.json',
                           );
-                          if (mounted && path != null)
+                          if (mounted && path != null) {
                             setState(() => message = 'Saved: $path');
+                          }
                         });
                       },
                 child: const Text('Export recipe file'),
@@ -532,8 +544,9 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                 : () {
                     if (!form.currentState!.validate()) return;
                     action(() async {
-                      if (source == null)
+                      if (source == null) {
                         throw StateError('Choose a photo first.');
+                      }
                       final result = await core.runRecipe(
                         data: source!,
                         recipeJson: document(),
@@ -565,11 +578,12 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                         output!,
                         value('filename'),
                       );
-                      if (mounted && path != null)
+                      if (mounted && path != null) {
                         setState(
                           () => message =
                               'Saved: $path. Your original file is unchanged.',
                         );
+                      }
                     }),
               child: const Text('Save a copy'),
             ),
@@ -606,8 +620,9 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                                   item.output!,
                                   item.outputName,
                                 );
-                                if (mounted && path != null)
+                                if (mounted && path != null) {
                                   setState(() => item.savedLocation = path);
+                                }
                               }),
                       ),
               ),

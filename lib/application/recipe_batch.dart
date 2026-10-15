@@ -48,10 +48,11 @@ class RecipeBatch {
             0,
             (n, i) => n + (i.output?.bytes.length ?? 0),
           );
-          if (used + output.bytes.length > 64 * 1024 * 1024)
+          if (used + output.bytes.length > 64 * 1024 * 1024) {
             throw StateError(
               'Batch output exceeds 64 MiB. Use fewer photos or a stricter size limit.',
             );
+          }
           item.output = output;
           item.state = BatchItemState.succeeded;
         } catch (e) {

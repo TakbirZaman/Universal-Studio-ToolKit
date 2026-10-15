@@ -50,7 +50,9 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
                 return Err(invalid("Output dimensions are inconsistent."));
             }
         }
-        "json" => {crate::recipe::Recipe::parse(&out.data)?;}
+        "json" => {
+            crate::recipe::Recipe::parse(&out.data)?;
+        }
         "pdf" => {
             if Some(crate::pdf::page_count(&out.data)?) != out.info.pages {
                 return Err(invalid("Output page count is inconsistent."));

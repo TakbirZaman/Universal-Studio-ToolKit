@@ -91,6 +91,36 @@ fn finish(mut doc: Document, count: usize) -> Result<PreparedOutput> {
     }
     Ok(PreparedOutput{info:OutputInfo{format:"pdf".into(),bytes:bytes.len() as u64,width:None,height:None,pages:Some(count as u32),quality:None,findings:vec![ValidationFinding{advisory:false,code:"pdf_reopened".into(),message:"PDF reopened and page count verified. This is structural validation, not a visual comparison.".into(),passed:true}]},data:bytes})
 }
+/// Lossless structural optimization only. Never rasterizes or recompresses images.
+/// If rewriting does not reduce bytes, return the validated original unchanged.
+pub fn optimize_lossless(data: &[u8]) -> Result<PreparedOutput> {
+    let document = load(data)?;
+    let pages = document.get_pages().len();
+    let mut output = finish(document, pages)?;
+    let reduced = output.data.len() < data.len();
+    if !reduced {
+        output.data = data.to_vec();
+        output.info.bytes = data.len() as u64;
+    }
+    output.info.findings.push(ValidationFinding {
+        advisory: true,
+        code: if reduced {
+            "lossless_smaller"
+        } else {
+            "lossless_unchanged"
+        }
+        .into(),
+        message: if reduced {
+            "Supported PDF structures optimized without rasterizing pages."
+        } else {
+            "No smaller lossless result was found. The saved copy has the original bytes."
+        }
+        .into(),
+        passed: true,
+    });
+    Ok(output)
+}
+
 /// Explicit page order (one-based); omitted pages are deleted. No duplicates.
 pub fn arrange(
     inputs: &[Vec<u8>],

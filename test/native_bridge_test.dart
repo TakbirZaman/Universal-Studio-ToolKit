@@ -31,9 +31,8 @@ void main() {
       expect(output.width, 300);
       expect(output.height, 300);
       expect(output.bytes.length, lessThan(102400));
-      final pdf = await File(
-        'verification-outputs/three-page-scan.pdf',
-      ).readAsBytes();
+      final syntheticScan = await scanPdf(inputs: [source, source, source]);
+      final pdf = syntheticScan.bytes;
       final page = await renderPdfPage(data: pdf, pageIndex: 0, maxPixels: 800);
       expect(page.format, 'png');
       expect(page.height, lessThanOrEqualTo(800));

@@ -3,12 +3,28 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Step {
-    Crop { x:u32,y:u32,width:u32,height:u32 },
-    Resize { width: u32, height: u32, fit: Fit },
-    Compress { limit: ByteLimit, min_quality: u8 },
+    Crop {
+        x: u32,
+        y: u32,
+        width: u32,
+        height: u32,
+    },
+    Resize {
+        width: u32,
+        height: u32,
+        fit: Fit,
+    },
+    Compress {
+        limit: ByteLimit,
+        min_quality: u8,
+    },
     RemoveMetadata,
-    Rename { filename: String },
-    Export { format: OutputFormat },
+    Rename {
+        filename: String,
+    },
+    Export {
+        format: OutputFormat,
+    },
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -28,9 +44,9 @@ impl Recipe {
         Ok(r)
     }
     pub fn validate(&self) -> Result<()> {
-        if ![1,2].contains(&self.schema_version)
+        if ![1, 2].contains(&self.schema_version)
             || self.name.trim().is_empty()
-            || self.name.len()>128
+            || self.name.len() > 128
             || self.steps.is_empty()
             || self.steps.len() > 6
         {
@@ -39,11 +55,32 @@ impl Recipe {
         let mut previous = -1;
         for step in &self.steps {
             let rank = match step {
-                Step::Crop{x,y,width,height}=>{
-                    if self.schema_version!=2 || *width==0 || *height==0 || *width as u64 * *height as u64>MAX_PIXELS || x.checked_add(*width).is_none_or(|v|v>12000) || y.checked_add(*height).is_none_or(|v|v>12000) {return Err(invalid("Crop needs recipe version 2 and valid pixel coordinates."));} 0
+                Step::Crop {
+                    x,
+                    y,
+                    width,
+                    height,
+                } => {
+                    if self.schema_version != 2
+                        || *width == 0
+                        || *height == 0
+                        || *width as u64 * *height as u64 > MAX_PIXELS
+                        || x.checked_add(*width).is_none_or(|v| v > 12000)
+                        || y.checked_add(*height).is_none_or(|v| v > 12000)
+                    {
+                        return Err(invalid(
+                            "Crop needs recipe version 2 and valid pixel coordinates.",
+                        ));
+                    }
+                    0
                 }
                 Step::Resize { width, height, .. } => {
-                    if *width == 0 || *height == 0 || *width > 12000 || *height > 12000 || *width as u64 * *height as u64 > MAX_PIXELS {
+                    if *width == 0
+                        || *height == 0
+                        || *width > 12000
+                        || *height > 12000
+                        || *width as u64 * *height as u64 > MAX_PIXELS
+                    {
                         return Err(invalid("Invalid resize dimensions."));
                     }
                     1
@@ -70,11 +107,22 @@ impl Recipe {
         if previous != 5 {
             return Err(invalid("A recipe must end with export."));
         }
-        if let Some(Step::Export{format})=self.steps.last() {
+        if let Some(Step::Export { format }) = self.steps.last() {
             for step in &self.steps {
-                if let Step::Rename{filename}=step {
-                    let ext=std::path::Path::new(filename).extension().and_then(|s|s.to_str()).unwrap_or("").to_lowercase();
-                    if !match format { OutputFormat::Jpeg=>ext=="jpg"||ext=="jpeg",OutputFormat::Png=>ext=="png" } {return Err(invalid("Recipe filename extension must match output format."));}
+                if let Step::Rename { filename } = step {
+                    let ext = std::path::Path::new(filename)
+                        .extension()
+                        .and_then(|s| s.to_str())
+                        .unwrap_or("")
+                        .to_lowercase();
+                    if !match format {
+                        OutputFormat::Jpeg => ext == "jpg" || ext == "jpeg",
+                        OutputFormat::Png => ext == "png",
+                    } {
+                        return Err(invalid(
+                            "Recipe filename extension must match output format.",
+                        ));
+                    }
                 }
             }
         }
@@ -90,7 +138,21 @@ impl Recipe {
         };
         for s in &self.steps {
             match s {
-                Step::Crop{x,y,width,height}=>{o.crop=Some(CropRect{x:*x,y:*y,width:*width,height:*height});o.width=*width;o.height=*height;}
+                Step::Crop {
+                    x,
+                    y,
+                    width,
+                    height,
+                } => {
+                    o.crop = Some(CropRect {
+                        x: *x,
+                        y: *y,
+                        width: *width,
+                        height: *height,
+                    });
+                    o.width = *width;
+                    o.height = *height;
+                }
                 Step::Resize { width, height, fit } => {
                     o.width = *width;
                     o.height = *height;

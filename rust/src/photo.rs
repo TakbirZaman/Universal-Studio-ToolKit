@@ -48,9 +48,23 @@ pub fn prepare(data: &[u8], o: &PhotoOptions) -> Result<DynamicImage> {
         return Err(invalid("Minimum quality must be between 1 and 100."));
     }
     let mut img = decode(data)?;
-    if let Some(crop)=o.crop {
-        if crop.width==0 || crop.height==0 || crop.x.checked_add(crop.width).is_none_or(|v|v>img.width()) || crop.y.checked_add(crop.height).is_none_or(|v|v>img.height()) { return Err(invalid("Crop extends outside the orientation-corrected photo.")); }
-        img=img.crop_imm(crop.x,crop.y,crop.width,crop.height);
+    if let Some(crop) = o.crop {
+        if crop.width == 0
+            || crop.height == 0
+            || crop
+                .x
+                .checked_add(crop.width)
+                .is_none_or(|v| v > img.width())
+            || crop
+                .y
+                .checked_add(crop.height)
+                .is_none_or(|v| v > img.height())
+        {
+            return Err(invalid(
+                "Crop extends outside the orientation-corrected photo.",
+            ));
+        }
+        img = img.crop_imm(crop.x, crop.y, crop.width, crop.height);
     }
     img = match o.rotate_quarters % 4 {
         1 => img.rotate90(),
