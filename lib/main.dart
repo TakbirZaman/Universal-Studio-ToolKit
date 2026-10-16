@@ -1,3 +1,4 @@
+import 'application/transparency_preview.dart';
 import 'dart:io';
 import 'application/recipes.dart';
 import 'package:path_provider/path_provider.dart';
@@ -1225,6 +1226,9 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       );
     }
     if (imageTool && output != null && !showOriginal) {
+      if (output!.format == 'png') {
+        return TransparencyPreview(bytes: Uint8List.fromList(output!.bytes));
+      }
       return Image.memory(
         Uint8List.fromList(output!.bytes),
         height: 360,

@@ -41,7 +41,8 @@ jobs:
         run: |
           flutter pub get --enforce-lockfile
           flutter analyze --no-pub
-          flutter test --no-pub test/studio_test.dart test/native_bridge_test.dart test/recipe_batch_test.dart
+          mapfile -t tests < <(find test -name '*_test.dart' ! -name 'visual_test.dart' | sort)
+          flutter test --no-pub "${tests[@]}"
       - name: Render home screens (capture only, baseline review pending)
         run: flutter test --no-pub --update-goldens test/visual_test.dart
       - name: Build portable Linux bundle
