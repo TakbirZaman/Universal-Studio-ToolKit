@@ -1,34 +1,32 @@
-# Implementation checkpoint — 2026-10-16
+# Checkpoint — 2026-10-16 UTC
 
-GitHub is the authoritative source. Full scope remains in REQUIREMENTS.md; no routine implementation approval is needed.
+Full scope remains in REQUIREMENTS.md. This is functioning development software, not launch completion. Continue ordinary implementation without phase-by-phase approval.
 
-## Verified development deliveries
+## Stable application checkpoint
 
-| Platform | Successful hosted run | Evidence and boundaries |
-|---|---|---|
-| Linux x64 / Ubuntu 24.04 | 38900451000 | 26 Rust tests, selected Flutter behavioral/native integration tests, analysis, release build, library resolution; packaged GUI window startup passed; interactive workflows/clean-device validation outstanding |
-| Android ARM64 | 38900451024 | Debug-signed and unsigned release APKs built; signature, ABI, native inventory, ZIP/ELF 16 KiB gates passed; no emulator/device behavior verification |
-| Windows x64 / Server 2022 runner | 38900451112 | Rust/native bridge tests, release ZIP, MSVC release runtime provenance and startup window gate passed; eight-second startup is not clean-system or full workflow validation |
+Application source 98dbeacac7c9e558205eb9bb8fc990594f122543 passed:
+- Linux run 38943392106: 27 Rust tests, selected Flutter behavioral/native/contrast/keyboard tests, analysis, release bundle, library resolution and an eight-second packaged-window startup check on Ubuntu 24.04 x64.
+- Windows run 38943392637: Rust/native Flutter tests, portable ZIP with release CRT provenance, packaged-window startup on the windows-2022 build host.
+- Android run 38943392331: ARM64 debug-signed and unsigned release APKs; signature, native contents and ZIP/ELF 16 KiB checks. Device behavior is unverified.
 
-Downloaded all three artifacts; outer SHA-256 and ZIP CRC checks passed. Windows inner ZIP CRC and required release CRT files checked. Saved user-facing development binaries separately. See evidence/development-builds-20261016.json for exact source commits, hashes and build IDs. These builds predate the subsequent draft-clear controls.
+All three downloads were independently checked against artifact SHA-256, ZIP CRC, native/font/notice inventories and desktop startup reports. Exact inner/outer hashes: evidence/development-builds-98dbeac.json. User-facing saved downloads are Universal-Studio-Windows-x64.zip, Universal-Studio-Linux-x64.tar.gz and Universal-Studio-Android-debug.apk. They include lossless PDF controls, keyboard shortcuts, guarded saves, distinct dark accents, original Android/Windows icons, scoped Android camera capture, scan drafts and licensed Bangla fallback typography. They do not include the experimental OCR adapter.
 
-## Implemented slices
+Golden rendering is capture-only; approved regression baselines remain unavailable. No representative users, clean-device workflows or accessibility certification have been claimed. Debug APK keys can differ between CI builds; uninstalling to resolve a signature mismatch deletes app-local data.
 
-Photo resize, bounded actual-byte compression, orientation, simple signature threshold/transparent PNG; supported PDF merge/page operations, images-to-PDF, PDFium previews/page PNG export and core-only lossless optimization; print sheets; scan filters/reorder and local hash-verified draft save/restore/retention; fixed example application pack; typed declarative recipe editor/import/export and serial batch retry/cancellation; SQLite settings; native Android document-provider save adapter. See STATUS.md for evidence boundaries.
+## Work in progress: work/offline-ocr
 
-## Current change and next action
+The experimental branch contains a real Linux Rust CLI Tesseract adapter, UTF-8 text validation/export, bounded model verification, private job staging and child limits. It uses only /usr/bin/tesseract; request/recipe files cannot specify executables or shell commands. It has no Flutter controls yet and no Windows/Android OCR engine packaging. See that branch's OCR-IMPLEMENTATION.md and rust-ocr-cli-smoke.json. The local full suite and actual English/Bangla CLI output checks are recorded separately; do not confuse those with app OCR support.
 
-Draft-clear controls and tests passed Linux/Windows CI. Delegated manual Android capture compiled and the APK gates passed. All three platform runs above succeeded at commit 7257778. Device camera behavior remains unverified.
+Exact next action: inspect Verify experimental OCR core on the branch (Linux and Windows compile/boundary tests). Fix failures. Then implement typed asynchronous OCR/capability APIs, regenerate FRB bindings with the pinned workflow, stage only checksum-verified local models and LICENSE for Linux, and add editable recognized-text results only where engine capability is available. Add truthful cancellation, resource/timeout tests, representative accuracy/performance checks and separately audited platform engine packaging before completion claims.
 
-The lossless PDF optimizer is now connected through regenerated FRB bindings and an opt-in PDF Studio checkbox. Single-document optimization uses the unchanged source directly; combined/reordered outputs optimize after page operations. Custom filenames are preserved. Rust text-layer/pixel-preservation and native bridge tests passed hosted Linux run 38942089761; the release build is still running. The Android launcher now uses the original four-studio vector mark. The follow-up adds Ctrl+O/Ctrl+Enter/Ctrl+S, single active export, distinct dark accents, representative contrast checks and 48px text/icon controls. The latest follow-up bundles an unchanged, licensed Noto Sans Bengali fallback font for filenames; its pinned provenance and glyph check are recorded separately. Official English/Bangla OCR model smoke checks passed outside the app, but OCR remains unimplemented; see OCR-ASSETS.md. First inspect the new platform runs, fix any formatting or behavior failure, then verify/download their bundles and continue the remaining requirements. Generator run 38941484662 passed; its four allowlisted outputs were checksum-verified before applying.
+Models were checked from official tessdata_fast commit 87416418657359cb625c412a48b6e1d6d41c29bd. See OCR-ASSETS.md for all hashes and license requirements. Reproducible development-only engine smoke: scripts/verify_ocr_engine.py. No app or test helper silently downloads models.
 
-## Remaining blockers and gates
+## Recovery details
 
-- This workspace currently lacks Flutter/Rust toolchains; pinned hosted jobs provide compilation/test evidence. Source must be pushed before a workspace reset.
-- OpenCV perspective/deskew, offline English/Bangla OCR and face assistance are not integrated.
-- Hostile document parsing remains in-process without hard per-process CPU/memory isolation.
-- Custom pack editing, manual signature refinement/placement, more PDF operations, flexible compression, full localization/a11y and real-user observation remain incomplete.
-- No clean-device acceptance tests, production APK signing key, AppImage or complete dependency obligation clearance. Android debug signing is for development; CI debug keys can differ between builds. Uninstalling to resolve a signature mismatch removes local app data.
-- Some golden baseline uploads were rejected by automatic approval review; capture-only rendering must not be called regression testing.
+GitHub is authoritative; user messages have repeatedly reset the scratch checkout/toolchains. Read the remote branch before changing files and push source checkpoints frequently. The active checkout is universal-studio-current, not the older skeleton. Local Rust 1.99.0 now works after replacing a damaged installed LLVM library with the original bytes from the verified official archive. Local debugger ptrace was denied; no restriction was bypassed. SDKs remain transient; hosted builds provide independent evidence.
 
-No perfect OCR, passport acceptance, universal compatibility or full commercial-product parity claim.
+## Remaining launch work and blockers
+
+OpenCV boundary/perspective/deskew and face assistance; OCR GUI and native engines; manual signature refinement/storage/PDF placement; remaining PDF forms/watermarks/numbering/compression/OCR geometry; flexible photo constraints and fuller print controls; editable application packs and managed cross-studio sources; drag/drop, complete localization, screen-reader/focus/reduced-motion/large-text checks and representative usability; hard isolation for PDF parsers; clean-device/runtime and full transitive license clearance; AppImage and production APK signing. Unchecked requirements are retained, not removed from scope.
+
+PDF parsing remains in-process and is a production blocker. No perfect OCR, passport acceptance, universal compatibility, secure erasure or commercial-product parity claim.

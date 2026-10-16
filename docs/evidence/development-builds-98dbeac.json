@@ -1,0 +1,49 @@
+[
+  {
+    "platform": "linux",
+    "source_commit": "98dbeacac7c9e558205eb9bb8fc990594f122543",
+    "run": 38943392106,
+    "artifact_sha256": "dbf70c2f1a72327d27d1fdbef4262764224c41f80f46b3b0acd3fd43d1f1c5ce",
+    "filename": "Universal-Studio-Linux-x64.tar.gz",
+    "bytes": 16975429,
+    "sha256": "9df2aa85a59cca49c39d3514778c4f64fd40546194984dfc31158755534d70bd",
+    "startup": [
+      {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      }
+    ],
+    "clean_device_verified": false
+  },
+  {
+    "platform": "windows",
+    "source_commit": "98dbeacac7c9e558205eb9bb8fc990594f122543",
+    "run": 38943392637,
+    "artifact_sha256": "d7e56f5e69301a464ff2010104d9e2fd927ab4239de733176133cb54c2b66f6f",
+    "filename": "Universal-Studio-Windows-x64.zip",
+    "bytes": 20643204,
+    "sha256": "243f8dd1e7c620610cca1676e0c8a8cdfb4ef0cc184d21fa23c6d569fbbb9436",
+    "startup": [
+      {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      }
+    ],
+    "clean_device_verified": false
+  },
+  {
+    "platform": "android",
+    "source_commit": "98dbeacac7c9e558205eb9bb8fc990594f122543",
+    "run": 38943392331,
+    "artifact_sha256": "8c1bad96803f8970d61c5b06179668ba51e620aecee9d3ee118963a7b20a2088",
+    "filename": "Universal-Studio-Android-debug.apk",
+    "bytes": 95449113,
+    "sha256": "34f99337c800a1348ce88da35b90096d1b4e746a0059089e87a7b4bf39ff6ef0",
+    "startup": [],
+    "clean_device_verified": false
+  }
+]

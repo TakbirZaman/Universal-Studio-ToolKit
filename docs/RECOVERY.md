@@ -1,5 +1,5 @@
 # Recovery
 
-Use the GitHub main branch as the source of truth. Read CHECKPOINT.md before resuming; it records exact build runs, remaining blockers and the next action. Do not use the older universal-studio-toolkit scratch skeleton. Preserve all uncommitted edits before syncing.
+Read CHECKPOINT.md from GitHub main before resuming. Main's downloadable application checkpoint is 98dbeac; experimental OCR source is on work/offline-ocr and must not be described as shipped GUI functionality. Inspect that branch's verification runs, then continue its exact next action. Preserve user edits and all uncommitted work when syncing. Scratch and toolchains have reset after user messages; GitHub is authoritative.
 
-The successful 2026-10-16 platform builds are documented in evidence/development-builds-20261016.json. Artifact retention is three days; saved user-facing binaries are independent of that expiry. Build success does not imply clean-device acceptance or full feature completion.
+Saved development binaries correspond to source 98dbeac and are independent of the three-day Actions artifact expiry. Build/startup checks do not replace device workflows, clean-device acceptance, representative usability or remaining features in REQUIREMENTS.md.

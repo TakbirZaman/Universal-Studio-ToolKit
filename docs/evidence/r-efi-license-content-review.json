@@ -1,0 +1,22 @@
+[
+  {
+    "package": "r-efi",
+    "version": "5.3.0",
+    "archive_sha256": "69cdb34c158ceb288df11e18b4bd39de994f6657d83847bdffdbd7f346754b0f",
+    "notice_file": "third_party/rust/r-efi-5.3.0/AUTHORS",
+    "notice_sha256": "ff92bed461f50338dd703a9ba9aee496a425957873df1d91192776e4bdf5dda7",
+    "notice_matches_locked_crate": true,
+    "license_option_selected": "MIT",
+    "filename_only_check_was_false_positive": true
+  },
+  {
+    "package": "r-efi",
+    "version": "6.0.0",
+    "archive_sha256": "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf",
+    "notice_file": "third_party/rust/r-efi-6.0.0/AUTHORS",
+    "notice_sha256": "d027e91dbc9cdbb2f1190068e498bd6b61cff022b6a032b191021ba658d96111",
+    "notice_matches_locked_crate": true,
+    "license_option_selected": "MIT",
+    "filename_only_check_was_false_positive": true
+  }
+]

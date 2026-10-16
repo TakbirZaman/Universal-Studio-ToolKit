@@ -19,3 +19,5 @@ Primary sources:
 - https://tesseract-ocr.github.io/tessdoc/Data-Files.html
 - https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
 - https://github.com/google/fonts/tree/b9b4b56be4f67f120752a756f39299b47366223c/ofl/notosansbengali
+
+Reproduce the development engine check with `python3 scripts/verify_ocr_engine.py --models /absolute/local/model-directory`. It requires locally installed Tesseract 5 and Pillow with RAQM, verifies both models and LICENSE first, generates only synthetic text images in an isolated temporary directory, and performs no downloads. Model tampering was separately rejected before engine execution. This script is not an application OCR adapter.

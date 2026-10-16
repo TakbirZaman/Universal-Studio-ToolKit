@@ -31,3 +31,5 @@ All platform entries marked unverified concern per-feature interaction or clean-
 Draft-clear controls and additional storage protection tests passed the current Linux and Windows suites.
 
 Commit 7257778 passed Linux run 38900451000, Windows run 38900451112 and Android run 38900451024. Both desktop bundles created windows; 26 Rust tests and selected Flutter tests passed. See evidence/development-builds-7257778.json. Lossless optimization controls and additional text-layer preservation tests are entering a separate verification run.
+
+Application checkpoint 98dbeac passed all three platform workflows: Linux 38943392106, Windows 38943392637, Android 38943392331. PDF optimization, keyboard/contrast tests and the licensed Bangla font are included. Independent download evidence: evidence/development-builds-98dbeac.json. Experimental Linux OCR CLI work lives on work/offline-ocr; Flutter OCR, Windows/Android engines and searchable PDF remain unavailable.
