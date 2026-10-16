@@ -10,6 +10,7 @@ cp rust/target/release/libstudio_core.so "$bundle/lib/"
 test -f native/linux-x64/libpdfium.so
 cp native/linux-x64/libpdfium.so "$bundle/lib/"
 cp -R third_party "$bundle/third_party"
+cp LICENSE README.md "$bundle/"
 cp docs/LIMITATIONS.md "$bundle/KNOWN-LIMITATIONS.md"
 mkdir -p dist
 tar -czf dist/universal-studio-linux-x64.tar.gz -C "$bundle" .
