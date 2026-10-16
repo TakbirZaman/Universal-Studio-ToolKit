@@ -5,6 +5,10 @@ abstract final class StudioTokens {
   static const scan = Color(0xff087f78);
   static const photo = Color(0xff5753bd);
   static const pack = Color(0xff976000);
+  static const darkPdf = Color(0xffffb3b5);
+  static const darkScan = Color(0xff72d9cc);
+  static const darkPhoto = Color(0xffc8bfff);
+  static const darkPack = Color(0xffffcf7b);
   static const spacing = 16.0;
   static const radius = 20.0;
   static ThemeData theme(Brightness brightness) {
@@ -36,6 +40,15 @@ abstract final class StudioTokens {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(minimumSize: const Size(48, 52)),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(48, 48),
+          tapTargetSize: MaterialTapTargetSize.padded,
+        ),
       ),
       cardTheme: CardThemeData(
         elevation: 0,

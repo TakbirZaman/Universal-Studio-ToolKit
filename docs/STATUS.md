@@ -8,6 +8,7 @@ Updated 2026-10-16. This is an implementation in progress, not launch completion
 | EXIF orientation 1–8 | Tested dimensions | Engine integration | Unverified | Unverified |
 | Transparency consent and simple signature cleanup | Tested | Controls and preview | Unverified | Unverified |
 | PDF merge / keep-delete-reorder / rotate | Tested, sample output inspected | Controls | Unverified | Unverified |
+| Lossless PDF optimization | Text extraction and pixel-preservation tests passed | Opt-in control and typed bridge tested | Native bridge verification running | APK build running |
 | PDFium preview and page PNG export | Tested; reordered page pixel identity | Connected, bridge test passed | Bundled; startup checked | Checksum-verified ARM64 staging implemented |
 | Images to PDF / print sheets | Tested; Poppler visual inspection | Connected | Unverified | Unverified |
 | Scan modes, brightness/contrast, rotation | Three new tests pass | Non-destructive source plus derived page preview | Unverified | Manual capture compiled; device testing pending |

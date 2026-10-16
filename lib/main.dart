@@ -179,6 +179,14 @@ extension ToolLabel on Tool {
     Tool.pack => StudioTokens.pack,
     _ => StudioTokens.photo,
   };
+  Color accent(Brightness brightness) => brightness == Brightness.light
+      ? color
+      : switch (this) {
+          Tool.merge => StudioTokens.darkPdf,
+          Tool.scan => StudioTokens.darkScan,
+          Tool.pack => StudioTokens.darkPack,
+          _ => StudioTokens.darkPhoto,
+        };
   String get synonyms => switch (this) {
     Tool.photo => 'smaller compress image picture passport resize crop',
     Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf',
@@ -366,13 +374,7 @@ class _StudioHomeState extends State<StudioHome> {
                                       Icon(
                                         t.icon,
                                         size: 32,
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Theme.of(
-                                                context,
-                                              ).colorScheme.primary
-                                            : t.color,
+                                        color: t.accent(Theme.of(context).brightness),
                                       ),
                                       const SizedBox(height: 20),
                                       Text(
@@ -654,18 +656,37 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   }
 
   Future<void> save() async {
-    if (output == null) return;
+    if (output == null || busy || !form.currentState!.validate()) return;
+    setState(() { busy = true; error = null; });
     try {
-      if (!form.currentState!.validate()) return;
       final location = await ExportService.saveCopy(output!, filename.text);
       if (mounted && location != null) setState(() => saved = location);
     } catch (e) {
       if (mounted) setState(() => error = clean(e));
+    } finally {
+      if (mounted) setState(() => busy = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
+  Widget build(BuildContext context) => CallbackShortcuts(
+    bindings: {
+      const SingleActivator(LogicalKeyboardKey.keyO, control: true): () {
+        if (!busy && (widget.tool != Tool.pack || sources.length < 3)) {
+          select(slot: widget.tool == Tool.pack ? sources.length : null);
+        }
+      },
+      const SingleActivator(LogicalKeyboardKey.enter, control: true): () {
+        if (!busy) process();
+      },
+      const SingleActivator(LogicalKeyboardKey.keyS, control: true): () {
+        if (!busy && output != null) save();
+      },
+    },
+    child: Focus(autofocus: true, child: workspaceContent()),
+  );
+
+  Widget workspaceContent() => SingleChildScrollView(
     padding: const EdgeInsets.all(24),
     child: Form(
       key: form,
@@ -680,6 +701,11 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
+          if (Platform.isWindows || Platform.isLinux)
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text('Keyboard: Ctrl+O choose files · Ctrl+Enter preview · Ctrl+S save a copy.'),
+            ),
           if (widget.tool == Tool.photo)
             TextButton.icon(
               onPressed: busy
