@@ -11,3 +11,5 @@ Status: workflow authored; first hosted execution and bundle verification pendin
 An Android arm64 workflow is now authored separately. Its unsigned release output is development-only; artifact structure checks do not imply installability or device compatibility.
 
 Windows pipeline: added a standard windows-2022 runner with pinned Flutter/Rust, checksum-verified Windows PDFium, Rust/native bridge tests and portable ZIP packaging. A procedural original four-studio icon avoids a missing external binary asset. Windows verification is pending the first run; no clean-system runtime claim is made.
+
+Windows import-table inspection found required Microsoft CRT DLLs missing from the first ZIP. Packaging now stages only the official release redistributable CRT directory from the licensed Visual Studio installation, records hashes/versions, and includes a separate runtime notice. The rebuilt ZIP must be checked before claiming the dependency issue resolved. `dartjni.dll` also references JVM libraries; its actual load behavior on a clean Windows system remains to be tested before imposing or ruling out a Java prerequisite.

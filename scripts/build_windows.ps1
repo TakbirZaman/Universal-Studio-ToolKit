@@ -17,6 +17,7 @@ Copy-Item native/windows-x64/pdfium.dll $bundle
 Copy-Item LICENSE,README.md $bundle
 Copy-Item third_party (Join-Path $bundle 'third_party') -Recurse -Force
 Copy-Item docs/LIMITATIONS.md (Join-Path $bundle 'KNOWN-LIMITATIONS.md')
+& (Join-Path $PSScriptRoot 'stage_windows_runtime.ps1') -Bundle $bundle
 New-Item -ItemType Directory -Path dist -Force | Out-Null
 Compress-Archive -Path "$bundle/*" -DestinationPath dist/universal-studio-windows-x64.zip -Force
 Write-Output 'Bundle created. Clean-system runtime validation is still required.'
