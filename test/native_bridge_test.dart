@@ -33,7 +33,14 @@ void main() {
       expect(output.bytes.length, lessThan(102400));
       final syntheticScan = await scanPdf(inputs: [source, source, source]);
       final pdf = syntheticScan.bytes;
+      final optimized = await optimizePdf(data: pdf);
+      expect(optimized.pages, 3);
+      expect(optimized.bytes.length, lessThanOrEqualTo(pdf.length));
       final page = await renderPdfPage(data: pdf, pageIndex: 0, maxPixels: 800);
+      final optimizedPage = await renderPdfPage(
+        data: optimized.bytes, pageIndex: 0, maxPixels: 800,
+      );
+      expect(optimizedPage.bytes, page.bytes);
       expect(page.format, 'png');
       expect(page.height, lessThanOrEqualTo(800));
 

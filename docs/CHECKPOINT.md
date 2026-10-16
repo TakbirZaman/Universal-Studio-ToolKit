@@ -20,7 +20,7 @@ Photo resize, bounded actual-byte compression, orientation, simple signature thr
 
 Draft-clear controls and tests passed Linux/Windows CI. Delegated manual Android capture compiled and the APK gates passed. All three platform runs above succeeded at commit 7257778. Device camera behavior remains unverified.
 
-The lossless optimizer API is being exposed through a new generated typed bridge. Inspect the Generate typed Rust bridge run, download its generated-bridge-source artifact, validate the JSON contains only the four fixed generated paths, then apply and commit those files together with PDF Studio's optimization checkbox/service call and native bridge text/render-preservation tests. The generated source workflow has read-only permissions and does not push changes.
+The lossless PDF optimizer is now connected through regenerated FRB bindings and an opt-in PDF Studio checkbox. Single-document optimization uses the unchanged source directly; combined/reordered outputs optimize after page operations. Custom filenames are preserved. Rust text-layer/pixel-preservation and native bridge tests are entering the next full platform runs. The Android launcher now uses the original four-studio vector mark. First inspect those new runs, fix any formatting or behavior failure, then verify/download their bundles and continue the remaining requirements. Generator run 38941484662 passed; its four allowlisted outputs were checksum-verified before applying.
 
 ## Remaining blockers and gates
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Original four-studio document mark. Project MIT license; no external asset. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#202333" android:pathData="M0,0H108V108H0Z" />
+    <path android:fillColor="#DE4D50" android:pathData="M20,20H50V50H20Z" />
+    <path android:fillColor="#00877B" android:pathData="M58,20H88V50H58Z" />
+    <path android:fillColor="#6553D3" android:pathData="M20,58H50V88H20Z" />
+    <path android:fillColor="#A86D00" android:pathData="M58,58H88V88H58Z" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M28,30H42M28,39H42M66,30H80M66,39H80M28,68H42M28,77H42M66,68H80M66,77H80" />
+</vector>

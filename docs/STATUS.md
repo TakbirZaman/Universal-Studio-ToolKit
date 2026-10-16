@@ -10,7 +10,7 @@ Updated 2026-10-16. This is an implementation in progress, not launch completion
 | PDF merge / keep-delete-reorder / rotate | Tested, sample output inspected | Controls | Unverified | Unverified |
 | PDFium preview and page PNG export | Tested; reordered page pixel identity | Connected, bridge test passed | Bundled; startup checked | Checksum-verified ARM64 staging implemented |
 | Images to PDF / print sheets | Tested; Poppler visual inspection | Connected | Unverified | Unverified |
-| Scan modes, brightness/contrast, rotation | Three new tests pass | Non-destructive source plus derived page preview | Unverified | Camera absent |
+| Scan modes, brightness/contrast, rotation | Three new tests pass | Non-destructive source plus derived page preview | Unverified | Manual capture compiled; device testing pending |
 | Advisory blur/exposure/edge warnings | Synthetic-case tests pass | Advisory text only | Unverified | Unverified |
 | Application ZIP / manifest / hashes | Tested | Fixed example pack connected | Unverified | Unverified |
 | Safe recipe processing and SQLite storage | Tested | Editor/import/export and batch controls; scheduler tested | Unverified | Unverified |
@@ -19,11 +19,14 @@ Updated 2026-10-16. This is an implementation in progress, not launch completion
 | Desktop/mobile UI layouts | Flutter behavioral tests pass; visual capture only | Real rendered widgets | Built; window startup checked | Device testing pending |
 | Local scan drafts and retention | Hosted storage tests passed | Save, restore and delete connected | Unverified | Device testing pending |
 | PNG preview backgrounds | Hosted widget test passed | Checkerboard, light and dark | Unverified | Unverified |
-| Full camera/OpenCV geometry/OCR | Not implemented | Not exposed as working | Pending | Pending |
+| Manual camera capture | Channel contract tests passed | Scoped Android adapter and capture control | Image import only | APK compiled; device behavior pending |
+| OpenCV geometry/OCR | Not implemented | Not exposed as working | Pending | Pending |
 | Distribution | Core executable compiled | Linux x64 release bundle built; display launch blocked | Portable ZIP built, startup gate passed | ARM64 debug and unsigned APKs built |
 
 Hosted Linux run 38862360058 passed 24 Rust tests, selected Flutter behavioral/native tests, analysis, capture-only rendering, release build and dependency resolution. Android run 38863568022 passed ARM64 APK packaging, debug signature and ZIP/ELF 16 KiB checks. Windows run 38864343687 passed its native tests, release build and packaged-window startup check with bundled release CRT. Exact hashes and source commits: evidence/development-builds-20261016.json.
 
 All platform entries marked unverified concern per-feature interaction or clean-device behavior; compilation alone does not validate them. No real-user usability observation, accessibility certification, hostile-document process isolation, clean-device compatibility or complete dependency obligation clearance has been claimed. Golden baseline regression remains pending approved baselines.
 
-Draft-clear controls and additional storage protection tests are entering a new hosted verification run; they are not included in the builds above.
+Draft-clear controls and additional storage protection tests passed the current Linux and Windows suites.
+
+Commit 7257778 passed Linux run 38900451000, Windows run 38900451112 and Android run 38900451024. Both desktop bundles created windows; 26 Rust tests and selected Flutter tests passed. See evidence/development-builds-7257778.json. Lossless optimization controls and additional text-layer preservation tests are entering a separate verification run.

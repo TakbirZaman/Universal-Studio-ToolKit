@@ -157,6 +157,10 @@ Future<void> validatePreparedOutput({
   filename: filename,
 );
 
+/// Lossless structure optimization; retains original bytes if no smaller result exists.
+Future<StudioOutput> optimizePdf({required List<int> data}) =>
+    RustLib.instance.api.crateApiOptimizePdf(data: data);
+
 /// Byte-based source boundary: Android URIs are resolved by the platform, never treated as paths.
 class StudioOutput {
   final Uint8List bytes;

@@ -181,7 +181,7 @@ extension ToolLabel on Tool {
   };
   String get synonyms => switch (this) {
     Tool.photo => 'smaller compress image picture passport resize crop',
-    Tool.merge => 'merge join combine extract delete split reorder pdf',
+    Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf',
     Tool.scan => 'scan certificate pages document camera',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
@@ -447,7 +447,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       png = false,
       cover = false,
       flatten = false,
-      showOriginal = false;
+      showOriginal = false,
+      optimizePdfStructures = false;
   int rotation = 0, quality = 60, threshold = 230;
   int previewIndex = 0, draftDays = 7;
   String? draftMessage;
@@ -470,7 +471,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   String get suggestedName => switch (widget.tool) {
     Tool.photo => png ? 'photo.png' : 'photo.jpg',
     Tool.signature => 'signature.png',
-    Tool.merge => 'combined.pdf',
+    Tool.merge => optimizePdfStructures ? 'optimized.pdf' : 'combined.pdf',
     Tool.scan => 'scans.pdf',
     Tool.pack => 'application-pack.zip',
     Tool.print => 'print-sheet.pdf',
@@ -633,6 +634,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               ? null
               : pages.text.split(',').map((s) => int.parse(s.trim())).toList(),
           rotation * 90,
+          optimize: optimizePdfStructures,
         ),
         Tool.scan => await service.scan(inputs),
         Tool.pack => await service.pack(inputs, int.parse(limit.text)),
@@ -981,6 +983,20 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             ),
           ],
           if (widget.tool == Tool.merge) ...[
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Try lossless optimization'),
+              subtitle: const Text('Keep text and image quality. Never rasterizes. Some PDFs cannot become smaller.'),
+              value: optimizePdfStructures,
+              onChanged: busy ? null : (value) {
+                setState(() {
+                  final previousName = suggestedName;
+                  optimizePdfStructures = value ?? false;
+                  if (filename.text == previousName) filename.text = suggestedName;
+                });
+                changed();
+              },
+            ),
             TextFormField(
               controller: pages,
               enabled: !busy,

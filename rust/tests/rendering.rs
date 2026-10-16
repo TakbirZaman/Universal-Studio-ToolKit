@@ -48,3 +48,43 @@ fn pdfium_renders_real_pages_and_exports_images() {
     assert!(rendering::page(&input, 99, 800).is_err());
     assert!(rendering::page(&input, 0, 99999).is_err());
 }
+
+#[test]
+fn lossless_optimization_preserves_selectable_text_and_rendering() {
+    use lopdf::{Document, Object, Stream, dictionary};
+    let mut document = Document::with_version("1.7");
+    let pages = document.new_object_id();
+    let font = document.add_object(dictionary! {
+        "Type" => "Font", "Subtype" => "Type1", "BaseFont" => "Helvetica",
+        "Encoding" => "WinAnsiEncoding"
+    });
+    let content = document.add_object(Stream::new(
+        dictionary! {},
+        b"BT /F1 18 Tf 40 100 Td (Selectable document text) Tj ET".to_vec(),
+    ));
+    let page = document.add_object(dictionary! {
+        "Type" => "Page", "Parent" => pages,
+        "MediaBox" => vec![0.into(), 0.into(), 300.into(), 200.into()],
+        "Resources" => dictionary! {"Font" => dictionary! {"F1" => font}},
+        "Contents" => content
+    });
+    document.objects.insert(
+        pages,
+        Object::Dictionary(dictionary! {
+            "Type" => "Pages", "Kids" => vec![Object::Reference(page)], "Count" => 1
+        }),
+    );
+    let root = document.add_object(dictionary! {"Type" => "Catalog", "Pages" => pages});
+    document.trailer.set("Root", root);
+    let mut original = Vec::new();
+    document.save_to(&mut original).unwrap();
+    let optimized = pdf::optimize_lossless(&original).unwrap();
+    let before = pdf::extract_text(&original).unwrap();
+    assert!(before.contains("Selectable document text"));
+    assert_eq!(before, pdf::extract_text(&optimized.data).unwrap());
+    assert_eq!(
+        rendering::page(&original, 0, 800).unwrap().data,
+        rendering::page(&optimized.data, 0, 800).unwrap().data
+    );
+    assert!(optimized.data.len() <= original.len());
+}

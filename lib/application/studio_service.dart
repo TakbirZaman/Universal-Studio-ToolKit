@@ -31,12 +31,19 @@ class StudioService {
   Future<core.StudioOutput> merge(
     List<Uint8List> inputs,
     List<int>? pages,
-    int rotation,
-  ) => core.combinePdfs(
-    inputs: inputs,
-    pages: pages == null ? null : Uint32List.fromList(pages),
-    rotation: rotation,
-  );
+    int rotation, {
+    bool optimize = false,
+  }) async {
+    if (optimize && inputs.length == 1 && pages == null && rotation == 0) {
+      return core.optimizePdf(data: inputs.first);
+    }
+    final output = await core.combinePdfs(
+      inputs: inputs,
+      pages: pages == null ? null : Uint32List.fromList(pages),
+      rotation: rotation,
+    );
+    return optimize ? core.optimizePdf(data: output.bytes) : output;
+  }
   Future<core.StudioOutput> scan(List<Uint8List> inputs) =>
       core.scanPdf(inputs: inputs);
   Future<core.StudioOutput> pack(List<Uint8List> inputs, int limit) =>

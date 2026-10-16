@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
     <application
-        android:label="Universal Studio"
+        android:label="Universal Studio Toolkit"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/studio_mark"
+        android:roundIcon="@drawable/studio_mark">
         <provider
             android:name=".ScanCaptureProvider"
             android:authorities="${applicationId}.capture"

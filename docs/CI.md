@@ -13,3 +13,9 @@ An Android arm64 workflow is now authored separately. Its unsigned release outpu
 Windows pipeline: added a standard windows-2022 runner with pinned Flutter/Rust, checksum-verified Windows PDFium, Rust/native bridge tests and portable ZIP packaging. A procedural original four-studio icon avoids a missing external binary asset. Windows verification is pending the first run; no clean-system runtime claim is made.
 
 Windows import-table inspection found required Microsoft CRT DLLs missing from the first ZIP. Packaging now stages only the official release redistributable CRT directory from the licensed Visual Studio installation, records hashes/versions, and includes a separate runtime notice. The rebuilt ZIP must be checked before claiming the dependency issue resolved. `dartjni.dll` also references JVM libraries; its actual load behavior on a clean Windows system remains to be tested before imposing or ruling out a Java prerequisite.
+
+## Verified 2026-10-16 checkpoint
+
+Commit 7257778 passed Linux run 38900451000, Windows run 38900451112 and Android run 38900451024. Both desktop bundles created windows in eight-second startup checks. Linux/Windows passed 26 Rust integration tests and selected Flutter behavioral/native tests. Android produced debug-signed and unsigned APKs with ABI, native inventory, signature and 16 KiB gates. This supersedes the earlier pending-build notes above; clean-system and interactive device acceptance remain outstanding.
+
+The separate read-only bridge generation job pins cargo-expand 1.0.118 and FRB codegen 2.13.0, generates typed sources without upgrading dependencies, analyzes them and uploads only four allowlisted source files in JSON. Generated output must be reviewed and committed before treating a clean checkout as equivalent to that build.
