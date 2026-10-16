@@ -23,3 +23,6 @@ cp build/app/outputs/flutter-apk/app-release.apk dist/universal-studio-android-a
 flutter build apk --debug --no-pub --target-platform android-arm64
 cp build/app/outputs/flutter-apk/app-debug.apk dist/universal-studio-android-arm64-debug.apk
 "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify dist/universal-studio-android-arm64-debug.apk
+
+"$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 4 dist/universal-studio-android-arm64-unsigned.apk
+"$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 4 dist/universal-studio-android-arm64-debug.apk

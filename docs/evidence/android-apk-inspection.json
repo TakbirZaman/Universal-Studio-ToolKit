@@ -1,0 +1,58 @@
+{
+  "artifact_sha256": "56fcc9b020e3a7370f75cc8ba27abba6898584d12fa72dfe2cf97ce0e0a243ef",
+  "apk_sha256": "9350e1c8d827f36e2022a28e9b271ca21c9b12db0a0859fbc7c28f41944b5054",
+  "libraries": [
+    {
+      "library": "lib/arm64-v8a/libapp.so",
+      "load_segment_alignments": [
+        65536,
+        65536,
+        65536
+      ],
+      "supports_16k_alignment": true
+    },
+    {
+      "library": "lib/arm64-v8a/libdartjni.so",
+      "load_segment_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports_16k_alignment": true
+    },
+    {
+      "library": "lib/arm64-v8a/libflutter.so",
+      "load_segment_alignments": [
+        65536,
+        65536,
+        65536
+      ],
+      "supports_16k_alignment": true
+    },
+    {
+      "library": "lib/arm64-v8a/libpdfium.so",
+      "load_segment_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "supports_16k_alignment": true
+    },
+    {
+      "library": "lib/arm64-v8a/libstudio_core.so",
+      "load_segment_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "supports_16k_alignment": true
+    }
+  ],
+  "unexpected_other_abi_entries": [
+    "lib/armeabi-v7a/libdartjni.so",
+    "lib/x86_64/libdartjni.so"
+  ],
+  "device_execution_verified": false,
+  "release_signing_configured": false
+}
