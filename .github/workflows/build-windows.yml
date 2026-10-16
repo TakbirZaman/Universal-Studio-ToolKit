@@ -1,0 +1,60 @@
+name: Verify and build Windows
+on:
+  push:
+    branches: [main]
+    paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'scripts/*windows*', '.github/workflows/build-windows.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    env:
+      CI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      UST_PDFIUM_LIBRARY: ${{ github.workspace }}/native/windows-x64/pdfium.dll
+      UST_CORE_LIBRARY: ${{ github.workspace }}/rust/target/debug/studio_core.dll
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned SDKs and verified PDFium
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal
+          if ($LASTEXITCODE -ne 0) { throw 'Rust install failed' }
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$env:RUNNER_TEMP/flutter"
+          if ($LASTEXITCODE -ne 0) { throw 'Flutter clone failed' }
+          $revision = git -C "$env:RUNNER_TEMP/flutter" rev-parse HEAD
+          if ($revision -ne 'abaf9c523780a608bd46686fd5e53740a07077f8') { throw 'Flutter revision mismatch' }
+          "$env:RUNNER_TEMP/flutter/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+          Invoke-WebRequest https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/8076/pdfium-win-x64.tgz -OutFile "$env:RUNNER_TEMP/pdfium-windows.tgz"
+          python scripts/stage_windows_pdfium.py "$env:RUNNER_TEMP/pdfium-windows.tgz"
+          if ($LASTEXITCODE -ne 0) { throw 'PDFium verification failed' }
+      - name: Verify Rust and Flutter native bridge
+        shell: pwsh
+        run: |
+          cargo test --locked --manifest-path rust/Cargo.toml
+          if ($LASTEXITCODE -ne 0) { throw 'Rust tests failed' }
+          cargo build --locked --manifest-path rust/Cargo.toml
+          if ($LASTEXITCODE -ne 0) { throw 'Rust library build failed' }
+          flutter pub get --enforce-lockfile
+          if ($LASTEXITCODE -ne 0) { throw 'Dependency resolution failed' }
+          flutter analyze --no-pub
+          if ($LASTEXITCODE -ne 0) { throw 'Flutter analysis failed' }
+          flutter test --no-pub test/native_bridge_test.dart test/studio_test.dart test/recipe_batch_test.dart
+          if ($LASTEXITCODE -ne 0) { throw 'Flutter tests failed' }
+      - name: Build portable ZIP
+        shell: pwsh
+        run: ./scripts/build_windows.ps1
+      - name: Upload development bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: universal-studio-windows-x64-development
+          path: dist/
+          retention-days: 3
+          if-no-files-found: error

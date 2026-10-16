@@ -64,3 +64,9 @@ No representative user tests, accessibility certification, clean-device compatib
 ### Lossless PDF optimization (CLI)
 
 Use a request with `operation: "optimize_pdf"`, `input`, `directory`, and `filename`. This uses supported structural optimization only, never rasterizes, and keeps the original bytes if rewriting does not reduce size. Existing conservative PDF structure/protection checks apply. The desktop interface for this operation is pending.
+
+### Hosted development builds
+
+Open the repository Actions tab and select a successful Linux run to download its development artifact. Extract the ZIP, verify SHA256SUMS, then extract the contained tar.gz and run `./universal_studio_toolkit`. The executable needs its adjacent `lib`, `data`, and notices folders. These are development bundles, not clean-device-certified releases. Artifacts expire after three days; a new workflow run reproduces them.
+
+The Android workflow produces an explicitly unsigned ARM64 release candidate. It requires private release signing before installation/distribution. No keystore or signing credentials are stored in this repository.

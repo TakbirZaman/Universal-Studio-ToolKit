@@ -12,11 +12,11 @@ Legend: [x] verified core implementation; [~] partial / implementation in progre
 - [~] 9. Typed documents/constraints/recipes/jobs/results/manifests/capabilities; bounded concurrency; staged outputs; URI support.
 - [~] 10. PDF merge/extract/delete/reorder/rotate/images-to-PDF/text extraction; split UI, thumbnails/rendering, page geometry, watermarks/numbers, signature placement, form filling, searchable export, three compression modes and interoperability.
 - [~] 11. Camera and permissions, import, multipage sessions, manual corners/perspective/deskew, modes/adjustments, non-destructive recovery and quality advisories.
-- [~] 12. JPEG/PNG, EXIF normalization, resize/rotate/flip, fit/fill/padding, compression, metadata and transparency; crop UI, comparison, batch UI, face suggestions, print UI.
+- [~] 12. JPEG/PNG, EXIF normalization, resize/rotate/flip, fit/fill/padding, compression, metadata and transparency; full crop gestures, comparison, face suggestions, print customization; numeric recipe crop and batch controls implemented.
 - [~] 13. Fixed compression constraints, KB/KiB/strict/inclusive, bounded same-source search and actual validation; flexible dimensions remain.
-- [~] 14. Threshold signature background removal and transparent export; crop/refinement/background previews/consented storage/PDF placement remain.
+- [~] 14. Threshold signature background removal and transparent export; manual refinement/consented storage/PDF placement remain; numeric crop and preview backgrounds implemented.
 - [~] 15. Verified ZIP with report/manifest; typed slots and complete constraint enforcement, preset provenance, builder UI remain.
-- [~] 16. Declarative safe recipe schema/order checks; per-item core results; persistence/import-export UI, preview/collisions/selective retry remain.
+- [~] 16. Declarative safe recipe schema/order checks; per-item core results; recipe persistence/import-export and selective batch retry implemented; broader recipe types and collision workflows remain.
 - [~] 17. Validated print layout and PDF core; custom paper UI, guides, preview and actual-size instructions remain.
 - [ ] 18. Offline English/Bangla OCR and editable results, searchable-PDF geometry, face ambiguity handling; asset audit.
 - [ ] 19. Managed internal references across all studios; integrated workflows and explicit lifetimes.

@@ -1,0 +1,8 @@
+{
+  "artifact_sha256": "cbf63f93b60c529e3a904da8b05217ef56457998da192a10e8113f2768322137",
+  "bundle_sha256": "4d598881531b3d8a99c91cc6c8ad1b324064cd42a47c0d0634f9472d9f132a8e",
+  "bundle_entries": 784,
+  "required_files_verified": true,
+  "archive_crc_verified": true,
+  "device_execution_verified": false
+}
