@@ -1,0 +1,44 @@
+{
+  "scope": "Linux Rust CLI adapter only; no Flutter or Windows/Android OCR support",
+  "engine": "Tesseract 5.3.4",
+  "verified_private_model_copies": true,
+  "parent_death_and_no_new_privileges_requested": true,
+  "configured_child_limits": {
+    "address_space_bytes": 805306368,
+    "cpu_soft_seconds": 30,
+    "cpu_hard_seconds": 31,
+    "file_bytes": 4194304,
+    "core_bytes": 0,
+    "wall_seconds": 60
+  },
+  "proc_sampling_available": false,
+  "results": [
+    {
+      "language": "english",
+      "recognized": "UNIVERSAL STUDIO 123",
+      "exact_clean_synthetic_match": true,
+      "actual_saved_bytes": 21,
+      "source_unchanged": true,
+      "existing_output_preserved": true,
+      "seconds_including_duplicate_check": 15.336
+    },
+    {
+      "language": "bangla",
+      "recognized": "আমার বাংলা ভাষা",
+      "exact_clean_synthetic_match": true,
+      "actual_saved_bytes": 42,
+      "source_unchanged": true,
+      "existing_output_preserved": true,
+      "seconds_including_duplicate_check": 2.253
+    },
+    {
+      "language": "mixed",
+      "recognized": "আমার বাংলা ভাষা",
+      "exact_clean_synthetic_match": true,
+      "actual_saved_bytes": 42,
+      "source_unchanged": true,
+      "existing_output_preserved": true,
+      "seconds_including_duplicate_check": 2.541
+    }
+  ]
+}

@@ -50,6 +50,19 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
                 return Err(invalid("Output dimensions are inconsistent."));
             }
         }
+        "txt" => {
+            if out.data.len() > crate::ocr::MAX_TEXT_BYTES {
+                return Err(invalid("Plain text output exceeds 4 MiB."));
+            }
+            if out.info.width.is_some()
+                || out.info.height.is_some()
+                || out.info.pages.is_some()
+                || out.info.quality.is_some()
+            {
+                return Err(invalid("Plain text output has inconsistent metadata."));
+            }
+            crate::ocr::text_output(out.data.clone())?;
+        }
         "json" => {
             crate::recipe::Recipe::parse(&out.data)?;
         }

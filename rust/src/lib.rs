@@ -13,3 +13,5 @@ pub mod rendering;
 pub mod storage;
 
 pub mod scanner;
+
+pub mod ocr;
