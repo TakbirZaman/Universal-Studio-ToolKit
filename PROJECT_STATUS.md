@@ -13,3 +13,5 @@ See docs/STATUS.md, docs/CHECKPOINT.md, docs/REQUIREMENTS.md and docs/LIMITATION
 Automatic approval review held some synthetic binary outputs and golden images from upload because their opaque contents could not be verified. Visual capture is not baseline regression testing; no completion claim depends on those held assets.
 
 Latest app checkpoint 98dbeac passed Linux run 38943392106, Windows run 38943392637 and Android run 38943392331. Experimental OCR work is isolated on work/offline-ocr; it is not in these GUI downloads. See docs/CHECKPOINT.md for the exact next action and remaining scope.
+
+Experimental OCR commit e467093 passed its hosted Linux/Windows boundary checks (run 38948658931) and 32 local Rust tests. Real English/Bangla/mixed CLI checks passed. This does not establish Flutter OCR or Windows/Android recognition support.
