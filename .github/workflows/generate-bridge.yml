@@ -30,6 +30,7 @@ jobs:
         run: |
           flutter pub get --enforce-lockfile
           flutter_rust_bridge_codegen generate --rust-input crate::api --rust-root rust/ --dart-output lib/src/rust --no-web --no-deps-check --no-dart-fix --no-auto-upgrade-dependency
+          cargo fmt --manifest-path rust/Cargo.toml
           cargo fmt --manifest-path rust/Cargo.toml --check
           flutter analyze --no-pub
           python3 scripts/collect_bridge.py
