@@ -1,13 +1,13 @@
 # Universal Studio Toolkit — active development
 
-This is working software under development, not a completed production release.
+Updated 2026-10-16. Working development builds exist for Windows x64, Linux x64 and Android ARM64. The full requested product is not launch-complete.
 
-- 24 Rust tests passed; PDFium pixel comparisons cover page reorder and lossless optimization.
-- Eight Flutter tests passed, including native bridge processing, home layouts and batch retry/cancellation.
-- Dart analyzer: no issues.
-- Android ARM64 Rust release built; APK packaging/device testing pending.
-- Existing Linux bundle predates the recovered recipe interface.
+- Windows: release portable ZIP built, native bridge tests passed, required MSVC release CRT bundled; packaged app created a window and survived the eight-second CI startup check.
+- Linux: 24 Rust tests, Flutter behavioral/native tests, analysis, release build and dependency resolution passed on Ubuntu 24.04 x64.
+- Android: debug-signed installable APK and unsigned release APK built. ARM64-only contents, APK signatures, ZIP/ELF 16 KiB alignment and required native libraries checked. Device behavior is unverified.
+- Recovered scan drafts, recipe/batch controls and transparency previews passed hosted verification. Draft cleanup improvements are entering verification separately.
+- No clean-device compatibility, representative usability, complete license clearance or production-readiness claim.
 
-See docs/REQUIREMENTS.md, docs/STATUS.md, docs/LIMITATIONS.md and docs/RECOVERY.md for remaining scope and exact next actions. Camera, OCR, draft recovery, advanced PDF tools and complete platform packaging remain unfinished.
+See docs/STATUS.md, docs/CHECKPOINT.md, docs/REQUIREMENTS.md and docs/LIMITATIONS.md. Exact build identifiers and download hashes are in docs/evidence/development-builds-20261016.json.
 
-Automatic approval review held some synthetic binary outputs and golden images from upload because it could not verify the opaque contents. Generating source is available; fresh-checkout golden checks remain dependent on restoring the held baselines. No completion claim depends on missing assets.
+Automatic approval review held some synthetic binary outputs and golden images from upload because their opaque contents could not be verified. Visual capture is not baseline regression testing; no completion claim depends on those held assets.

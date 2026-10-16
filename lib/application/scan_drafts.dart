@@ -70,7 +70,11 @@ class ScanDrafts {
     return m;
   }
   Future<List<DraftSummary>> list({DateTime? now}) => Isolate.run(() async {
-    if(!await Directory(root).exists()) { return <DraftSummary>[]; }
+    final type = await FileSystemEntity.type(root, followLinks: false);
+    if (type == FileSystemEntityType.notFound) { return <DraftSummary>[]; }
+    if (type != FileSystemEntityType.directory) {
+      throw const FormatException('Draft storage must be a local directory.');
+    }
     final result=<DraftSummary>[];
     await for(final entry in Directory(root).list(followLinks:false)) {
       if(entry is! Directory) { continue; }
@@ -103,6 +107,24 @@ class ScanDrafts {
       validate(p); pages.add(p);
     }
     return pages;
+  });
+  /// Explicit user-confirmed cleanup includes interrupted and corrupt drafts.
+  /// Only owned, directly contained draft directories are eligible.
+  Future<int> clear() => Isolate.run(() async {
+    final type = await FileSystemEntity.type(root, followLinks: false);
+    if (type == FileSystemEntityType.notFound) { return 0; }
+    if (type != FileSystemEntityType.directory) {
+      throw const FormatException('Draft storage must be a local directory.');
+    }
+    var deleted = 0;
+    await for (final entry in Directory(root).list(followLinks: false)) {
+      if (entry is! Directory) { continue; }
+      final id = entry.uri.pathSegments.where((s) => s.isNotEmpty).last;
+      if (!RegExp(r'^draft-[A-Za-z0-9_-]+$').hasMatch(id)) { continue; }
+      await (await folder(id)).delete(recursive: true);
+      deleted++;
+    }
+    return deleted;
   });
   Future<void> delete(String id) => Isolate.run(() async { await (await folder(id)).delete(recursive:true); });
 }

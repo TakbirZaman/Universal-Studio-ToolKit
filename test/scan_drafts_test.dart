@@ -37,4 +37,42 @@ void main() {
       await expectLater(store.save([],1), throwsA(isA<FormatException>()));
     } finally { await temp.delete(recursive:true); }
   });
+  test('clear removes incomplete drafts but preserves unrelated storage', () async {
+    final temp = await Directory.systemTemp.createTemp('ust-draft-clear-');
+    try {
+      final store = ScanDrafts(temp.path);
+      await store.save([DraftPage('a.png', Uint8List.fromList([1]))], 7);
+      final incomplete = Directory('${store.root}/draft-interrupted');
+      await incomplete.create();
+      await File('${incomplete.path}/manifest.tmp').writeAsString('incomplete');
+      final unrelated = Directory('${store.root}/unrelated');
+      await unrelated.create();
+      await File('${unrelated.path}/keep.txt').writeAsString('keep');
+      expect(await store.clear(), 2);
+      expect(await store.list(), isEmpty);
+      expect(await File('${unrelated.path}/keep.txt').readAsString(), 'keep');
+      expect(await store.clear(), 0);
+    } finally { await temp.delete(recursive: true); }
+  });
+
+  test('draft cleanup refuses linked roots and never follows linked drafts', () async {
+    final temp = await Directory.systemTemp.createTemp('ust-draft-link-');
+    try {
+      final outside = await Directory('${temp.path}/outside').create();
+      final keep = File('${outside.path}/keep.txt');
+      await keep.writeAsString('keep');
+      final store = ScanDrafts('${temp.path}/app');
+      await Directory('${temp.path}/app').create();
+      final rootLink = Link(store.root);
+      await rootLink.create(outside.path);
+      await expectLater(store.list(), throwsA(isA<FormatException>()));
+      await expectLater(store.clear(), throwsA(isA<FormatException>()));
+      await rootLink.delete();
+      await Directory(store.root).create();
+      await Link('${store.root}/draft-link').create(outside.path);
+      expect(await store.clear(), 0);
+      expect(await keep.readAsString(), 'keep');
+    } finally { await temp.delete(recursive: true); }
+  }, skip: Platform.isWindows);
+
 }
