@@ -10,3 +10,7 @@ key.properties
 *.iml
 /dist/
 android/local.properties
+
+/android/app/src/main/jniLibs/
+/android/app/src/main/assets/third_party/
+__pycache__/

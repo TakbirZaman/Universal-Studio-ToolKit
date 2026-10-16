@@ -1,0 +1,46 @@
+name: Build Android development APK
+on:
+  push:
+    branches: [main]
+    paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'scripts/*android*', '.github/workflows/build-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      CI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned toolchains
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal
+          rustup target add aarch64-linux-android --toolchain 1.99.0
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = abaf9c523780a608bd46686fd5e53740a07077f8
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+          echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;28.2.13676358'
+      - name: Obtain verified non-V8 PDFium (build time only)
+        run: |
+          curl --fail --location --retry 2 https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/8076/pdfium-android-arm64.tgz -o "$RUNNER_TEMP/pdfium-android.tgz"
+          echo "UST_PDFIUM_ANDROID_ARCHIVE=$RUNNER_TEMP/pdfium-android.tgz" >> "$GITHUB_ENV"
+      - name: Build unsigned release
+        run: bash scripts/build_android.sh
+      - name: Verify native APK contents
+        run: python3 scripts/verify_android_apk.py dist/universal-studio-android-arm64-unsigned.apk
+      - name: Upload unsigned development build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: universal-studio-android-arm64-unsigned-development
+          path: dist/
+          retention-days: 3
+          if-no-files-found: error

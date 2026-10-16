@@ -7,3 +7,5 @@ The workflow runs the Rust integration suite (including PDFium), Flutter analyze
 Golden images were held from repository upload by automatic review. The visual job renders new screenshots as capture-only output; it is explicitly not a regression comparison. Screenshots and sample documents are not uploaded as workflow artifacts. Restore and review the original baselines before claiming golden-regression coverage on a fresh checkout.
 
 Status: workflow authored; first hosted execution and bundle verification pending. Android and Windows pipelines remain separate future build gates.
+
+An Android arm64 workflow is now authored separately. Its unsigned release output is development-only; artifact structure checks do not imply installability or device compatibility.
