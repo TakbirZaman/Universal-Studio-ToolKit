@@ -18,7 +18,7 @@ Photo resize, bounded actual-byte compression, orientation, simple signature thr
 
 ## Current change and next action
 
-Draft cleanup now has a confirmed Delete all saved drafts action, covering incomplete/corrupt copies. Root symlinks are rejected; unrelated directories and linked draft targets are preserved. New storage regression tests are entering hosted Linux verification. First inspect that run and fix any failure. Then continue camera/native capture, geometry, OCR, advanced PDF and custom pack work in PLAN.md. Do not mark new cleanup verified until CI passes.
+Draft cleanup now has a confirmed Delete all saved drafts action, covering incomplete/corrupt copies. Root symlinks are rejected; unrelated directories and linked draft targets are preserved. New storage regression tests are entering hosted Linux verification. Android delegated manual capture is also implemented in source with a scoped FileProvider and byte limits; channel contract tests and Android compilation are entering CI. First inspect those runs and fix failures. Camera device acceptance is still outstanding. Then continue geometry, OCR, advanced PDF and custom pack work in PLAN.md. Do not mark new cleanup verified until CI passes.
 
 ## Remaining blockers and gates
 

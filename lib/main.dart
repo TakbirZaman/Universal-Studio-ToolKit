@@ -1,3 +1,5 @@
+import 'application/camera_capture.dart';
+import 'package:flutter/services.dart';
 import 'application/scan_drafts.dart';
 import 'application/scan_draft_picker.dart';
 import 'application/transparency_preview.dart';
@@ -539,6 +541,35 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     }
   }
 
+  late final Future<bool> cameraAvailable = CameraCapture().available();
+
+  Future<void> capturePage() async {
+    if (sources.length >= 200) {
+      setState(() => error = 'A scan session supports at most 200 pages.');
+      return;
+    }
+    setState(() { busy = true; error = null; });
+    try {
+      final bytes = await CameraCapture().capture();
+      if (bytes == null || !mounted) { return; }
+      if (sources.fold<int>(0, (n, s) => n + s.bytes.length) + bytes.length > 64 * 1024 * 1024) {
+        throw const FormatException('This session would exceed 64 MiB. Save this scan before capturing more pages.');
+      }
+      setState(() {
+        sources.add(SelectedSource('Captured page ${sources.length + 1}.jpg', bytes));
+        previewIndex = sources.length - 1;
+        output = null;
+        saved = null;
+      });
+    } on PlatformException catch (e) {
+      if (mounted) { setState(() => error = e.message ?? 'Could not capture a page. Try importing an image.'); }
+    } catch (e) {
+      if (mounted) { setState(() => error = clean(e)); }
+    } finally {
+      if (mounted) { setState(() => busy = false); }
+    }
+  }
+
   Future<XFile?> _one(XTypeGroup type) => openFile(acceptedTypeGroups: [type]);
   String clean(Object e) => e.toString().replaceFirst('Exception: ', '');
   String? positive(String? s) {
@@ -730,6 +761,13 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     ? 'Add page images'
                     : 'Choose image',
               ),
+            ),
+          if (widget.tool == Tool.scan && Platform.isAndroid)
+            FutureBuilder<bool>(
+              future: cameraAvailable,
+              builder: (context, snapshot) => snapshot.data == true
+                ? FilledButton.icon(onPressed: busy ? null : capturePage, icon: const Icon(Icons.camera_alt_outlined), label: const Text('Capture a page'))
+                : const Text('Import page images if a camera app is unavailable.'),
             ),
           if (sources.isNotEmpty) ...[
             const SizedBox(height: 12),
@@ -976,7 +1014,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ],
           if (widget.tool == Tool.scan) ...[
             const Text(
-              'Import page images, choose a page below its filename, adjust, then prepare the PDF. Camera and perspective correction are still pending.',
+              'Import page images, choose a page below its filename, adjust, then prepare the PDF. On Android, you can also capture pages with the device camera app. Perspective correction is still pending.',
             ),
             ExpansionTile(title: const Text('Save or restore a scan draft'), children: [
               const Text('Save original page copies and adjustments on this device. Nothing is uploaded. Expired drafts are removed when the draft list is opened.'),
