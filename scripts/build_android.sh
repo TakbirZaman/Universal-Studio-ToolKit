@@ -19,3 +19,7 @@ flutter pub get --enforce-lockfile
 flutter build apk --release --no-pub --target-platform android-arm64
 mkdir -p dist
 cp build/app/outputs/flutter-apk/app-release.apk dist/universal-studio-android-arm64-unsigned.apk
+# A standard debug key is generated locally by Android tooling, never committed.
+flutter build apk --debug --no-pub --target-platform android-arm64
+cp build/app/outputs/flutter-apk/app-debug.apk dist/universal-studio-android-arm64-debug.apk
+"$ANDROID_HOME/build-tools/36.0.0/apksigner" verify dist/universal-studio-android-arm64-debug.apk
