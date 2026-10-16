@@ -1,3 +1,5 @@
+import 'application/scan_drafts.dart';
+import 'application/scan_draft_picker.dart';
 import 'application/transparency_preview.dart';
 import 'dart:io';
 import 'application/recipes.dart';
@@ -445,7 +447,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       flatten = false,
       showOriginal = false;
   int rotation = 0, quality = 60, threshold = 230;
-  int previewIndex = 0;
+  int previewIndex = 0, draftDays = 7;
+  String? draftMessage;
   bool get imageTool =>
       widget.tool == Tool.photo || widget.tool == Tool.signature;
   @override
@@ -975,6 +978,15 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             const Text(
               'Import page images, choose a page below its filename, adjust, then prepare the PDF. Camera and perspective correction are still pending.',
             ),
+            ExpansionTile(title: const Text('Save or restore a scan draft'), children: [
+              const Text('Save original page copies and adjustments on this device. Nothing is uploaded. Expired drafts are removed when the draft list is opened.'),
+              DropdownButtonFormField<int>(initialValue:draftDays, decoration:const InputDecoration(labelText:'Keep draft for'), items:[for(final days in [1,7,30,90])DropdownMenuItem(value:days,child:Text('$days days'))],onChanged:busy?null:(value)=>setState(()=>draftDays=value!)),
+              Wrap(spacing:12,children:[
+                OutlinedButton(onPressed:busy||sources.isEmpty?null:saveDraft,child:const Text('Save draft on this device')),
+                OutlinedButton(onPressed:busy?null:restoreDraft,child:const Text('Restore saved draft')),
+              ]),
+              if(draftMessage!=null)Semantics(liveRegion:true,child:Text(draftMessage!)),
+            ]),
             if (sources.isNotEmpty) scanControls(),
           ],
           if (widget.tool == Tool.print) ...[
@@ -1100,6 +1112,36 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       ),
     ),
   );
+  Future<void> saveDraft() async {
+    final directory=ref.read(dataDirectoryProvider);
+    if(directory==null){setState(()=>draftMessage='Local draft storage is unavailable.');return;}
+    final snapshot=sources.map((s)=>DraftPage(s.name,s.bytes,mode:s.scanMode,rotation:s.scanRotation,brightness:s.brightness,contrast:s.contrast)).toList();
+    setState(()=>busy=true);
+    try {
+      await ScanDrafts(directory).save(snapshot,draftDays);
+      if(mounted) { setState(()=>draftMessage='Draft saved on this device for $draftDays days. Your original files are unchanged.'); }
+    } catch(_){if(mounted) { setState(()=>draftMessage='Could not save the draft. Check free space and storage access.'); }}
+    finally{if(mounted) { setState(()=>busy=false); }}
+  }
+  Future<void> restoreDraft() async {
+    final directory=ref.read(dataDirectoryProvider);
+    if(directory==null){setState(()=>draftMessage='Local draft storage is unavailable.');return;}
+    final store=ScanDrafts(directory);
+    final id=await showDialog<String>(context:context,builder:(context)=>ScanDraftPicker(store:store));
+    if(id==null||!mounted) { return; }
+    if(sources.isNotEmpty){
+      final replace=await showDialog<bool>(context:context,builder:(context)=>AlertDialog(title:const Text('Replace the current scan session?'),content:const Text('Save a draft first if you want to keep your current page order and adjustments. Original files will stay unchanged.'),actions:[TextButton(onPressed:()=>Navigator.pop(context,false),child:const Text('Keep current scan')),FilledButton(onPressed:()=>Navigator.pop(context,true),child:const Text('Restore draft'))]));
+      if(replace!=true||!mounted) { return; }
+    }
+    setState(()=>busy=true);
+    try {
+      final restored=await store.restore(id);
+      final incoming=restored.map((p)=>SelectedSource(p.name,p.bytes)..scanMode=p.mode..scanRotation=p.rotation..brightness=p.brightness..contrast=p.contrast).toList();
+      if(mounted) { setState((){sources=incoming;previewIndex=0;output=null;error=null;saved=null;draftMessage='Restored ${incoming.length} pages. The saved draft is still available.';}); }
+    } catch(_){if(mounted) { setState(()=>draftMessage='Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.'); }}
+    finally{if(mounted) { setState(()=>busy=false); }}
+  }
+
   Widget scanControls() {
     final source = sources[previewIndex.clamp(0, sources.length - 1)];
     return Column(

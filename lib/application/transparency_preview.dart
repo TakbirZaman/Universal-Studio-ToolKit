@@ -47,7 +47,7 @@ class _Background extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(Offset.zero & size, Paint()..color = mode == 'dark' ? const Color(0xff202127) : Colors.white);
-    if (mode != 'checkerboard') return;
+    if (mode != 'checkerboard') { return; }
     final paint = Paint()..color = const Color(0xffd6d6dc);
     for (var row = 0; row * 20 < size.height; row++) {
       for (var col = 0; col * 20 < size.width; col++) {
