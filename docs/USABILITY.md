@@ -5,9 +5,9 @@ No representative users have been observed. The ten-second home discoverability 
 | Scenario | Current path | Issues / remaining evidence |
 |---|---|---|
 | Photo 300×300 below limit | Resize Photo → choose → dimensions/maximum size → prepare → inspect measured result → save copy | Defaults match 300×300; KiB and strict limit explained. Need real users, keyboard and screen-reader observation. |
-| Three-page scan and reorder | Scan Documents → add page images → move up → prepare PDF → save | Desktop import only. Modes, brightness/contrast and PDFium visual preview are connected. Camera, thumbnails, drag reorder, perspective correction and draft recovery remain. |
+| Three-page scan and reorder | Scan Documents → add page images → move up → prepare PDF → save | Image import is connected. Modes, brightness/contrast and PDFium visual preview are connected. Draft recovery and deletion are connected and tested. Android manual capture is entering compilation; device acceptance, thumbnails, drag reorder and perspective correction remain. |
 | Merge two PDFs | Combine PDFs → add PDFs → prepare → page-count result → save | Structure limitations explained. PDFium visual result preview is connected; page selector currently comma-separated integers, no thumbnail manipulation. |
-| Transparent signature | Clean Signature → import → threshold → prepare PNG → save | Threshold adjustable and PNG enforced; manual mask/crop and light/dark/checkerboard preview remain. |
+| Transparent signature | Clean Signature → import → threshold → prepare PNG → save | Threshold adjustable and PNG enforced; light/dark/checkerboard preview is implemented; manual mask and direct crop gestures remain. |
 | Application pack | Prepare Application → photo → signature → PDF → limit → prepare ZIP → save | Explicit example requirements. Required three slots validated. Editable presets and cross-studio managed sources remain. |
 
 Implemented UI design decisions: native controls with semantic text labels; tooltip labels on icon buttons; no colour-only success state; light/dark Material themes; nonfixed card heights and scrollable pages; 52px primary controls; source and actual result size separate; original unchanged message; errors beside processing controls; no fake progress percentages; no destructive overwrite control; no mandatory onboarding.

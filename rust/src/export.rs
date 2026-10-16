@@ -72,22 +72,39 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
                 return Err(invalid("Archive manifest is too large."));
             }
             let m: Manifest = serde_json::from_slice(&content)?;
-            if m.schema_version != 1 || m.entries.len() + 2 != archive.len() {
+            if m.schema_version != 1 || m.entries.is_empty() || m.entries.len() + 2 != archive.len()
+            {
                 return Err(invalid("Archive manifest is inconsistent."));
             }
+            archive.by_name("validation.txt")?;
+            let mut names = std::collections::HashSet::new();
+            let mut total = 0usize;
             for entry in m.entries {
                 safe_name(&entry.filename)?;
+                let key = entry.filename.to_lowercase();
+                if ["manifest.json", "validation.txt"].contains(&key.as_str())
+                    || !names.insert(key)
+                    || !["jpeg", "png", "pdf"].contains(&entry.info.format.as_str())
+                {
+                    return Err(invalid("Archive entries are inconsistent."));
+                }
+                verify_extension(&entry.filename, &entry.info.format)?;
                 let mut actual = Vec::new();
                 archive
                     .by_name(&entry.filename)?
-                    .take(MAX_INPUT_BYTES as u64 + 1)
+                    .take((MAX_INPUT_BYTES - total) as u64 + 1)
                     .read_to_end(&mut actual)?;
-                if actual.len() > MAX_INPUT_BYTES
+                total += actual.len();
+                if total > MAX_INPUT_BYTES
                     || actual.len() as u64 != entry.info.bytes
                     || format!("{:x}", Sha256::digest(&actual)) != entry.sha256
                 {
                     return Err(invalid("Archive entry failed verification."));
                 }
+                verify_output(&PreparedOutput {
+                    data: actual,
+                    info: entry.info,
+                })?;
             }
         }
         _ => return Err(invalid("Unsupported output format.")),
@@ -95,19 +112,24 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
     Ok(())
 }
 
-pub fn save_copy(dir: &Path, name: &str, out: &PreparedOutput) -> Result<()> {
-    safe_name(name)?;
-    verify_output(out)?;
+fn verify_extension(name: &str, format: &str) -> Result<()> {
     let ext = Path::new(name)
         .extension()
         .and_then(|s| s.to_str())
         .unwrap_or("")
         .to_lowercase();
-    if !(ext == out.info.format || (ext == "jpg" && out.info.format == "jpeg")) {
+    if !(ext == format || (ext == "jpg" && format == "jpeg")) {
         return Err(invalid(
             "Filename extension must match the prepared output format.",
         ));
     }
+    Ok(())
+}
+
+pub fn save_copy(dir: &Path, name: &str, out: &PreparedOutput) -> Result<()> {
+    safe_name(name)?;
+    verify_output(out)?;
+    verify_extension(name, &out.info.format)?;
     if !dir.is_dir() {
         return Err(invalid("Choose an existing destination folder."));
     }
@@ -138,6 +160,12 @@ pub fn pack(items: Vec<(String, PreparedOutput)>) -> Result<PreparedOutput> {
     if items.is_empty() || items.len() > 32 {
         return Err(invalid("A pack needs 1–32 documents."));
     }
+    let total = items.iter().try_fold(0usize, |total, (_, output)| {
+        total.checked_add(output.data.len())
+    });
+    if total.is_none_or(|bytes| bytes > MAX_INPUT_BYTES) {
+        return Err(invalid("Pack documents exceed 64 MiB combined."));
+    }
     let mut names = std::collections::HashSet::new();
     let mut manifest = Manifest {
         schema_version: 1,
@@ -153,23 +181,11 @@ pub fn pack(items: Vec<(String, PreparedOutput)>) -> Result<PreparedOutput> {
         if ["manifest.json", "validation.txt"].contains(&key.as_str()) || !names.insert(key) {
             return Err(invalid("Pack filenames collide. Choose unique names."));
         }
-        if out.info.bytes != out.data.len() as u64 {
-            return Err(invalid("Output length does not match its manifest."));
+        if !["jpeg", "png", "pdf"].contains(&out.info.format.as_str()) {
+            return Err(invalid("Unsupported pack output format."));
         }
-        match out.info.format.as_str() {
-            "jpeg" | "png" => {
-                let img = crate::photo::decode(&out.data)?;
-                if Some(img.width()) != out.info.width || Some(img.height()) != out.info.height {
-                    return Err(invalid("Pack image verification failed."));
-                }
-            }
-            "pdf" => {
-                if Some(crate::pdf::page_count(&out.data)?) != out.info.pages {
-                    return Err(invalid("Pack page verification failed."));
-                }
-            }
-            _ => return Err(invalid("Unsupported pack output format.")),
-        }
+        verify_output(&out)?;
+        verify_extension(&name, &out.info.format)?;
         writer.start_file(&name, opt)?;
         writer.write_all(&out.data)?;
         manifest.entries.push(ManifestEntry {

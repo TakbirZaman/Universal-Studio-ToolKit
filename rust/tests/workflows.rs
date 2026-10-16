@@ -289,3 +289,50 @@ fn pack_slots_enforce_constraints() {
     .unwrap();
     assert!(p.build(vec![Some(invalid)]).is_err());
 }
+
+#[test]
+fn pack_rejects_mislabeled_formats_and_extensions() {
+    let mut wrong_format = photo::process(&image(20, 20), &Default::default()).unwrap();
+    wrong_format.info.format = "png".into();
+    assert!(export::pack(vec![("photo.png".into(), wrong_format)]).is_err());
+    let wrong_extension = photo::process(&image(20, 20), &Default::default()).unwrap();
+    assert!(export::pack(vec![("photo.png".into(), wrong_extension)]).is_err());
+}
+
+#[test]
+fn archive_validation_reopens_document_instead_of_trusting_manifest_hash() {
+    use sha2::{Digest, Sha256};
+    use std::io::Write;
+    let output = photo::process(&image(20, 20), &Default::default()).unwrap();
+    let mut forged_info = output.info;
+    forged_info.width = Some(17);
+    let manifest = export::Manifest {
+        schema_version: 1,
+        preset_status: "Example".into(),
+        entries: vec![export::ManifestEntry {
+            filename: "photo.jpg".into(),
+            sha256: format!("{:x}", Sha256::digest(&output.data)),
+            info: forged_info,
+        }],
+    };
+    let mut writer = zip::ZipWriter::new(Cursor::new(Vec::new()));
+    let options = zip::write::SimpleFileOptions::default();
+    writer.start_file("photo.jpg", options).unwrap();
+    writer.write_all(&output.data).unwrap();
+    writer.start_file("manifest.json", options).unwrap();
+    writer
+        .write_all(&serde_json::to_vec(&manifest).unwrap())
+        .unwrap();
+    writer.start_file("validation.txt", options).unwrap();
+    writer.write_all(b"Untrusted report").unwrap();
+    let bytes = writer.finish().unwrap().into_inner();
+    let mut valid = export::pack(vec![(
+        "photo.jpg".into(),
+        photo::process(&image(20, 20), &Default::default()).unwrap(),
+    )])
+    .unwrap();
+    export::verify_output(&valid).unwrap();
+    valid.info.bytes = bytes.len() as u64;
+    valid.data = bytes;
+    assert!(export::verify_output(&valid).is_err());
+}

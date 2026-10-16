@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:universal_studio_toolkit/application/camera_capture.dart';

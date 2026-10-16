@@ -10,6 +10,6 @@ All collected notices are packaged as Android assets. Native libraries and copie
 
 Release signing is not configured. The release APK is labelled unsigned and is not an installable production release. Configure your own private signing key outside the repository and back it up securely. Never commit keystores or passwords. Losing the signing key can prevent updates to installed releases.
 
-Remaining gates: successful hosted APK build, signature verification, 16 KiB page-size compatibility, device startup, offline processing, camera, document-provider cancellation/partial writes, and clean-device validation. ARM64 Rust compilation alone does not satisfy these gates.
+Hosted run 38863568022 passed APK builds, debug signature, ABI inventory and ZIP/ELF 16 KiB alignment checks. Actual device startup, offline processing, camera behavior, document-provider cancellation/partial writes and clean-device validation remain open. Camera capture source added after that build is awaiting its own compilation and device evidence.
 
 The build script now also produces a debug-signed APK for manual device testing and checks its signature with Android apksigner. This uses the standard development signing key generated on the build runner; it is not a production signing identity and may differ between builds. Uninstalling an older development build can erase its local drafts/settings, so export anything needed before changing debug builds. Production signing and key-backup setup remain separate.

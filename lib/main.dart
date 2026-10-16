@@ -404,7 +404,7 @@ class _StudioHomeState extends State<StudioHome> {
               ),
               const SizedBox(height: 28),
               const Text(
-                'Your original files stay unchanged. No account, uploads or advertising. Camera capture and OCR are not included in this build.',
+                'Your original files stay unchanged. No account, uploads or advertising. OCR is not included in this build.',
               ),
               const SizedBox(height: 24),
             ],
@@ -1014,7 +1014,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ],
           if (widget.tool == Tool.scan) ...[
             const Text(
-              'Import page images, choose a page below its filename, adjust, then prepare the PDF. On Android, you can also capture pages with the device camera app. Perspective correction is still pending.',
+              'Import page images, choose a page below its filename, adjust, then prepare the PDF. On Android, you can also capture pages with the device camera app. Save a draft before capturing to protect against Android closing the app. Perspective correction is still pending.',
             ),
             ExpansionTile(title: const Text('Save or restore a scan draft'), children: [
               const Text('Save original page copies and adjustments on this device. Nothing is uploaded. Expired drafts are removed when the draft list is opened.'),
