@@ -46,7 +46,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Dependency resolution failed' }
           flutter analyze --no-pub
           if ($LASTEXITCODE -ne 0) { throw 'Flutter analysis failed' }
-          flutter test --no-pub test/native_bridge_test.dart test/studio_test.dart test/recipe_batch_test.dart
+          $tests = Get-ChildItem test -Filter '*_test.dart' | Where-Object { $_.Name -ne 'visual_test.dart' } | Sort-Object Name | ForEach-Object { $_.FullName }
+          flutter test --no-pub @tests
           if ($LASTEXITCODE -ne 0) { throw 'Flutter tests failed' }
       - name: Build portable ZIP
         shell: pwsh
