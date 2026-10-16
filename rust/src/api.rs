@@ -345,3 +345,10 @@ pub fn validate_prepared_output(
     })
     .map_err(|e| e.to_string())
 }
+
+/// Lossless structure optimization; retains original bytes if no smaller result exists.
+pub fn optimize_pdf(data: Vec<u8>) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| pdf::optimize_lossless(&data))
+        .map(Into::into)
+        .map_err(|e| e.to_string())
+}
