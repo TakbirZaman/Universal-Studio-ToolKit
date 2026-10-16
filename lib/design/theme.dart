@@ -19,6 +19,7 @@ abstract final class StudioTokens {
     return ThemeData(
       useMaterial3: true,
       fontFamily: 'StudioRoboto',
+      fontFamilyFallback: const ['StudioNotoBengali'],
       brightness: brightness,
       colorScheme: scheme,
       scaffoldBackgroundColor: brightness == Brightness.light

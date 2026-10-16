@@ -26,3 +26,6 @@ flutter:
         - asset: assets/fonts/Roboto-Regular.ttf
         - asset: assets/fonts/Roboto-Bold.ttf
           weight: 700
+    - family: StudioNotoBengali
+      fonts:
+        - asset: assets/fonts/NotoSansBengali.ttf

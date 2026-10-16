@@ -1,0 +1,25 @@
+{
+  "engine": "Tesseract 5.3.4 host command; not integrated in app",
+  "model_commit": "87416418657359cb625c412a48b6e1d6d41c29bd",
+  "raqm": true,
+  "cases": [
+    {
+      "language": "eng",
+      "synthetic_expected": "UNIVERSAL STUDIO 123",
+      "recognized": "UNIVERSAL STUDIO 123",
+      "exact_match": true,
+      "exit_code": 0,
+      "seconds": 0.489,
+      "model_sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    },
+    {
+      "language": "ben",
+      "synthetic_expected": "আমার বাংলা ভাষা",
+      "recognized": "আমার বাংলা ভাষা",
+      "exact_match": true,
+      "exit_code": 0,
+      "seconds": 0.102,
+      "model_sha256": "31163084c279aaebd376216f0c3d5c17ad4b5fee8db49dae79c20000b5de5964"
+    }
+  ]
+}
