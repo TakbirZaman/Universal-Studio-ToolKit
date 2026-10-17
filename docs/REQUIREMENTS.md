@@ -12,7 +12,7 @@ Legend: [x] verified core implementation; [~] partial / implementation in progre
 - [~] 9. Typed documents/constraints/recipes/jobs/results/manifests/capabilities; bounded concurrency; staged outputs; URI support.
 - [~] 10. PDF merge/extract/delete/reorder/rotate/images-to-PDF/text extraction; split UI, thumbnails/rendering, page geometry, watermarks/numbers, signature placement, form filling, searchable export, three compression modes and interoperability.
 - [~] 11. Camera and permissions, import, multipage sessions, manual corners/perspective/deskew, modes/adjustments, non-destructive recovery and quality advisories.
-- [~] 12. JPEG/PNG, EXIF normalization, resize/rotate/flip, fit/fill/padding, compression, metadata and transparency; full crop gestures, comparison, face suggestions, print customization; numeric recipe crop and batch controls implemented.
+- [~] 12. JPEG/PNG, EXIF normalization, resize/rotate/flip, fit/fill/padding, compression, metadata and transparency; physical mm/DPI export with verified JFIF/pHYs density implemented locally; full crop gestures, comparison, face suggestions, print customization; numeric recipe crop and batch controls implemented.
 - [~] 13. Fixed compression constraints, KB/KiB/strict/inclusive, bounded same-source search and actual validation; flexible dimensions remain.
 - [~] 14. Threshold signature background removal and transparent export; manual refinement/consented storage/PDF placement remain; numeric crop and preview backgrounds implemented.
 - [~] 15. Verified ZIP with report/manifest; typed slots and complete constraint enforcement, preset provenance, builder UI remain.

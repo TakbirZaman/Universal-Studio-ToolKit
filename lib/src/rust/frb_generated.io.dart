@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
 import 'jobs.dart';
+import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 
@@ -47,6 +48,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  PrintDensity dco_decode_box_autoadd_print_density(dynamic raw);
 
   @protected
   StudioOutput dco_decode_box_autoadd_studio_output(dynamic raw);
@@ -94,6 +98,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  PrintDensity? dco_decode_opt_box_autoadd_print_density(dynamic raw);
+
+  @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
 
   @protected
@@ -103,10 +110,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint32List? dco_decode_opt_list_prim_u_32_strict(dynamic raw);
 
   @protected
+  PrintDensity dco_decode_print_density(dynamic raw);
+
+  @protected
   StudioOutput dco_decode_studio_output(dynamic raw);
 
   @protected
   StudioPreferences dco_decode_studio_preferences(dynamic raw);
+
+  @protected
+  int dco_decode_u_16(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
@@ -143,6 +156,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  PrintDensity sse_decode_box_autoadd_print_density(
+    SseDeserializer deserializer,
+  );
 
   @protected
   StudioOutput sse_decode_box_autoadd_studio_output(
@@ -196,6 +214,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  PrintDensity? sse_decode_opt_box_autoadd_print_density(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
@@ -207,10 +230,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  PrintDensity sse_decode_print_density(SseDeserializer deserializer);
+
+  @protected
   StudioOutput sse_decode_studio_output(SseDeserializer deserializer);
 
   @protected
   StudioPreferences sse_decode_studio_preferences(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
@@ -250,6 +279,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_print_density(
+    PrintDensity self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_studio_output(
@@ -315,6 +350,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_opt_box_autoadd_print_density(
+    PrintDensity? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
@@ -327,6 +368,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_print_density(PrintDensity self, SseSerializer serializer);
+
+  @protected
   void sse_encode_studio_output(StudioOutput self, SseSerializer serializer);
 
   @protected
@@ -334,6 +378,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     StudioPreferences self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);

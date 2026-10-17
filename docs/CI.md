@@ -18,7 +18,7 @@ Windows import-table inspection found required Microsoft CRT DLLs missing from t
 
 Commit 7257778 passed Linux run 38900451000, Windows run 38900451112 and Android run 38900451024. Both desktop bundles created windows in eight-second startup checks. Linux/Windows passed 26 Rust integration tests and selected Flutter behavioral/native tests. Android produced debug-signed and unsigned APKs with ABI, native inventory, signature and 16 KiB gates. This supersedes the earlier pending-build notes above; clean-system and interactive device acceptance remain outstanding.
 
-The separate read-only bridge generation job pins cargo-expand 1.0.118 and FRB codegen 2.13.0, generates typed sources without upgrading dependencies, analyzes them and uploads only six allowlisted source files (including OCR language and job-state enums) in JSON. Generated output must be reviewed and committed before treating a clean checkout as equivalent to that build.
+The separate read-only bridge generation job pins cargo-expand 1.0.118 and FRB codegen 2.13.0, generates typed sources without upgrading dependencies, analyzes them and uploads only seven allowlisted source files (including OCR language, job-state and print-density models) in JSON. Generated output must be reviewed and committed before treating a clean checkout as equivalent to that build.
 
 ## Experimental OCR integration gate
 

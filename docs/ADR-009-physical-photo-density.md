@@ -1,6 +1,6 @@
 # ADR 009 — explicit physical photo size and verified print-density metadata
 
-Status: implementation in progress on work/photo-density; not a shipped feature claim.
+Status: locally implemented and verified on work/photo-density; platform packaging gates remain pending.
 
 Convert requested millimetres and integer DPI (1–2400) into bounded whole-pixel dimensions in Rust. Process a fresh orientation-normalized source, retaining existing fit/crop, transparency consent and byte-limit rules. Report pixel rounding and the physical size computed from the saved pixels and actual density; never promise that printer settings or external application acceptance are guaranteed.
 
@@ -15,3 +15,7 @@ Add typed optional print density to output metadata and FRB results. Reopen the 
 A DTO change requires regenerated bindings. Until regeneration and native/Flutter tests pass, this branch must not be described as runnable through the new Flutter API. Do not hand-edit generated files. Require independent Pillow density/pixel/byte checks in addition to Rust round-trip tests before completion claims.
 
 Primary references: pinned image 0.25.10 src/codecs/jpeg/encoder.rs and png 0.18.1 sources; https://docs.rs/png/0.18.1/png/struct.Encoder.html#method.set_pixel_dims. Future physical-size presets must identify their source/revision or be clearly marked examples.
+
+The adapter preserves 8-bit and 16-bit PNG channel data. Fitted PNG padding also retains 16-bit precision within the per-image decoded-buffer bound. Alpha checks inspect original channel precision, so alpha 65534/65535 cannot become an unnoticed opaque JPEG after 8-bit quantization. Two dedicated tests cover this.
+
+Local evidence: 41 Rust tests, typed JPEG/PNG native bridge checks and independent Pillow inspection of actual saved outputs. A fixture-backed picker test uses real Rust processing and result UI at desktop and 390px dark/200% text; only the OS picker is substituted. This does not validate native platform dialogs or representative user success. Generated bindings were obtained from the pinned workflow, checksum/ZIP/allowlist verified and applied, not hand-edited.

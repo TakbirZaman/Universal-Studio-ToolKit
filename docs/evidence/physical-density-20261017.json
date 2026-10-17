@@ -1,0 +1,54 @@
+{
+  "scope": "Synthetic saved outputs only; not printer or application acceptance testing",
+  "cases": [
+    {
+      "format": "jpeg",
+      "pixels": [
+        413,
+        531
+      ],
+      "pillow_dpi": [
+        300,
+        300
+      ],
+      "bytes": 48907,
+      "sha256": "0e1d37d4b151d07ae84070d3a9976348d4303e3d5c7e5e2fcc2343935df11af8",
+      "original_unchanged": true,
+      "existing_output_preserved": true,
+      "exif_absent": true,
+      "icc_absent": true
+    },
+    {
+      "format": "png",
+      "pixels": [
+        413,
+        531
+      ],
+      "pillow_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "bytes": 8535,
+      "sha256": "332a6641da1ba4be66789e00f27a68bd79a4e029f4d69011faf5936685b162f5",
+      "original_unchanged": true,
+      "existing_output_preserved": true,
+      "exif_absent": true,
+      "icc_absent": true
+    }
+  ],
+  "date_utc": "2026-10-17",
+  "rust_tests_passed": 41,
+  "bridge_generation_run": 39025892759,
+  "bridge_artifact": 12098760967,
+  "bridge_artifact_sha256": "41bdd71fbdaaffa4637f6d612c8e5578f83d3e7fadf4f4b29207108890ad0f5d",
+  "generated_source_files_verified": 7,
+  "png_16_bit_preservation_tested": true,
+  "sub_8_bit_alpha_jpeg_consent_tested": true,
+  "flutter_behavioral_native_tests_passed": 22,
+  "native_picker_substituted_in_widget_tests": true,
+  "layout_cases": [
+    "1440px light desktop",
+    "390px dark at 200% text"
+  ],
+  "layout_review": "Capture-only; locally inspected, no golden regression baseline or user testing"
+}

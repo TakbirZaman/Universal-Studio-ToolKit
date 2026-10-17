@@ -15,3 +15,5 @@
 - History/signature retention is not enabled; reusable local signature storage is not implemented. No promise of physical secure erasure.
 
 - OCR resource limits apply to the child, not all parent-side image preparation. They do not establish a filesystem/network sandbox. Cancellation waits for preparation checkpoints; the engine is killed/reaped before a cancelled return. Abnormal parent termination can leave private temporary files; abandoned-job retention/cleanup is still pending. The engine-presence/model-hash capability check is not an engine-version certification.
+
+- Physical-photo mm/DPI export is implemented locally with pixel rounding, verified JPEG JFIF/PNG pHYs and preserved 16-bit PNG where applicable. UI reports the saved size; external print settings can change final dimensions. This is not printer/official-application acceptance certification. Platform package checks for this slice are pending.

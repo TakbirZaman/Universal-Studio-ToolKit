@@ -33,6 +33,26 @@ pub fn decode(data: &[u8]) -> Result<DynamicImage> {
     img.apply_orientation(orientation);
     Ok(img)
 }
+fn has_transparency(image: &DynamicImage) -> bool {
+    match image {
+        DynamicImage::ImageRgba8(value) => value.pixels().any(|pixel| pixel[3] < u8::MAX),
+        DynamicImage::ImageLumaA8(value) => value.pixels().any(|pixel| pixel[1] < u8::MAX),
+        DynamicImage::ImageRgba16(value) => value.pixels().any(|pixel| pixel[3] < u16::MAX),
+        DynamicImage::ImageLumaA16(value) => value.pixels().any(|pixel| pixel[1] < u16::MAX),
+        _ => false,
+    }
+}
+
+fn sixteen_bit(image: &DynamicImage) -> bool {
+    matches!(
+        image.color(),
+        image::ColorType::L16
+            | image::ColorType::La16
+            | image::ColorType::Rgb16
+            | image::ColorType::Rgba16
+    )
+}
+
 pub fn prepare(data: &[u8], o: &PhotoOptions) -> Result<DynamicImage> {
     if o.width == 0
         || o.height == 0
@@ -91,12 +111,21 @@ pub fn prepare(data: &[u8], o: &PhotoOptions) -> Result<DynamicImage> {
         }
         img = DynamicImage::ImageRgba8(rgba);
     }
-    if o.format == OutputFormat::Jpeg
-        && !o.flatten_transparency
-        && img.to_rgba8().pixels().any(|p| p[3] < 255)
-    {
+    if o.format == OutputFormat::Jpeg && !o.flatten_transparency && has_transparency(&img) {
         return Err(invalid(
             "JPEG cannot keep transparency. Choose PNG or explicitly allow a background colour.",
+        ));
+    }
+    let decoded_pixel_bytes = match o.fit {
+        Fit::Contain => 8,
+        Fit::Cover => u64::from(img.color().bytes_per_pixel()),
+    };
+    if o.format == OutputFormat::Png
+        && sixteen_bit(&img)
+        && u64::from(o.width) * u64::from(o.height) * decoded_pixel_bytes > 128 * 1024 * 1024
+    {
+        return Err(invalid(
+            "16-bit output exceeds the 128 MiB decoded-image limit. Reduce its dimensions.",
         ));
     }
     let f = image::imageops::FilterType::Lanczos3;
@@ -109,18 +138,38 @@ pub fn prepare(data: &[u8], o: &PhotoOptions) -> Result<DynamicImage> {
             } else {
                 255
             };
-            let mut canvas = RgbaImage::from_pixel(
-                o.width,
-                o.height,
-                Rgba([o.background[0], o.background[1], o.background[2], alpha]),
-            );
-            image::imageops::overlay(
-                &mut canvas,
-                &resized,
-                ((o.width - resized.width()) / 2).into(),
-                ((o.height - resized.height()) / 2).into(),
-            );
-            DynamicImage::ImageRgba8(canvas)
+            if o.format == OutputFormat::Png && sixteen_bit(&resized) {
+                let mut canvas = image::ImageBuffer::<Rgba<u16>, Vec<u16>>::from_pixel(
+                    o.width,
+                    o.height,
+                    Rgba([
+                        u16::from(o.background[0]) * 257,
+                        u16::from(o.background[1]) * 257,
+                        u16::from(o.background[2]) * 257,
+                        0,
+                    ]),
+                );
+                image::imageops::overlay(
+                    &mut canvas,
+                    &resized.to_rgba16(),
+                    ((o.width - resized.width()) / 2).into(),
+                    ((o.height - resized.height()) / 2).into(),
+                );
+                DynamicImage::ImageRgba16(canvas)
+            } else {
+                let mut canvas = RgbaImage::from_pixel(
+                    o.width,
+                    o.height,
+                    Rgba([o.background[0], o.background[1], o.background[2], alpha]),
+                );
+                image::imageops::overlay(
+                    &mut canvas,
+                    &resized,
+                    ((o.width - resized.width()) / 2).into(),
+                    ((o.height - resized.height()) / 2).into(),
+                );
+                DynamicImage::ImageRgba8(canvas)
+            }
         }
     };
     if o.format == OutputFormat::Jpeg {
@@ -230,7 +279,7 @@ pub fn process_cancellable(
     if let Some(density) = print_density {
         info.findings.push(ValidationFinding {
             advisory: true, code: "print_density_verified".into(), passed: true,
-            message: format!("Print density verified: {:.4} × {:.4} DPI; actual print size {:.2} × {:.2} mm. Pixel rounding applies. Print at Actual size / 100%.", density.x_dpi, density.y_dpi, f64::from(o.width) / density.x_dpi * 25.4, f64::from(o.height) / density.y_dpi * 25.4),
+            message: format!("Print resolution verified: {:.4} × {:.4} DPI; actual print size {:.2} × {:.2} mm. Pixel rounding applies. Print at Actual size / 100%.", density.x_dpi, density.y_dpi, f64::from(o.width) / density.x_dpi * 25.4, f64::from(o.height) / density.y_dpi * 25.4),
         });
     }
     Ok(PreparedOutput { data: bytes, info })

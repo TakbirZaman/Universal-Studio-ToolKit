@@ -107,8 +107,19 @@ fn invalid_physical_requests_do_not_decode_or_silently_resize() {
             dpi: 300,
         },
     ] {
+        let error = photo::process_physical(b"invalid source", &spec, &PhotoOptions::default())
+            .unwrap_err()
+            .to_string();
+        let expected = if spec.dpi == 0 || spec.dpi > 2400 {
+            "Print resolution"
+        } else if spec.width_mm == 0.00001 {
+            "rounds to zero pixels"
+        } else {
+            "valid millimetres"
+        };
         assert!(
-            photo::process_physical(b"invalid source", &spec, &PhotoOptions::default()).is_err()
+            error.contains(expected),
+            "Constraint validation must precede decoding: {error}"
         );
     }
     let output = photo::process(
@@ -172,4 +183,58 @@ fn pixel_rounding_and_density_are_explicit_and_not_privacy_tags() {
     let mut forged = text;
     forged.info.print_density = output.info.print_density;
     assert!(export::verify_output(&forged).is_err());
+}
+
+#[test]
+fn physical_png_preserves_sixteen_bit_pixels_and_padding() {
+    let image = image::ImageBuffer::<image::Rgba<u16>, Vec<u16>>::from_fn(5, 7, |x, y| {
+        image::Rgba([(x * 10001) as u16, (y * 8001) as u16, 12345, 65534])
+    });
+    let original = DynamicImage::ImageRgba16(image);
+    let bytes = density::encode_png(&original, 300).unwrap();
+    assert_eq!(bytes[24], 16); // Independently inspect PNG IHDR bit depth.
+    assert_eq!(
+        photo::decode(&bytes).unwrap().to_rgba16(),
+        original.to_rgba16()
+    );
+    let output = photo::process_physical(
+        &bytes,
+        &PhysicalPhotoSpec {
+            width_mm: 35.0,
+            height_mm: 45.0,
+            dpi: 300,
+        },
+        &PhotoOptions {
+            format: OutputFormat::Png,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    assert_eq!(output.data[24], 16);
+    export::verify_output(&output).unwrap();
+    assert_eq!(
+        photo::decode(&output.data).unwrap().color(),
+        image::ColorType::Rgba16
+    );
+}
+
+#[test]
+fn nearly_opaque_sixteen_bit_alpha_still_requires_jpeg_consent() {
+    let original = DynamicImage::ImageRgba16(image::ImageBuffer::from_pixel(
+        5,
+        7,
+        image::Rgba([10000_u16, 20000, 30000, 65534]),
+    ));
+    let bytes = density::encode_png(&original, 300).unwrap();
+    assert!(photo::process(&bytes, &PhotoOptions::default()).is_err());
+    assert!(
+        photo::process(
+            &bytes,
+            &PhotoOptions {
+                flatten_transparency: true,
+                ..Default::default()
+            }
+        )
+        .is_ok()
+    );
 }

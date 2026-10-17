@@ -15,7 +15,6 @@ pub fn encode_png(image: &DynamicImage, dpi: u16) -> Result<Vec<u8>> {
     validate_dpi(dpi)?;
     let mut bytes = Vec::new();
     let mut encoder = png::Encoder::new(&mut bytes, image.width(), image.height());
-    encoder.set_depth(png::BitDepth::Eight);
     encoder.set_compression(png::Compression::Fast);
     let per_metre = (f64::from(dpi) / 0.0254).round() as u32;
     encoder.set_pixel_dims(Some(png::PixelDimensions {
@@ -23,13 +22,51 @@ pub fn encode_png(image: &DynamicImage, dpi: u16) -> Result<Vec<u8>> {
         yppu: per_metre,
         unit: png::Unit::Meter,
     }));
-    let pixels = if image.color().has_alpha() {
-        encoder.set_color(png::ColorType::Rgba);
-        image.to_rgba8().into_raw()
-    } else {
-        encoder.set_color(png::ColorType::Rgb);
-        image.to_rgb8().into_raw()
+    let (color, depth, pixels) = match image {
+        DynamicImage::ImageLuma8(value) => (
+            png::ColorType::Grayscale,
+            png::BitDepth::Eight,
+            value.as_raw().clone(),
+        ),
+        DynamicImage::ImageLumaA8(value) => (
+            png::ColorType::GrayscaleAlpha,
+            png::BitDepth::Eight,
+            value.as_raw().clone(),
+        ),
+        DynamicImage::ImageRgb8(value) => (
+            png::ColorType::Rgb,
+            png::BitDepth::Eight,
+            value.as_raw().clone(),
+        ),
+        DynamicImage::ImageRgba8(value) => (
+            png::ColorType::Rgba,
+            png::BitDepth::Eight,
+            value.as_raw().clone(),
+        ),
+        DynamicImage::ImageLuma16(value) => (
+            png::ColorType::Grayscale,
+            png::BitDepth::Sixteen,
+            big_endian(value.as_raw()),
+        ),
+        DynamicImage::ImageLumaA16(value) => (
+            png::ColorType::GrayscaleAlpha,
+            png::BitDepth::Sixteen,
+            big_endian(value.as_raw()),
+        ),
+        DynamicImage::ImageRgb16(value) => (
+            png::ColorType::Rgb,
+            png::BitDepth::Sixteen,
+            big_endian(value.as_raw()),
+        ),
+        DynamicImage::ImageRgba16(value) => (
+            png::ColorType::Rgba,
+            png::BitDepth::Sixteen,
+            big_endian(value.as_raw()),
+        ),
+        _ => return Err(invalid("This PNG pixel representation is not supported.")),
     };
+    encoder.set_color(color);
+    encoder.set_depth(depth);
     let mut writer = encoder
         .write_header()
         .map_err(|_| invalid("Couldn’t encode the PNG print settings."))?;
@@ -40,6 +77,13 @@ pub fn encode_png(image: &DynamicImage, dpi: u16) -> Result<Vec<u8>> {
         .finish()
         .map_err(|_| invalid("Couldn’t finish the PNG copy."))?;
     Ok(bytes)
+}
+
+fn big_endian(values: &[u16]) -> Vec<u8> {
+    values
+        .iter()
+        .flat_map(|value| value.to_be_bytes())
+        .collect()
 }
 
 fn density(x: f64, y: f64) -> Result<Option<PrintDensity>> {

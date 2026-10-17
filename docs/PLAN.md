@@ -11,4 +11,4 @@
 
 Work progresses without phase-by-phase approval. No phase is deemed complete from this plan alone.
 
-Active next slice (2026-10-17): physical photo size with explicit DPI. Backend encoding/typed output evolution is staged on work/photo-density. Regenerate bindings, run Rust tests, wire Flutter controls, inspect real output density independently and verify packaging before checking this slice complete.
+Active next slice (2026-10-17): physical photo size with explicit DPI. Backend encoding, regenerated typed bindings, Flutter controls and actual-output verification pass locally on work/photo-density. Run the platform packaging gates before marking distributed builds supported. Next quality slice: bound multipage scan intermediates and avoid retaining every adjusted page in Dart.

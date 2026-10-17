@@ -30,6 +30,30 @@ void main() {
       );
       expect(output.width, 300);
       expect(output.height, 300);
+      for (final png in [false, true]) {
+        final physical = await resizePhysicalPhoto(
+          data: source,
+          widthMm: 35,
+          heightMm: 45,
+          dpi: 300,
+          png: png,
+          cover: false,
+          limitKib: 100,
+          minimumQuality: 60,
+          flatten: false,
+          rotation: 0,
+        );
+        expect(physical.width, 413);
+        expect(physical.height, 531);
+        expect(physical.bytes.length, lessThan(102400));
+        expect(physical.printDensity!.xDpi, closeTo(300, 0.013));
+        expect(physical.printDensity!.yDpi, closeTo(300, 0.013));
+        await validatePreparedOutput(
+          output: physical,
+          filename: png ? 'physical.png' : 'physical.jpg',
+        );
+      }
+
       expect(output.bytes.length, lessThan(102400));
       final syntheticScan = await scanPdf(inputs: [source, source, source]);
       final pdf = syntheticScan.bytes;
@@ -38,7 +62,9 @@ void main() {
       expect(optimized.bytes.length, lessThanOrEqualTo(pdf.length));
       final page = await renderPdfPage(data: pdf, pageIndex: 0, maxPixels: 800);
       final optimizedPage = await renderPdfPage(
-        data: optimized.bytes, pageIndex: 0, maxPixels: 800,
+        data: optimized.bytes,
+        pageIndex: 0,
+        maxPixels: 800,
       );
       expect(optimizedPage.bytes, page.bytes);
       expect(page.format, 'png');

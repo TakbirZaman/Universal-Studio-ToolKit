@@ -29,9 +29,19 @@ Branch work/license-provenance commit 895e1ecbcab0f60d448b6a55c8c32d5fa64a1d6e p
 
 The current integration adds these pre-package checks on every platform. This is integrity/provenance, not automatic license classification or complete redistribution clearance. Composite/native obligations still need review. r-efi AUTHORS contains the MIT alternative; it is not a missing-license blocker. Retain whole multi-license files.
 
+## Physical-photo slice — work/photo-density
+
+Backend API commit 6850494b3fb97c34070206828d2d7db7c7218653 triggered successful bridge generation run 39025892759. Its seven-file source artifact (12098760967) was SHA-256/ZIP/allowlist verified and applied. Generated files were not hand-edited.
+
+The current candidate implements mm/DPI controls and typed actual print density, JPEG JFIF/PNG pHYs encoding, default density stripping, source-precision alpha consent and preserved 16-bit PNG/padding. All 41 Rust tests passed; 22 selected Flutter tests passed, including real processing/result UI through a substituted OS picker at desktop and 390px dark/200% text. Analysis is clean. The preview header wraps after an overflow was found; success uses a labelled icon and output details are collapsed. Independent Pillow checks reopened actual saved JPEG/PNG at 413×531 pixels and 300 / 299.9994 DPI, verified actual bytes, source preservation and non-overwrite. Evidence: physical-density-20261017.json. No printer or official-application acceptance claim.
+
+The existing platform-interface package was promoted to a pinned test dependency without a version/source change; png 0.18.1 became a direct dependency at its existing locked version. The dependency set remains 256 records/471 retained notice references and provenance verification passes. See ADR-009-physical-photo-density.md.
+
+Main source 38879229cfab62b12cf6b9f70276492b5ee388f7 passed Linux 39025313290, Windows 39025313390, Android 39025313287 and notice matrix 39025313275. Those refreshed artifacts have not yet replaced the saved cd474ed downloads. The physical-photo candidate must pass its own platform builds before those downloads claim this feature.
+
 ## Exact next action
 
-Inspect workflow runs for the current main HEAD after the notice/finalization integration. Fix any failure, independently verify refreshed artifacts, and update the existing saved downloads only after successful checks. Previously saved cd474ed artifacts remain the last verified downloads until then. Continue with a physical-photo-size/DPI vertical slice: validate requested mm/DPI in Rust, encode density explicitly, reopen and verify actual pixels/density/bytes, regenerate typed bindings and add understandable controls. Do not silently treat DPI as privacy metadata or claim physical size from pixel dimensions alone.
+Integrate the locally verified physical-photo candidate, inspect the current main HEAD's Linux/Windows/Android workflow runs, fix failures and independently verify the resulting artifacts before replacing existing saved downloads. Keep source/packaging evidence distinct from device/printer acceptance. Then inspect Android backup/extraction policy and bound multipage scan intermediates: current Dart scanning retains every adjusted page before PDF assembly, so compressed input limits alone do not bound intermediate memory. Continue the full requirements checklist without phase approval.
 
 ## Recovery
 
