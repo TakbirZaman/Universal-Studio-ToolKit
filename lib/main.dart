@@ -65,15 +65,18 @@ Future<void> main() async {
           await check.writeAsString('');
           await check.delete();
           storage = portable.path;
-          storageNotice = 'Portable mode: settings are saved in studio-data beside the application.';
+          storageNotice =
+              'Portable mode: settings are saved in studio-data beside the application.';
         } catch (_) {
-          storageNotice = 'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
+          storageNotice =
+              'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
         }
       }
       initialTheme = (await loadPreferences(directory: storage!)).theme;
     } catch (_) {
       storage = null;
-      storageNotice = 'Settings could not be saved on this device. Changes apply only to this session.';
+      storageNotice =
+          'Settings could not be saved on this device. Changes apply only to this session.';
     }
     runApp(
       ProviderScope(
@@ -388,9 +391,9 @@ class _StudioHomeState extends State<StudioHome> {
                                       const SizedBox(height: 20),
                                       Text(
                                         t.label,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleLarge,
                                       ),
                                       const SizedBox(height: 8),
                                       Text(t.description),
@@ -479,8 +482,9 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     }
     filename.text = suggestedName;
     if (widget.tool == Tool.scan) {
-      textRecognitionAvailable = Future<bool>(() async => ocrAvailable())
-          .catchError((_) => false);
+      textRecognitionAvailable = Future<bool>(
+        () async => ocrAvailable(),
+      ).catchError((_) => false);
     }
   }
 
@@ -760,8 +764,9 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         children: [
           Text(
             widget.tool.label,
-            style: Theme.of(context).textTheme.headlineLarge
-                ?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
@@ -1094,8 +1099,9 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                       setState(() {
                         final previousName = suggestedName;
                         optimizePdfStructures = value ?? false;
-                        if (filename.text == previousName)
+                        if (filename.text == previousName) {
                           filename.text = suggestedName;
+                        }
                       });
                       changed();
                     },
@@ -1418,7 +1424,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     } catch (_) {
       if (mounted) {
         setState(
-          () => draftMessage = 'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
+          () => draftMessage =
+              'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
         );
       }
     } finally {

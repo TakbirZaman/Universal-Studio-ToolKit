@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,35 +19,38 @@ void main() {
       ),
     );
   });
-  test('opaque handle cancellation and edited Bangla cross the actual typed bridge', () async {
-    final task = core.createOcrTask();
-    try {
-      expect(core.ocrTaskState(task: task), JobState.queued);
-      expect(core.cancelOcrTask(task: task), isTrue);
-      expect(core.ocrTaskState(task: task), JobState.cancelling);
+  test(
+    'opaque handle cancellation and edited Bangla cross the actual typed bridge',
+    () async {
+      final task = core.createOcrTask();
+      try {
+        expect(core.ocrTaskState(task: task), JobState.queued);
+        expect(core.cancelOcrTask(task: task), isTrue);
+        expect(core.ocrTaskState(task: task), JobState.cancelling);
+        await expectLater(
+          core.recognizeText(
+            task: task,
+            data: Uint8List(0),
+            language: Language.english,
+          ),
+          throwsA(anything),
+        );
+        expect(core.ocrTaskState(task: task), JobState.cancelled);
+        expect(core.cancelOcrTask(task: task), isFalse);
+      } finally {
+        task.dispose();
+      }
+      final edited = Uint8List.fromList(utf8.encode('আমার edited বাংলা'));
+      final output = await core.prepareEditedText(data: edited);
+      expect(output.bytes, edited);
+      expect(output.format, 'txt');
+      await core.validatePreparedOutput(output: output, filename: 'বাংলা.txt');
       await expectLater(
-        core.recognizeText(
-          task: task,
-          data: Uint8List(0),
-          language: Language.english,
-        ),
+        core.validatePreparedOutput(output: output, filename: '../escape.txt'),
         throwsA(anything),
       );
-      expect(core.ocrTaskState(task: task), JobState.cancelled);
-      expect(core.cancelOcrTask(task: task), isFalse);
-    } finally {
-      task.dispose();
-    }
-    final edited = Uint8List.fromList(utf8.encode('আমার edited বাংলা'));
-    final output = await core.prepareEditedText(data: edited);
-    expect(output.bytes, edited);
-    expect(output.format, 'txt');
-    await core.validatePreparedOutput(output: output, filename: 'বাংলা.txt');
-    await expectLater(
-      core.validatePreparedOutput(output: output, filename: '../escape.txt'),
-      throwsA(anything),
-    );
-  });
+    },
+  );
 
   final directory = Platform.environment['UST_OCR_SMOKE_DIR'];
   final canRecognize = Platform.isLinux && directory != null;
@@ -56,9 +58,9 @@ void main() {
     'real engine returns English, Bangla and mixed text through FRB',
     () async {
       expect(await core.ocrAvailable(), isTrue);
-      final expected = jsonDecode(
-        await File('$directory/expected.json').readAsString(),
-      ) as Map<String, dynamic>;
+      final expected =
+          jsonDecode(await File('$directory/expected.json').readAsString())
+              as Map<String, dynamic>;
       for (final entry in [
         (Language.english, 'eng'),
         (Language.bangla, 'ben'),
@@ -82,15 +84,19 @@ void main() {
         }
       }
     },
-    skip: canRecognize ? false : 'Requires explicitly supplied Linux engine, verified models and synthetic pages.',
+    skip: canRecognize
+        ? false
+        : 'Requires explicitly supplied Linux engine, verified models and synthetic pages.',
   );
 
   testWidgets('recognition screen displays real text and permits correction', (
     tester,
   ) async {
-    final page = await File('$directory/eng.png').readAsBytes();
+    final page = await tester.runAsync(
+      () => File('$directory/eng.png').readAsBytes(),
+    );
     await tester.pumpWidget(
-      MaterialApp(home: RecognizedTextScreen(page: page)),
+      MaterialApp(home: RecognizedTextScreen(page: page!)),
     );
     await tester.tap(find.text('Read this page'));
     await tester.pump();
@@ -99,8 +105,12 @@ void main() {
         () => Future<void>.delayed(const Duration(milliseconds: 100)),
       );
       await tester.pump();
-      if (find.text('Text is ready to review and edit.').evaluate().isNotEmpty)
+      if (find
+          .text('Text is ready to review and edit.')
+          .evaluate()
+          .isNotEmpty) {
         break;
+      }
     }
     expect(find.text('Text is ready to review and edit.'), findsOneWidget);
     final editor = find.byType(TextField).first;

@@ -64,12 +64,14 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       timer?.cancel();
       final finalState = core.ocrTaskState(task: handle);
       handle.dispose();
-      if (mounted)
+      if (mounted) {
         setState(() {
           task = null;
           state = finalState;
+          if (finalState == JobState.cancelled) error = null;
           busy = false;
         });
+      }
     }
   }
 

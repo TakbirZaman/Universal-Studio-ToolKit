@@ -17,7 +17,7 @@ jobs:
       UST_PDFIUM_LIBRARY: ${{ github.workspace }}/native/linux-x64/libpdfium.so
       UST_OCR_TESSDATA: ${{ github.workspace }}/build-ocr-models
       UST_OCR_MODEL_SOURCE: ${{ github.workspace }}/build-ocr-models
-      UST_OCR_SMOKE_DIR: ${{ runner.temp }}/synthetic-ocr-pages
+      UST_OCR_SMOKE_DIR: ${{ github.workspace }}/build/synthetic-ocr-pages
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
