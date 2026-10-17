@@ -62,6 +62,7 @@ pub fn page(data: &[u8], index: u32, max_pixels: u32) -> Result<PreparedOutput> 
         height: Some(img.height()),
         pages: None,
         quality: None,
+        print_density: None,
         findings: vec![ValidationFinding {
             advisory: false,
             code: "pdfium_render".into(),

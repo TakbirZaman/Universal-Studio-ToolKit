@@ -15,3 +15,5 @@ pub mod storage;
 pub mod scanner;
 
 pub mod ocr;
+
+pub mod density;

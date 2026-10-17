@@ -10,3 +10,5 @@
 9. Accessibility, visual and real-user tests, localization, security/resource tests, license audit, clean-device release gates.
 
 Work progresses without phase-by-phase approval. No phase is deemed complete from this plan alone.
+
+Active next slice (2026-10-17): physical photo size with explicit DPI. Backend encoding/typed output evolution is staged on work/photo-density. Regenerate bindings, run Rust tests, wire Flutter controls, inspect real output density independently and verify packaging before checking this slice complete.

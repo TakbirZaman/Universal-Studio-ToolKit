@@ -124,6 +124,7 @@ pub fn text_output(bytes: Vec<u8>) -> Result<PreparedOutput> {
         info: OutputInfo {
             format: "txt".into(), bytes: bytes.len() as u64,
             width: None, height: None, pages: None, quality: None,
+            print_density: None,
             findings: vec![ValidationFinding {
                 advisory: true, code: "ocr_review_required".into(), passed: true,
                 message: "Offline OCR is approximate. Review and edit the recognized text before use. This is plain text, not a searchable PDF.".into(),

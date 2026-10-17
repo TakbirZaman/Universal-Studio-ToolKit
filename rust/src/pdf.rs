@@ -89,7 +89,7 @@ fn finish(mut doc: Document, count: usize) -> Result<PreparedOutput> {
     if check.get_pages().len() != count {
         return Err(invalid("PDF page count verification failed."));
     }
-    Ok(PreparedOutput{info:OutputInfo{format:"pdf".into(),bytes:bytes.len() as u64,width:None,height:None,pages:Some(count as u32),quality:None,findings:vec![ValidationFinding{advisory:false,code:"pdf_reopened".into(),message:"PDF reopened and page count verified. This is structural validation, not a visual comparison.".into(),passed:true}]},data:bytes})
+    Ok(PreparedOutput{info:OutputInfo{format:"pdf".into(),bytes:bytes.len() as u64,width:None,height:None,pages:Some(count as u32),quality:None,print_density:None,findings:vec![ValidationFinding{advisory:false,code:"pdf_reopened".into(),message:"PDF reopened and page count verified. This is structural validation, not a visual comparison.".into(),passed:true}]},data:bytes})
 }
 /// Lossless structural optimization only. Never rasterizes or recompresses images.
 /// If rewriting does not reduce bytes, return the validated original unchanged.

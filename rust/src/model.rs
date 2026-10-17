@@ -99,6 +99,8 @@ pub struct PhotoOptions {
     pub signature_threshold: Option<u8>,
     #[serde(default)]
     pub crop: Option<CropRect>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_dpi: Option<u16>,
 }
 impl Default for PhotoOptions {
     fn default() -> Self {
@@ -115,6 +117,7 @@ impl Default for PhotoOptions {
             flip_horizontal: false,
             signature_threshold: None,
             crop: None,
+            output_dpi: None,
         }
     }
 }
@@ -126,6 +129,21 @@ pub struct ValidationFinding {
     pub message: String,
     pub passed: bool,
 }
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PrintDensity {
+    pub x_dpi: f64,
+    pub y_dpi: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PhysicalPhotoSpec {
+    pub width_mm: f64,
+    pub height_mm: f64,
+    pub dpi: u16,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OutputInfo {
     pub format: String,
@@ -134,6 +152,8 @@ pub struct OutputInfo {
     pub height: Option<u32>,
     pub pages: Option<u32>,
     pub quality: Option<u8>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub print_density: Option<PrintDensity>,
     pub findings: Vec<ValidationFinding>,
 }
 #[derive(Debug, Clone)]

@@ -47,6 +47,9 @@ pub fn prepare(data: &[u8], o: &PhotoOptions) -> Result<DynamicImage> {
     if !(1..=100).contains(&o.min_quality) {
         return Err(invalid("Minimum quality must be between 1 and 100."));
     }
+    if let Some(dpi) = o.output_dpi {
+        crate::density::validate_dpi(dpi)?;
+    }
     let mut img = decode(data)?;
     if let Some(crop) = o.crop {
         if crop.width == 0
@@ -161,8 +164,11 @@ pub fn process_cancellable(
                     return Err(StudioError::Cancelled);
                 }
                 let mut bytes = Vec::new();
-                image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, q)
-                    .encode_image(&img)?;
+                let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, q);
+                if let Some(dpi) = o.output_dpi {
+                    encoder.set_pixel_density(image::codecs::jpeg::PixelDensity::dpi(dpi));
+                }
+                encoder.encode_image(&img)?;
                 if o.max_bytes
                     .map(|l| l.accepts(bytes.len()))
                     .transpose()?
@@ -174,9 +180,13 @@ pub fn process_cancellable(
             }
         }
         OutputFormat::Png => {
-            let mut buf = Cursor::new(Vec::new());
-            img.write_to(&mut buf, ImageFormat::Png)?;
-            let bytes = buf.into_inner();
+            let bytes = if let Some(dpi) = o.output_dpi {
+                crate::density::encode_png(&img, dpi)?
+            } else {
+                let mut buf = Cursor::new(Vec::new());
+                img.write_to(&mut buf, ImageFormat::Png)?;
+                buf.into_inner()
+            };
             if o.max_bytes
                 .map(|l| l.accepts(bytes.len()))
                 .transpose()?
@@ -194,12 +204,35 @@ pub fn process_cancellable(
     if decoded.dimensions() != (o.width, o.height) {
         return Err(invalid("Output dimensions did not pass verification."));
     }
+    let print_density = crate::density::read(&bytes, o.format)?;
+    if let Some(requested) = o.output_dpi {
+        let actual =
+            print_density.ok_or_else(|| invalid("Print-density metadata was not saved."))?;
+        if (actual.x_dpi - f64::from(requested)).abs() > 0.013
+            || (actual.y_dpi - f64::from(requested)).abs() > 0.013
+        {
+            return Err(invalid(
+                "Saved print density did not meet the requested DPI.",
+            ));
+        }
+    } else if print_density.is_some() {
+        return Err(invalid(
+            "Print-density metadata was retained without a request.",
+        ));
+    }
     let format = match o.format {
         OutputFormat::Jpeg => "jpeg",
         OutputFormat::Png => "png",
     }
     .to_string();
-    let info=OutputInfo{format,bytes:bytes.len() as u64,width:Some(o.width),height:Some(o.height),pages:None,quality,findings:vec![ValidationFinding{advisory:false,code:"verified".into(),message:"Encoded output reopened; dimensions, format and byte limit verified. Metadata removed; unprofiled pixels treated as sRGB.".into(),passed:true}]};
+    let info=OutputInfo{format,bytes:bytes.len() as u64,width:Some(o.width),height:Some(o.height),pages:None,quality,print_density,findings:vec![ValidationFinding{advisory:false,code:"verified".into(),message:"Encoded output reopened; dimensions, format and byte limit verified. Personal metadata removed; unprofiled pixels treated as sRGB.".into(),passed:true}]};
+    let mut info = info;
+    if let Some(density) = print_density {
+        info.findings.push(ValidationFinding {
+            advisory: true, code: "print_density_verified".into(), passed: true,
+            message: format!("Print density verified: {:.4} × {:.4} DPI; actual print size {:.2} × {:.2} mm. Pixel rounding applies. Print at Actual size / 100%.", density.x_dpi, density.y_dpi, f64::from(o.width) / density.x_dpi * 25.4, f64::from(o.height) / density.y_dpi * 25.4),
+        });
+    }
     Ok(PreparedOutput { data: bytes, info })
 }
 pub fn physical_pixels(mm: f64, dpi: f64) -> Result<u32> {
@@ -213,4 +246,17 @@ pub fn physical_pixels(mm: f64, dpi: f64) -> Result<u32> {
         return Err(invalid("Physical size rounds to zero pixels."));
     }
     Ok(pixels)
+}
+
+pub fn process_physical(
+    data: &[u8],
+    spec: &PhysicalPhotoSpec,
+    options: &PhotoOptions,
+) -> Result<PreparedOutput> {
+    crate::density::validate_dpi(spec.dpi)?;
+    let mut options = options.clone();
+    options.width = physical_pixels(spec.width_mm, f64::from(spec.dpi))?;
+    options.height = physical_pixels(spec.height_mm, f64::from(spec.dpi))?;
+    options.output_dpi = Some(spec.dpi);
+    process(data, &options)
 }

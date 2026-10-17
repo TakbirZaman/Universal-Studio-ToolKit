@@ -11,6 +11,7 @@ fn settings_survive_restart_and_history_is_opt_in() {
         height: Some(300),
         pages: None,
         quality: None,
+        print_density: None,
         findings: vec![],
     };
     db.record("photo", &info).unwrap();
