@@ -138,6 +138,7 @@ void main() {
       }
     }
     expect(find.text('Text is ready to review and edit.'), findsOneWidget);
+    expect(find.text('Cancel recognition'), findsNothing);
     final editor = find.byType(TextField).first;
     expect(
       tester.widget<TextField>(editor).controller!.text.trim(),

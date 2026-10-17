@@ -1,45 +1,44 @@
 # Checkpoint — 2026-10-17 UTC
 
-Full scope remains in REQUIREMENTS.md. This is functioning development software, not launch completion. Continue ordinary implementation without phase-by-phase approval.
+This is functioning development software, not launch completion. Full scope remains in REQUIREMENTS.md. Continue ordinary implementation without phase-by-phase approval.
 
-## Stable application checkpoint
+## Latest saved application builds
 
-Application source 98dbeacac7c9e558205eb9bb8fc990594f122543 passed:
-- Linux run 38943392106: 27 Rust tests, selected Flutter behavioral/native/contrast/keyboard tests, analysis, release bundle, library resolution and an eight-second packaged-window startup check on Ubuntu 24.04 x64.
-- Windows run 38943392637: Rust/native Flutter tests, portable ZIP with release CRT provenance, packaged-window startup on the windows-2022 build host.
-- Android run 38943392331: ARM64 debug-signed and unsigned release APKs; signature, native contents and ZIP/ELF 16 KiB checks. Device behavior is unverified.
+Source cd474ede184bb62c1ad1fd868c4d34bbcc7637b5 passed all three hosted platform gates:
+- Linux 39024416796: 35 Rust tests, 19 selected Flutter behavioral/native tests including real English/Bangla/mixed OCR and the editable result screen, clean analysis, capture-only home rendering, release bundle, dependency resolution and eight-second packaged-window startup on Ubuntu 24.04 x64.
+- Windows 39024416815: core/native Flutter tests and analysis, portable ZIP with official release CRT provenance and eight-second packaged-window startup on windows-2022 x64. OCR engine recognition is unavailable.
+- Android 39024416794: ARM64 debug-signed and unsigned release APKs, debug-signature verification, native inventory and ZIP/ELF 16 KiB checks. Device/camera/provider behavior remains unverified; OCR is unavailable.
 
-All three downloads were independently checked against artifact SHA-256, ZIP CRC, native/font/notice inventories and desktop startup reports. Exact inner/outer hashes: evidence/development-builds-98dbeac.json. User-facing saved downloads are Universal-Studio-Windows-x64.zip, Universal-Studio-Linux-x64.tar.gz and Universal-Studio-Android-debug.apk. They include lossless PDF controls, keyboard shortcuts, guarded saves, distinct dark accents, original Android/Windows icons, scoped Android camera capture, scan drafts and licensed Bangla fallback typography. They do not include the experimental OCR adapter.
+All three artifacts were downloaded and independently checked against outer SHA-256, ZIP CRC, native/font/notice inventories and desktop startup reports. Linux model/license hashes and provenance also match. Exact inner/outer measurements: evidence/development-builds-cd474ed.json. The three saved user downloads are Universal-Studio-Windows-x64.zip, Universal-Studio-Linux-x64.tar.gz and Universal-Studio-Android-debug.apk (updated versions saved successfully). Debug keys can change across CI builds; uninstalling to resolve a signing mismatch deletes app-local drafts/settings.
 
-Golden rendering is capture-only; approved regression baselines remain unavailable. No representative users, clean-device workflows or accessibility certification have been claimed. Debug APK keys can differ between CI builds; uninstalling to resolve a signature mismatch deletes app-local data.
+Typed bridge regeneration run 39024416799 passed. Artifact 12096909913 was SHA-256/ZIP/allowlist verified; all six freshly generated files exactly match committed source. Do not hand-edit generated files.
 
-## Work in progress: work/offline-ocr
+## OCR scope and verification
 
-Current application code 96686d1f6f6b4fde0b76d623367640a497479ebe includes the Linux Rust Tesseract adapter, typed FRB opaque single-use jobs, cancellable queue waiting, named job states, verified UTF-8 text export and an editable Scanner Studio result screen. Windows/Android OCR capability remains false. The entry is hidden unless the Linux engine exists and all pinned local model/license files verify. The current selected page is freshly adjusted before OCR. No searchable PDF claims.
+Linux OCR uses only fixed /usr/bin/tesseract with verified local English/Bangla tessdata_fast models, typed single-use opaque jobs, cancellable serial waiting, named states and verified UTF-8 save-copy export. The selected scan is freshly adjusted before recognition. The review screen keeps text editable, retains edits on retry/export failure and reports ready only after the editor transfer settles. Presence/model hashes gate its entry. Windows/Android report unavailable; no searchable PDF claims.
 
-Verification this session:
-- All 35 local Rust tests passed with real PDFium, including queued cancellation and six OCR boundary/export tests.
-- All 19 selected Flutter behavioral/native tests passed, including real English, Bangla and mixed-language OCR through FRB and editable result population.
-- Additional native tests passed actual Bangla-named UTF-8 save, non-overwrite and invalid-filename recovery without losing edits.
-- Three model-staging boundary tests passed. Actual pinned English/Bangla models and LICENSE staged successfully. Host Tesseract 5.3.4 again returned both clean synthetic phrases exactly; this is narrow integration evidence, not representative accuracy.
-- Two capture-only layout checks passed and were visually inspected: desktop light and 390px dark at 200% text. Captures remain local, not uploaded or treated as approved golden baselines.
-- Flutter analysis is clean after removing unused imports and fixing braces.
-- API commit 84bcbf0 passed hosted Linux/Windows core checks (39022900303); generated bridge source from 39022900304 was SHA-256/ZIP/allowlist verified before applying all six files. Later core run 39023339613 also passed.
+Models are staged only from explicitly supplied local files; CI explicitly fetches pinned development assets. Normal application use and the staging helper never download. The bundle retains Apache-2.0 LICENSE/provenance. The Tesseract engine remains a separately installed Linux runtime prerequisite, not a bundled portable engine. See ADR-008-offline-ocr.md, OCR-IMPLEMENTATION.md and OCR-ASSETS.md.
 
-A real-engine widget test caught an unsendable widget-closure transfer and premature ready status. Text conversion now uses top-level compute callbacks; ready is reported only after the editor transfer settles. Cancellation clears cancellation-only error text, keeps old edited text, and waits for cleanup.
+Additional local checks: actual Bangla-named text save/non-overwrite, invalid-filename recovery preserving edits, three staging-boundary tests and two visually inspected capture-only layouts (desktop light and 390px dark at 200% text). Model lookup without UST_OCR_TESSDATA passed through the real Rust CLI using the same executable-parent lookup; actual output hash and original preservation are in evidence/ocr-integration-20261017.json. Small synthetic phrases are integration evidence, not representative accuracy/performance.
 
-The new Linux integration workflow initially needed an unavailable job-level runner context corrected, then an unused-import analysis fix. Run 39023943472 targeting 96686d1 passed all integration/build/startup steps. Artifact 12098096286 was independently checked against outer SHA-256, ZIP CRC, native inventory, all model/license hashes, provenance and its eight-second window startup report; see evidence/experimental-ocr-build-96686d1.json. The workflow explicitly downloads pinned development models; normal application use and the local staging helper never download. Models ship with Apache-2.0 LICENSE and provenance. `/usr/bin/tesseract` remains a system runtime prerequisite and is not bundled.
+A widget test caught unsendable closure capture during worker transfer. Top-level compute callbacks now transfer only text bytes. Finalization also hides the engine-cancel action after recognition ends; cancellation cannot expose a premature ready status. The latest finalization change passed three native/widget tests and clean analysis locally; current-main packaging checks must complete before claiming its refreshed packages passed.
 
-Model discovery without UST_OCR_TESSDATA also passed through the real Rust CLI using the same executable-parent lookup; output bytes/hash and original preservation are recorded in evidence/ocr-integration-20261017.json. OCR home search/copy corrections passed the four home/workspace tests and clean analysis. Exact next action: integrate this verified slice into main, inspect its Linux/Windows/Android build gates and independently verify each new artifact. Persist the verified new bundle separately from older saved stable builds. Continue the full requirements checklist after this slice; no phase approval is needed.
+## Notice provenance integration
 
-See ADR-008-offline-ocr.md, OCR-IMPLEMENTATION.md, OCR-ASSETS.md. Models are from official tessdata_fast commit 87416418657359cb625c412a48b6e1d6d41c29bd. The staging helper accepts only checksum-verified local files and refuses existing destinations. System engine redistribution/audit on all platforms, local model import/retention, abnormal-exit temp cleanup, hard parser isolation and broader accuracy/resource/device gates remain open.
+Branch work/license-provenance commit 895e1ecbcab0f60d448b6a55c8c32d5fa64a1d6e passed hosted Linux and Windows notice checks in run 39024849049. All 256 locked dependency records and 471 retained notice-file references verify. All 71 Dart versions, 252 source archive checksums and four actual SDK source revisions are recorded. Four boundary tests reject changed/missing notices, traversal, duplicates and incomplete/changed lockfile coverage. Windows checkout attributes preserve notice bytes.
 
-## Recovery details
+The current integration adds these pre-package checks on every platform. This is integrity/provenance, not automatic license classification or complete redistribution clearance. Composite/native obligations still need review. r-efi AUTHORS contains the MIT alternative; it is not a missing-license blocker. Retain whole multi-license files.
 
-GitHub is authoritative; user messages have repeatedly reset the scratch checkout/toolchains. Read the remote branch before changing files and push source checkpoints frequently. The active checkout is universal-studio-current, not the older skeleton. Local Rust 1.99.0 now works after replacing a damaged installed LLVM library with the original bytes from the verified official archive. Local debugger ptrace was denied; no restriction was bypassed. SDKs remain transient; hosted builds provide independent evidence.
+## Exact next action
+
+Inspect workflow runs for the current main HEAD after the notice/finalization integration. Fix any failure, independently verify refreshed artifacts, and update the existing saved downloads only after successful checks. Previously saved cd474ed artifacts remain the last verified downloads until then. Continue with a physical-photo-size/DPI vertical slice: validate requested mm/DPI in Rust, encode density explicitly, reopen and verify actual pixels/density/bytes, regenerate typed bindings and add understandable controls. Do not silently treat DPI as privacy metadata or claim physical size from pixel dimensions alone.
+
+## Recovery
+
+GitHub is authoritative; user messages have repeatedly reset scratch checkouts/toolchains. Fetch main and read this checkpoint first. Active checkout: universal-studio-current, not the older skeleton. Local Rust 1.99.0 and Flutter 3.47.7 were restored in this session; SDKs are transient. Local Linux release tooling lacks pkg-config/GTK headers, so hosted builds provide release/startup evidence. A prior damaged installed LLVM library was repaired from the checksum-verified official archive; debugger restrictions were not bypassed.
 
 ## Remaining launch work and blockers
 
-OpenCV boundary/perspective/deskew and face assistance; Windows/Android OCR engines and searchable-PDF geometry; manual signature refinement/storage/PDF placement; remaining PDF forms/watermarks/numbering/compression/OCR geometry; flexible photo constraints and fuller print controls; editable application packs and managed cross-studio sources; drag/drop, complete localization, screen-reader/focus/reduced-motion/large-text checks and representative usability; hard isolation for PDF parsers; clean-device/runtime and full transitive license clearance; AppImage and production APK signing. Unchecked requirements are retained, not removed from scope.
+OpenCV boundary/perspective/deskew and face assistance; Windows/Android OCR engine packaging and searchable-PDF geometry; manual signature refinement/storage/PDF placement; remaining PDF forms/watermarks/numbering/compression; flexible photo constraints, physical-size UI and fuller print controls; editable application packs and managed cross-studio sources; drag/drop, localization, complete screen-reader/focus/reduced-motion/large-text checks and representative usability; hard process isolation for PDF parsers; orphaned temporary-job cleanup; complete native/transitive license-obligation review; clean-device/runtime and Android workflow validation; AppImage and private production APK signing. Unchecked requirements are retained.
 
-PDF parsing remains in-process and is a production blocker. No perfect OCR, passport acceptance, universal compatibility, secure erasure or commercial-product parity claim.
+OCR child resource limits do not establish a filesystem/network sandbox or a bound on all parent-side preparation. Parent termination may leave private temporary files; retention/cleanup remains open. No perfect OCR, passport acceptance, universal compatibility, physical secure-erasure or commercial-product parity claim.

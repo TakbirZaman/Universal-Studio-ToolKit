@@ -2,6 +2,8 @@ $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
 $env:CI = 'true'
 $env:FLUTTER_SUPPRESS_ANALYTICS = 'true'
+python scripts/notice_provenance.py
+if ($LASTEXITCODE -ne 0) { throw 'Dependency notices failed provenance verification' }
 python scripts/generate_windows_icon.py
 if ($LASTEXITCODE -ne 0) { throw 'Icon generation failed' }
 if (!(Test-Path native/windows-x64/pdfium.dll)) { throw 'Stage the audited Windows PDFium DLL first' }

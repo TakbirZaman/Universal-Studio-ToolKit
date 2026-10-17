@@ -35,7 +35,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
   Language language = Language.english;
   core.OcrTask? task;
   JobState? state;
-  bool busy = false;
+  bool busy = false, preparingText = false;
   String? error, saved;
   Timer? timer;
 
@@ -53,6 +53,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
     setState(() {
       task = handle;
       state = JobState.queued;
+      preparingText = false;
       busy = true;
       error = null;
       saved = null;
@@ -75,6 +76,13 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
         data: widget.page,
         language: language,
       );
+      timer?.cancel();
+      if (mounted) {
+        setState(() {
+          task = null;
+          preparingText = true;
+        });
+      }
       final bytes = result.bytes;
       final recognized = await compute(_decodeText, bytes);
       transferred = true;
@@ -88,6 +96,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       if (mounted) {
         setState(() {
           task = null;
+          preparingText = false;
           state = finalState == JobState.succeeded && !transferred
               ? JobState.failed
               : finalState;
@@ -127,16 +136,20 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
     }
   }
 
-  String get status => switch (state) {
-    JobState.queued => 'Waiting for the processing slot…',
-    JobState.running => 'Reading printed text on this device…',
-    JobState.cancelling => 'Stopping recognition and cleaning temporary files…',
-    JobState.cancelled => 'Recognition cancelled. Previous text is unchanged.',
-    JobState.succeeded => 'Text is ready to review and edit.',
-    JobState.failed =>
-      'Couldn’t read this page. Try another language or a clearer image.',
-    _ => 'Choose the page language, then read its printed text.',
-  };
+  String get status => preparingText
+      ? 'Preparing editable text…'
+      : switch (state) {
+          JobState.queued => 'Waiting for the processing slot…',
+          JobState.running => 'Reading printed text on this device…',
+          JobState.cancelling =>
+            'Stopping recognition and cleaning temporary files…',
+          JobState.cancelled =>
+            'Recognition cancelled. Previous text is unchanged.',
+          JobState.succeeded => 'Text is ready to review and edit.',
+          JobState.failed =>
+            'Couldn’t read this page. Try another language or a clearer image.',
+          _ => 'Choose the page language, then read its printed text.',
+        };
 
   @override
   Widget build(BuildContext context) => PopScope(
@@ -201,10 +214,9 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
                         onPressed: state == JobState.cancelling
                             ? null
                             : () {
-                                core.cancelOcrTask(task: task!);
-                                setState(
-                                  () => state = core.ocrTaskState(task: task!),
-                                );
+                                if (core.cancelOcrTask(task: task!)) {
+                                  setState(() => state = JobState.cancelling);
+                                }
                               },
                         child: const Text('Cancel recognition'),
                       ),

@@ -1,0 +1,3 @@
+# Retained upstream notices and provenance use their exact collected bytes.
+# Do not rewrite their line endings on Windows checkouts.
+third_party/** -text

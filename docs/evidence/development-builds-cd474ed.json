@@ -1,0 +1,68 @@
+{
+  "source_commit": "cd474ede184bb62c1ad1fd868c4d34bbcc7637b5",
+  "date_utc": "2026-10-17",
+  "clean_system_verified": false,
+  "android_device_behavior_verified": false,
+  "ocr_platform_scope": "Linux with separately installed system Tesseract; Windows/Android OCR unavailable",
+  "artifacts": [
+    {
+      "artifact": 12097604933,
+      "outer_sha256": "fdf64d26d5bc3c276375adaaddb8d3b9db23c9f68325818d76c96f282c7c52be",
+      "outer_bytes": 19546777,
+      "zip_crc_verified": true,
+      "entries": [
+        "SHA256SUMS",
+        "linux-startup-smoke.json",
+        "universal-studio-linux-x64.tar.gz"
+      ],
+      "model_license_font_hashes_verified": true,
+      "startup": {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      },
+      "filename": "Universal-Studio-Linux-x64.tar.gz",
+      "sha256": "696f704b1a1bc7193be4c954a2edacfedeb174cfd66d1d72680e996859f5d774",
+      "bytes": 19600715
+    },
+    {
+      "artifact": 12098465960,
+      "outer_sha256": "ba0aa26c8614aea985e53c1dd1b549b5d55cc6eff6e0a1920d16c7f536a19d52",
+      "outer_bytes": 20132200,
+      "zip_crc_verified": true,
+      "entries": [
+        "universal-studio-windows-x64.zip",
+        "windows-startup-smoke.json"
+      ],
+      "crt_inventory_verified": true,
+      "inner_crc_verified": true,
+      "startup": {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      },
+      "filename": "Universal-Studio-Windows-x64.zip",
+      "sha256": "02a9179476d13b5e9ff471ba2b0030cca28a2c91855f436a67d950f4b96c2c44",
+      "bytes": 20686955
+    },
+    {
+      "artifact": 12098017764,
+      "outer_sha256": "52316cd9b2904f482930f20a3faa4d234c1fc0270d4c5f5d94eb1cd2c7357ffa",
+      "outer_bytes": 69236642,
+      "zip_crc_verified": true,
+      "entries": [
+        "universal-studio-android-arm64-debug.apk",
+        "universal-studio-android-arm64-unsigned.apk",
+        "universal-studio-android-arm64-debug.sha256",
+        "universal-studio-android-arm64-unsigned.sha256"
+      ],
+      "arm64_only_native_inventory_verified": true,
+      "inner_crc_verified": true,
+      "filename": "Universal-Studio-Android-debug.apk",
+      "sha256": "3eee5610fd8c98466e5099d805bfc175c8ae541ace2396dd7dc4bfc1e9981ffa",
+      "bytes": 95514961
+    }
+  ]
+}

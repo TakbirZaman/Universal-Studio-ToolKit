@@ -1,0 +1,24 @@
+name: Verify dependency notice provenance
+on:
+  push:
+    branches: [main, work/license-provenance]
+    paths: ['third_party/**', 'scripts/*notice*', 'scripts/test_notice_provenance.py', 'Cargo.lock', 'rust/Cargo.lock', 'pubspec.lock', '.gitattributes', '.github/workflows/verify-notices.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notices:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify source coverage and exact retained notices
+        run: |
+          python --version
+          python scripts/test_notice_provenance.py
+          python scripts/notice_provenance.py
