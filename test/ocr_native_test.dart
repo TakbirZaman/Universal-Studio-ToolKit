@@ -45,6 +45,31 @@ void main() {
       expect(output.bytes, edited);
       expect(output.format, 'txt');
       await core.validatePreparedOutput(output: output, filename: 'বাংলা.txt');
+      final destination = await Directory.systemTemp.createTemp(
+        'ust-ocr-bridge-',
+      );
+      try {
+        await core.saveOutput(
+          directory: destination.path,
+          filename: 'বাংলা.txt',
+          output: output,
+        );
+        expect(
+          await File('${destination.path}/বাংলা.txt').readAsBytes(),
+          edited,
+        );
+        await expectLater(
+          core.saveOutput(
+            directory: destination.path,
+            filename: 'বাংলা.txt',
+            output: output,
+          ),
+          throwsA(anything),
+        );
+      } finally {
+        await destination.delete(recursive: true);
+      }
+
       await expectLater(
         core.validatePreparedOutput(output: output, filename: '../escape.txt'),
         throwsA(anything),
@@ -124,6 +149,25 @@ void main() {
       'Corrected বাংলা 123',
     );
     expect(find.text('Choose location and save a copy'), findsOneWidget);
+    final nameField = find.byType(TextField).last;
+    await tester.enterText(nameField, '../escape.txt');
+    final save = find.text('Choose location and save a copy');
+    await tester.ensureVisible(save);
+    await tester.tap(save);
+    for (var attempt = 0; attempt < 50; attempt++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+      if (find.textContaining('Use a plain filename').evaluate().isNotEmpty) {
+        break;
+      }
+    }
+    expect(find.textContaining('Use a plain filename'), findsOneWidget);
+    expect(
+      tester.widget<TextField>(editor).controller!.text,
+      'Corrected বাংলা 123',
+    );
     await tester.pumpWidget(const SizedBox());
   }, skip: !canRecognize);
 }

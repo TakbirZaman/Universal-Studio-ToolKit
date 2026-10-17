@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
@@ -240,7 +239,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
               maxLines: 20,
               onChanged: (_) => setState(() => saved = null),
               decoration: const InputDecoration(
-                labelText: 'Review and edit recognized text',
+                labelText: 'Edit recognized text',
                 alignLabelWithHint: true,
               ),
             ),
