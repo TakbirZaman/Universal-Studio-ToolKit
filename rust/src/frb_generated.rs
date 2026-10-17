@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1450087555;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -427922543;
 
 // Section: executor
 
@@ -738,6 +738,61 @@ fn wire__crate__api__resize_photo_impl(
         },
     )
 }
+fn wire__crate__api__resize_physical_photo_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "resize_physical_photo",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_width_mm = <f64>::sse_decode(&mut deserializer);
+            let api_height_mm = <f64>::sse_decode(&mut deserializer);
+            let api_dpi = <u16>::sse_decode(&mut deserializer);
+            let api_png = <bool>::sse_decode(&mut deserializer);
+            let api_cover = <bool>::sse_decode(&mut deserializer);
+            let api_limit_kib = <Option<u32>>::sse_decode(&mut deserializer);
+            let api_minimum_quality = <u8>::sse_decode(&mut deserializer);
+            let api_flatten = <bool>::sse_decode(&mut deserializer);
+            let api_rotation = <u8>::sse_decode(&mut deserializer);
+            let api_signature_threshold = <Option<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::resize_physical_photo(
+                        api_data,
+                        api_width_mm,
+                        api_height_mm,
+                        api_dpi,
+                        api_png,
+                        api_cover,
+                        api_limit_kib,
+                        api_minimum_quality,
+                        api_flatten,
+                        api_rotation,
+                        api_signature_threshold,
+                    )?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__run_recipe_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1084,6 +1139,17 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Option<crate::model::PrintDensity> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::model::PrintDensity>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1117,6 +1183,18 @@ impl SseDecode for Option<Vec<u32>> {
     }
 }
 
+impl SseDecode for crate::model::PrintDensity {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_xDpi = <f64>::sse_decode(deserializer);
+        let mut var_yDpi = <f64>::sse_decode(deserializer);
+        return crate::model::PrintDensity {
+            x_dpi: var_xDpi,
+            y_dpi: var_yDpi,
+        };
+    }
+}
+
 impl SseDecode for crate::api::StudioOutput {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1126,6 +1204,7 @@ impl SseDecode for crate::api::StudioOutput {
         let mut var_height = <Option<u32>>::sse_decode(deserializer);
         let mut var_pages = <Option<u32>>::sse_decode(deserializer);
         let mut var_quality = <Option<u8>>::sse_decode(deserializer);
+        let mut var_printDensity = <Option<crate::model::PrintDensity>>::sse_decode(deserializer);
         let mut var_validation = <String>::sse_decode(deserializer);
         return crate::api::StudioOutput {
             bytes: var_bytes,
@@ -1134,6 +1213,7 @@ impl SseDecode for crate::api::StudioOutput {
             height: var_height,
             pages: var_pages,
             quality: var_quality,
+            print_density: var_printDensity,
             validation: var_validation,
         };
     }
@@ -1150,6 +1230,13 @@ impl SseDecode for crate::api::StudioPreferences {
             history_enabled: var_historyEnabled,
             retention_days: var_retentionDays,
         };
+    }
+}
+
+impl SseDecode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u16::<NativeEndian>().unwrap()
     }
 }
 
@@ -1203,12 +1290,13 @@ fn pde_ffi_dispatcher_primary_impl(
         16 => wire__crate__api__recognize_text_impl(port, ptr, rust_vec_len, data_len),
         17 => wire__crate__api__render_pdf_page_impl(port, ptr, rust_vec_len, data_len),
         18 => wire__crate__api__resize_photo_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__run_recipe_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__resize_physical_photo_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__run_recipe_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1284,6 +1372,22 @@ impl flutter_rust_bridge::IntoIntoDart<crate::ocr::Language> for crate::ocr::Lan
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::model::PrintDensity {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.x_dpi.into_into_dart().into_dart(),
+            self.y_dpi.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::model::PrintDensity {}
+impl flutter_rust_bridge::IntoIntoDart<crate::model::PrintDensity> for crate::model::PrintDensity {
+    fn into_into_dart(self) -> crate::model::PrintDensity {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::StudioOutput {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1293,6 +1397,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::StudioOutput {
             self.height.into_into_dart().into_dart(),
             self.pages.into_into_dart().into_dart(),
             self.quality.into_into_dart().into_dart(),
+            self.print_density.into_into_dart().into_dart(),
             self.validation.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -1453,6 +1558,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Option<crate::model::PrintDensity> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::model::PrintDensity>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1483,6 +1598,14 @@ impl SseEncode for Option<Vec<u32>> {
     }
 }
 
+impl SseEncode for crate::model::PrintDensity {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.x_dpi, serializer);
+        <f64>::sse_encode(self.y_dpi, serializer);
+    }
+}
+
 impl SseEncode for crate::api::StudioOutput {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1492,6 +1615,7 @@ impl SseEncode for crate::api::StudioOutput {
         <Option<u32>>::sse_encode(self.height, serializer);
         <Option<u32>>::sse_encode(self.pages, serializer);
         <Option<u8>>::sse_encode(self.quality, serializer);
+        <Option<crate::model::PrintDensity>>::sse_encode(self.print_density, serializer);
         <String>::sse_encode(self.validation, serializer);
     }
 }
@@ -1502,6 +1626,13 @@ impl SseEncode for crate::api::StudioPreferences {
         <String>::sse_encode(self.theme, serializer);
         <bool>::sse_encode(self.history_enabled, serializer);
         <u32>::sse_encode(self.retention_days, serializer);
+    }
+}
+
+impl SseEncode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u16::<NativeEndian>(self).unwrap();
     }
 }
 

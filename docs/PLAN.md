@@ -10,3 +10,5 @@
 9. Accessibility, visual and real-user tests, localization, security/resource tests, license audit, clean-device release gates.
 
 Work progresses without phase-by-phase approval. No phase is deemed complete from this plan alone.
+
+Active next slice (2026-10-17): physical photo size with explicit DPI. Backend encoding, regenerated typed bindings, Flutter controls and actual-output verification pass locally on work/photo-density. Run the platform packaging gates before marking distributed builds supported. Next quality slice: bound multipage scan intermediates and avoid retaining every adjusted page in Dart.

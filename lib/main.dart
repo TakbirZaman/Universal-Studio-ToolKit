@@ -453,7 +453,10 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       limit = TextEditingController(text: '100'),
       pages = TextEditingController(),
       filename = TextEditingController(),
-      copies = TextEditingController(text: '12');
+      copies = TextEditingController(text: '12'),
+      widthMm = TextEditingController(text: '35'),
+      heightMm = TextEditingController(text: '45'),
+      dpi = TextEditingController(text: '300');
   final form = GlobalKey<FormState>();
   List<SelectedSource> sources = [];
   StudioOutput? output;
@@ -463,7 +466,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       cover = false,
       flatten = false,
       showOriginal = false,
-      optimizePdfStructures = false;
+      optimizePdfStructures = false,
+      physicalSize = false;
   int rotation = 0, quality = 60, threshold = 230;
   int previewIndex = 0, draftDays = 7;
   String? draftMessage;
@@ -476,6 +480,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     if (widget.tool == Tool.signature) {
       png = true;
       height.text = '100';
+      widthMm.text = '50';
+      heightMm.text = '15';
     }
     if (widget.tool == Tool.print) {
       width.text = '30';
@@ -499,7 +505,17 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   };
   @override
   void dispose() {
-    for (final c in [width, height, limit, pages, filename, copies]) {
+    for (final c in [
+      width,
+      height,
+      limit,
+      pages,
+      filename,
+      copies,
+      widthMm,
+      heightMm,
+      dpi,
+    ]) {
       c.dispose();
     }
     super.dispose();
@@ -618,6 +634,43 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     return n == null || n <= 0 ? 'Enter a positive whole number.' : null;
   }
 
+  String? positiveDecimal(String? value) {
+    final number = double.tryParse(value ?? '');
+    return number == null || !number.isFinite || number <= 0
+        ? 'Enter a positive number using a decimal point if needed.'
+        : null;
+  }
+
+  Future<StudioOutput> preparePhoto(StudioService service, Uint8List input) {
+    if (physicalSize) {
+      return service.physicalPhoto(
+        input,
+        widthMm: double.parse(widthMm.text),
+        heightMm: double.parse(heightMm.text),
+        dpi: int.parse(dpi.text),
+        png: png,
+        cover: cover,
+        limit: limit.text.isEmpty ? null : int.parse(limit.text),
+        quality: quality,
+        flatten: flatten,
+        rotation: rotation,
+        threshold: widget.tool == Tool.signature ? threshold : null,
+      );
+    }
+    return service.photo(
+      input,
+      width: int.parse(width.text),
+      height: int.parse(height.text),
+      png: png,
+      cover: cover,
+      limit: limit.text.isEmpty ? null : int.parse(limit.text),
+      quality: quality,
+      flatten: flatten,
+      rotation: rotation,
+      threshold: widget.tool == Tool.signature ? threshold : null,
+    );
+  }
+
   Future<void> process() async {
     if (!form.currentState!.validate()) return;
     if (sources.isEmpty) {
@@ -656,18 +709,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           )
           .toList();
       final value = switch (widget.tool) {
-        Tool.photo || Tool.signature => await service.photo(
-          inputs.first,
-          width: int.parse(width.text),
-          height: int.parse(height.text),
-          png: png,
-          cover: cover,
-          limit: limit.text.isEmpty ? null : int.parse(limit.text),
-          quality: quality,
-          flatten: flatten,
-          rotation: rotation,
-          threshold: widget.tool == Tool.signature ? threshold : null,
-        ),
+        Tool.photo ||
+        Tool.signature => await preparePhoto(service, inputs.first),
         Tool.merge => await service.merge(
           inputs,
           pages.text.trim().isEmpty
@@ -943,18 +986,37 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
+          if (imageTool)
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Set a print size in millimetres'),
+              subtitle: const Text(
+                'Off: set pixel dimensions. Originals stay unchanged.',
+              ),
+              value: physicalSize,
+              onChanged: busy
+                  ? null
+                  : (value) {
+                      setState(() => physicalSize = value);
+                      changed();
+                    },
+            ),
           if (imageTool || widget.tool == Tool.print) ...[
             Row(
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller: width,
+                    controller: imageTool && physicalSize ? widthMm : width,
                     enabled: !busy,
-                    validator: positive,
+                    validator: physicalSize || widget.tool == Tool.print
+                        ? positiveDecimal
+                        : positive,
                     onChanged: (_) => changed(),
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: physicalSize || widget.tool == Tool.print,
+                    ),
                     decoration: InputDecoration(
-                      labelText: widget.tool == Tool.print
+                      labelText: widget.tool == Tool.print || physicalSize
                           ? 'Width (mm)'
                           : 'Width (pixels)',
                     ),
@@ -963,19 +1025,48 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextFormField(
-                    controller: height,
+                    controller: imageTool && physicalSize ? heightMm : height,
                     enabled: !busy,
-                    validator: positive,
+                    validator: physicalSize || widget.tool == Tool.print
+                        ? positiveDecimal
+                        : positive,
                     onChanged: (_) => changed(),
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: physicalSize || widget.tool == Tool.print,
+                    ),
                     decoration: InputDecoration(
-                      labelText: widget.tool == Tool.print
+                      labelText: widget.tool == Tool.print || physicalSize
                           ? 'Height (mm)'
                           : 'Height (pixels)',
                     ),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (imageTool && physicalSize) ...[
+            TextFormField(
+              controller: dpi,
+              enabled: !busy,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                final number = int.tryParse(value ?? '');
+                return number == null || number < 1 || number > 2400
+                    ? 'Use 1–2400 DPI.'
+                    : null;
+              },
+              onChanged: (_) => changed(),
+              decoration: const InputDecoration(
+                labelText: 'Print resolution (DPI)',
+                helperText:
+                    'Dots per inch. Saved dimensions are rounded to whole pixels.',
+                helperMaxLines: 3,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'The file keeps your chosen print resolution while personal metadata is removed. The preview reports the saved physical size. Check the required dimensions before saving.',
             ),
             const SizedBox(height: 16),
           ],
@@ -1244,19 +1335,30 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       ),
     ),
   );
+  String printSizeSummary(StudioOutput value) {
+    final density = value.printDensity!;
+    final resolution = density.xDpi == density.yDpi
+        ? '${density.xDpi.toStringAsFixed(2)} DPI'
+        : '${density.xDpi.toStringAsFixed(2)} × ${density.yDpi.toStringAsFixed(2)} DPI';
+    return 'Saved print size: ${(value.width! / density.xDpi * 25.4).toStringAsFixed(2)} × ${(value.height! / density.yDpi * 25.4).toStringAsFixed(2)} mm at $resolution.';
+  }
+
   Widget previewPanel() => Card(
     child: Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
             children: [
               Text(
                 '3  Preview',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const Spacer(),
               if (imageTool && output != null)
                 TextButton(
                   onPressed: () => setState(() => showOriginal = !showOriginal),
@@ -1278,13 +1380,46 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             const SizedBox(height: 20),
             Semantics(
               liveRegion: true,
-              child: Text(
-                '✓ ${(output!.bytes.length / 1024).toStringAsFixed(2)} KiB · ${output!.format.toUpperCase()}${output!.width != null ? ' · ${output!.width} × ${output!.height} pixels' : ''}${output!.pages != null ? ' · ${output!.pages} pages' : ''}',
-                style: Theme.of(context).textTheme.titleMedium,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.check_circle_outline,
+                    semanticLabel: 'Verified output',
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '${(output!.bytes.length / 1024).toStringAsFixed(2)} KiB · ${output!.format.toUpperCase()}${output!.width != null ? ' · ${output!.width} × ${output!.height} pixels' : ''}${output!.pages != null ? ' · ${output!.pages} pages' : ''}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 8),
-            Text(output!.validation),
+            if (imageTool)
+              const Text('Dimensions, file size and format checked.')
+            else
+              Text(output!.validation),
+            if (output!.printDensity != null) ...[
+              const SizedBox(height: 8),
+              Text(printSizeSummary(output!)),
+              const Text(
+                'Print at Actual size / 100%. Other print settings can change the final size.',
+              ),
+            ],
+            if (imageTool)
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: const Text('Output details'),
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(output!.validation),
+                  ),
+                ],
+              ),
             const Divider(height: 32),
             const Text(
               '4  Save a copy',

@@ -5,6 +5,7 @@ Updated 2026-10-17. This is an implementation in progress, not launch completion
 | Capability | Rust Linux evidence | Flutter integration | Windows | Android |
 |---|---|---|---|---|
 | Fixed-size JPEG/PNG resize, bounded compression | Tested, real outputs | Tested bridge + controls | Built + native bridge tested | Built, device unverified |
+| Physical photo size / explicit DPI | 41-test suite includes saved-density, 16-bit and alpha-consent cases; Pillow independently checks JPEG/PNG | Typed bridge + real processing/result UI tested locally at desktop and narrow dark/200% | Packaging pending | Packaging pending |
 | EXIF orientation 1–8 | Tested dimensions | Engine integration | Unverified | Unverified |
 | Transparency consent and simple signature cleanup | Tested | Controls and preview | Unverified | Unverified |
 | PDF merge / keep-delete-reorder / rotate | Tested, sample output inspected | Controls | Unverified | Unverified |

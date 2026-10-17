@@ -8,6 +8,7 @@ fn prepared(data: Vec<u8>) -> PreparedOutput {
             height: None,
             pages: None,
             quality: None,
+            print_density: None,
             findings: vec![],
         },
         data,

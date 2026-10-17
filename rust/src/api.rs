@@ -8,6 +8,7 @@ pub struct StudioOutput {
     pub height: Option<u32>,
     pub pages: Option<u32>,
     pub quality: Option<u8>,
+    pub print_density: Option<PrintDensity>,
     pub validation: String,
 }
 impl From<PreparedOutput> for StudioOutput {
@@ -19,6 +20,7 @@ impl From<PreparedOutput> for StudioOutput {
             height: o.info.height,
             pages: o.info.pages,
             quality: o.info.quality,
+            print_density: o.info.print_density,
             validation: o
                 .info
                 .findings
@@ -98,6 +100,7 @@ pub fn save_output(
         height: output.height,
         pages: output.pages,
         quality: output.quality,
+        print_density: output.print_density,
         findings: vec![],
     };
     export::save_copy(
@@ -338,6 +341,7 @@ pub fn validate_prepared_output(
                 height: output.height,
                 pages: output.pages,
                 quality: output.quality,
+                print_density: output.print_density,
                 findings: vec![],
             },
             data: output.bytes,
@@ -435,4 +439,49 @@ pub fn prepare_edited_text(data: Vec<u8>) -> std::result::Result<StudioOutput, S
     let output = crate::ocr::text_output(data).map_err(|e| e.to_string())?;
     export::verify_output(&output).map_err(|e| e.to_string())?;
     Ok(output.into())
+}
+
+pub fn resize_physical_photo(
+    data: Vec<u8>,
+    width_mm: f64,
+    height_mm: f64,
+    dpi: u16,
+    png: bool,
+    cover: bool,
+    limit_kib: Option<u32>,
+    minimum_quality: u8,
+    flatten: bool,
+    rotation: u8,
+    signature_threshold: Option<u8>,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        photo::process_physical(
+            &data,
+            &PhysicalPhotoSpec {
+                width_mm,
+                height_mm,
+                dpi,
+            },
+            &PhotoOptions {
+                format: if png {
+                    OutputFormat::Png
+                } else {
+                    OutputFormat::Jpeg
+                },
+                fit: if cover { Fit::Cover } else { Fit::Contain },
+                min_quality: minimum_quality,
+                max_bytes: limit_kib.map(|value| ByteLimit {
+                    value: u64::from(value),
+                    unit: SizeUnit::KiB,
+                    strict: true,
+                }),
+                flatten_transparency: flatten,
+                rotate_quarters: rotation,
+                signature_threshold,
+                ..Default::default()
+            },
+        )
+    })
+    .map(Into::into)
+    .map_err(|e| e.to_string())
 }

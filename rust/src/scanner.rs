@@ -90,6 +90,7 @@ pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
             height: Some(img.height()),
             pages: None,
             quality: None,
+            print_density: None,
             findings,
         },
         data: bytes,

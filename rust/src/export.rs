@@ -35,8 +35,23 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
     if out.info.bytes != out.data.len() as u64 {
         return Err(invalid("Output byte count is inconsistent."));
     }
+    if !matches!(out.info.format.as_str(), "jpeg" | "png") && out.info.print_density.is_some() {
+        return Err(invalid(
+            "Print density applies only to JPEG and PNG outputs.",
+        ));
+    }
     match out.info.format.as_str() {
         "jpeg" | "png" => {
+            let format = if out.info.format == "jpeg" {
+                OutputFormat::Jpeg
+            } else {
+                OutputFormat::Png
+            };
+            if crate::density::read(&out.data, format)? != out.info.print_density {
+                return Err(invalid(
+                    "Saved print-density metadata does not match the validation report.",
+                ));
+            }
             let expected = if out.info.format == "jpeg" {
                 image::ImageFormat::Jpeg
             } else {
@@ -240,5 +255,5 @@ pub fn pack(items: Vec<(String, PreparedOutput)>) -> Result<PreparedOutput> {
             return Err(invalid("ZIP output verification failed."));
         }
     }
-    Ok(PreparedOutput{info:OutputInfo{format:"zip".into(),bytes:bytes.len()as u64,width:None,height:None,pages:None,quality:None,findings:vec![ValidationFinding{advisory:false,code:"archive_verified".into(),passed:true,message:"Every archived document was reopened and its hash verified against the manifest.".into()}]},data:bytes})
+    Ok(PreparedOutput{info:OutputInfo{format:"zip".into(),bytes:bytes.len()as u64,width:None,height:None,pages:None,quality:None,print_density:None,findings:vec![ValidationFinding{advisory:false,code:"archive_verified".into(),passed:true,message:"Every archived document was reopened and its hash verified against the manifest.".into()}]},data:bytes})
 }

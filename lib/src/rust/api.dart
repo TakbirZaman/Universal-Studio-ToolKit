@@ -5,6 +5,7 @@
 
 import 'frb_generated.dart';
 import 'jobs.dart';
+import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -189,6 +190,32 @@ Future<StudioOutput> recognizeText({
 Future<StudioOutput> prepareEditedText({required List<int> data}) =>
     RustLib.instance.api.crateApiPrepareEditedText(data: data);
 
+Future<StudioOutput> resizePhysicalPhoto({
+  required List<int> data,
+  required double widthMm,
+  required double heightMm,
+  required int dpi,
+  required bool png,
+  required bool cover,
+  int? limitKib,
+  required int minimumQuality,
+  required bool flatten,
+  required int rotation,
+  int? signatureThreshold,
+}) => RustLib.instance.api.crateApiResizePhysicalPhoto(
+  data: data,
+  widthMm: widthMm,
+  heightMm: heightMm,
+  dpi: dpi,
+  png: png,
+  cover: cover,
+  limitKib: limitKib,
+  minimumQuality: minimumQuality,
+  flatten: flatten,
+  rotation: rotation,
+  signatureThreshold: signatureThreshold,
+);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
 abstract class OcrTask implements RustOpaqueInterface {}
 
@@ -200,6 +227,7 @@ class StudioOutput {
   final int? height;
   final int? pages;
   final int? quality;
+  final PrintDensity? printDensity;
   final String validation;
 
   const StudioOutput({
@@ -209,6 +237,7 @@ class StudioOutput {
     this.height,
     this.pages,
     this.quality,
+    this.printDensity,
     required this.validation,
   });
 
@@ -220,6 +249,7 @@ class StudioOutput {
       height.hashCode ^
       pages.hashCode ^
       quality.hashCode ^
+      printDensity.hashCode ^
       validation.hashCode;
 
   @override
@@ -233,6 +263,7 @@ class StudioOutput {
           height == other.height &&
           pages == other.pages &&
           quality == other.quality &&
+          printDensity == other.printDensity &&
           validation == other.validation;
 }
 

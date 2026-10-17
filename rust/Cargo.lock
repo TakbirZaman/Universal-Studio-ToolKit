@@ -1319,6 +1319,7 @@ dependencies = [
  "libc",
  "lopdf",
  "pdfium-render",
+ "png",
  "rusqlite",
  "serde",
  "serde_json",

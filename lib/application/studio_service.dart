@@ -28,6 +28,32 @@ class StudioService {
     rotation: rotation,
     signatureThreshold: threshold,
   );
+  Future<core.StudioOutput> physicalPhoto(
+    Uint8List data, {
+    required double widthMm,
+    required double heightMm,
+    required int dpi,
+    required bool png,
+    required bool cover,
+    required int? limit,
+    required int quality,
+    required bool flatten,
+    required int rotation,
+    int? threshold,
+  }) => core.resizePhysicalPhoto(
+    data: data,
+    widthMm: widthMm,
+    heightMm: heightMm,
+    dpi: dpi,
+    png: png,
+    cover: cover,
+    limitKib: limit,
+    minimumQuality: quality,
+    flatten: flatten,
+    rotation: rotation,
+    signatureThreshold: threshold,
+  );
+
   Future<core.StudioOutput> merge(
     List<Uint8List> inputs,
     List<int>? pages,
@@ -44,6 +70,7 @@ class StudioService {
     );
     return optimize ? core.optimizePdf(data: output.bytes) : output;
   }
+
   Future<core.StudioOutput> scan(List<Uint8List> inputs) =>
       core.scanPdf(inputs: inputs);
   Future<core.StudioOutput> pack(List<Uint8List> inputs, int limit) =>

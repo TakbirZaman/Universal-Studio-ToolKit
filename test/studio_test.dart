@@ -95,4 +95,40 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets(
+    'physical size units are explicit and invalid DPI is recoverable',
+    (tester) async {
+      tester.view.physicalSize = const Size(1280, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(body: ToolWorkspace(tool: Tool.photo)),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Set a print size in millimetres'));
+      await tester.pumpAndSettle();
+      expect(find.text('Width (mm)'), findsOneWidget);
+      expect(find.text('Height (mm)'), findsOneWidget);
+      final resolution = find.widgetWithText(
+        TextFormField,
+        'Print resolution (DPI)',
+      );
+      await tester.ensureVisible(resolution);
+      await tester.enterText(resolution, '2401');
+      await tester.ensureVisible(find.text('Prepare preview'));
+      await tester.tap(find.text('Prepare preview'));
+      await tester.pump();
+      expect(find.text('Use 1–2400 DPI.'), findsOneWidget);
+      await tester.ensureVisible(find.text('Set a print size in millimetres'));
+      await tester.tap(find.text('Set a print size in millimetres'));
+      await tester.pumpAndSettle();
+      final pixels = find.widgetWithText(TextFormField, 'Width (pixels)');
+      expect(tester.widget<TextFormField>(pixels).controller!.text, '300');
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
