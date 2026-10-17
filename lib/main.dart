@@ -1,19 +1,28 @@
 import 'application/camera_capture.dart';
+import 'application/recognized_text.dart';
+
 import 'package:flutter/services.dart';
+
 import 'application/scan_drafts.dart';
 import 'application/scan_draft_picker.dart';
 import 'application/transparency_preview.dart';
+
 import 'dart:io';
+
 import 'application/recipes.dart';
+
 import 'package:path_provider/path_provider.dart';
+
 import 'application/pdf_preview.dart';
 import 'application/preferences.dart';
 import 'application/export_service.dart';
+
 import 'package:path/path.dart' as paths;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+
 import 'application/studio_service.dart';
 import 'design/theme.dart';
 import 'src/rust/frb_generated.dart';
@@ -56,18 +65,15 @@ Future<void> main() async {
           await check.writeAsString('');
           await check.delete();
           storage = portable.path;
-          storageNotice =
-              'Portable mode: settings are saved in studio-data beside the application.';
+          storageNotice = 'Portable mode: settings are saved in studio-data beside the application.';
         } catch (_) {
-          storageNotice =
-              'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
+          storageNotice = 'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
         }
       }
       initialTheme = (await loadPreferences(directory: storage!)).theme;
     } catch (_) {
       storage = null;
-      storageNotice =
-          'Settings could not be saved on this device. Changes apply only to this session.';
+      storageNotice = 'Settings could not be saved on this device. Changes apply only to this session.';
     }
     runApp(
       ProviderScope(
@@ -189,7 +195,8 @@ extension ToolLabel on Tool {
         };
   String get synonyms => switch (this) {
     Tool.photo => 'smaller compress image picture passport resize crop',
-    Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf',
+    Tool.merge =>
+      'merge join combine extract delete split reorder compress optimize pdf',
     Tool.scan => 'scan certificate pages document camera',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
@@ -374,14 +381,16 @@ class _StudioHomeState extends State<StudioHome> {
                                       Icon(
                                         t.icon,
                                         size: 32,
-                                        color: t.accent(Theme.of(context).brightness),
+                                        color: t.accent(
+                                          Theme.of(context).brightness,
+                                        ),
                                       ),
                                       const SizedBox(height: 20),
                                       Text(
                                         t.label,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
                                       const SizedBox(height: 8),
                                       Text(t.description),
@@ -454,6 +463,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   int rotation = 0, quality = 60, threshold = 230;
   int previewIndex = 0, draftDays = 7;
   String? draftMessage;
+  Future<bool>? textRecognitionAvailable;
   bool get imageTool =>
       widget.tool == Tool.photo || widget.tool == Tool.signature;
   @override
@@ -468,6 +478,10 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       height.text = '30';
     }
     filename.text = suggestedName;
+    if (widget.tool == Tool.scan) {
+      textRecognitionAvailable = Future<bool>(() async => ocrAvailable())
+          .catchError((_) => false);
+    }
   }
 
   String get suggestedName => switch (widget.tool) {
@@ -551,25 +565,44 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       setState(() => error = 'A scan session supports at most 200 pages.');
       return;
     }
-    setState(() { busy = true; error = null; });
+    setState(() {
+      busy = true;
+      error = null;
+    });
     try {
       final bytes = await CameraCapture().capture();
-      if (bytes == null || !mounted) { return; }
-      if (sources.fold<int>(0, (n, s) => n + s.bytes.length) + bytes.length > 64 * 1024 * 1024) {
-        throw const FormatException('This session would exceed 64 MiB. Save this scan before capturing more pages.');
+      if (bytes == null || !mounted) {
+        return;
+      }
+      if (sources.fold<int>(0, (n, s) => n + s.bytes.length) + bytes.length >
+          64 * 1024 * 1024) {
+        throw const FormatException(
+          'This session would exceed 64 MiB. Save this scan before capturing more pages.',
+        );
       }
       setState(() {
-        sources.add(SelectedSource('Captured page ${sources.length + 1}.jpg', bytes));
+        sources.add(
+          SelectedSource('Captured page ${sources.length + 1}.jpg', bytes),
+        );
         previewIndex = sources.length - 1;
         output = null;
         saved = null;
       });
     } on PlatformException catch (e) {
-      if (mounted) { setState(() => error = e.message ?? 'Could not capture a page. Try importing an image.'); }
+      if (mounted) {
+        setState(
+          () => error =
+              e.message ?? 'Could not capture a page. Try importing an image.',
+        );
+      }
     } catch (e) {
-      if (mounted) { setState(() => error = clean(e)); }
+      if (mounted) {
+        setState(() => error = clean(e));
+      }
     } finally {
-      if (mounted) { setState(() => busy = false); }
+      if (mounted) {
+        setState(() => busy = false);
+      }
     }
   }
 
@@ -655,9 +688,41 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     }
   }
 
+  Future<void> readSelectedPage() async {
+    if (busy || sources.isEmpty) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      final source = sources[previewIndex.clamp(0, sources.length - 1)];
+      final adjusted = await adjustScanPage(
+        data: source.bytes,
+        mode: source.scanMode,
+        rotation: source.scanRotation,
+        brightness: source.brightness.round(),
+        contrast: source.contrast,
+        threshold: 128,
+      );
+      if (!mounted) return;
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (_) => RecognizedTextScreen(page: adjusted.bytes),
+        ),
+      );
+    } catch (e) {
+      if (mounted) setState(() => error = clean(e));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
   Future<void> save() async {
     if (output == null || busy || !form.currentState!.validate()) return;
-    setState(() { busy = true; error = null; });
+    setState(() {
+      busy = true;
+      error = null;
+    });
     try {
       final location = await ExportService.saveCopy(output!, filename.text);
       if (mounted && location != null) setState(() => saved = location);
@@ -695,16 +760,17 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         children: [
           Text(
             widget.tool.label,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(context).textTheme.headlineLarge
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
           if (Platform.isWindows || Platform.isLinux)
             const Padding(
               padding: EdgeInsets.only(top: 8),
-              child: Text('Keyboard: Ctrl+O choose files · Ctrl+Enter preview · Ctrl+S save a copy.'),
+              child: Text(
+                'Keyboard: Ctrl+O choose files · Ctrl+Enter preview · Ctrl+S save a copy.',
+              ),
             ),
           if (widget.tool == Tool.photo)
             TextButton.icon(
@@ -794,8 +860,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             FutureBuilder<bool>(
               future: cameraAvailable,
               builder: (context, snapshot) => snapshot.data == true
-                ? FilledButton.icon(onPressed: busy ? null : capturePage, icon: const Icon(Icons.camera_alt_outlined), label: const Text('Capture a page'))
-                : const Text('Import page images if a camera app is unavailable.'),
+                  ? FilledButton.icon(
+                      onPressed: busy ? null : capturePage,
+                      icon: const Icon(Icons.camera_alt_outlined),
+                      label: const Text('Capture a page'),
+                    )
+                  : const Text(
+                      'Import page images if a camera app is unavailable.',
+                    ),
             ),
           if (sources.isNotEmpty) ...[
             const SizedBox(height: 12),
@@ -1012,16 +1084,21 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             CheckboxListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Try lossless optimization'),
-              subtitle: const Text('Keep text and image quality. Never rasterizes. Some PDFs cannot become smaller.'),
+              subtitle: const Text(
+                'Keep text and image quality. Never rasterizes. Some PDFs cannot become smaller.',
+              ),
               value: optimizePdfStructures,
-              onChanged: busy ? null : (value) {
-                setState(() {
-                  final previousName = suggestedName;
-                  optimizePdfStructures = value ?? false;
-                  if (filename.text == previousName) filename.text = suggestedName;
-                });
-                changed();
-              },
+              onChanged: busy
+                  ? null
+                  : (value) {
+                      setState(() {
+                        final previousName = suggestedName;
+                        optimizePdfStructures = value ?? false;
+                        if (filename.text == previousName)
+                          filename.text = suggestedName;
+                      });
+                      changed();
+                    },
             ),
             TextFormField(
               controller: pages,
@@ -1058,16 +1135,60 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             const Text(
               'Import page images, choose a page below its filename, adjust, then prepare the PDF. On Android, you can also capture pages with the device camera app. Save a draft before capturing to protect against Android closing the app. Perspective correction is still pending.',
             ),
-            ExpansionTile(title: const Text('Save or restore a scan draft'), children: [
-              const Text('Save original page copies and adjustments on this device. Nothing is uploaded. Expired drafts are removed when the draft list is opened.'),
-              DropdownButtonFormField<int>(initialValue:draftDays, decoration:const InputDecoration(labelText:'Keep draft for'), items:[for(final days in [1,7,30,90])DropdownMenuItem(value:days,child:Text('$days days'))],onChanged:busy?null:(value)=>setState(()=>draftDays=value!)),
-              Wrap(spacing:12,children:[
-                OutlinedButton(onPressed:busy||sources.isEmpty?null:saveDraft,child:const Text('Save draft on this device')),
-                OutlinedButton(onPressed:busy?null:restoreDraft,child:const Text('Restore saved draft')),
-              ]),
-              if(draftMessage!=null)Semantics(liveRegion:true,child:Text(draftMessage!)),
-            ]),
+            ExpansionTile(
+              title: const Text('Save or restore a scan draft'),
+              children: [
+                const Text(
+                  'Save original page copies and adjustments on this device. Nothing is uploaded. Expired drafts are removed when the draft list is opened.',
+                ),
+                DropdownButtonFormField<int>(
+                  initialValue: draftDays,
+                  decoration: const InputDecoration(
+                    labelText: 'Keep draft for',
+                  ),
+                  items: [
+                    for (final days in [1, 7, 30, 90])
+                      DropdownMenuItem(value: days, child: Text('$days days')),
+                  ],
+                  onChanged: busy
+                      ? null
+                      : (value) => setState(() => draftDays = value!),
+                ),
+                Wrap(
+                  spacing: 12,
+                  children: [
+                    OutlinedButton(
+                      onPressed: busy || sources.isEmpty ? null : saveDraft,
+                      child: const Text('Save draft on this device'),
+                    ),
+                    OutlinedButton(
+                      onPressed: busy ? null : restoreDraft,
+                      child: const Text('Restore saved draft'),
+                    ),
+                  ],
+                ),
+                if (draftMessage != null)
+                  Semantics(liveRegion: true, child: Text(draftMessage!)),
+              ],
+            ),
             if (sources.isNotEmpty) scanControls(),
+            FutureBuilder<bool>(
+              future: textRecognitionAvailable,
+              builder: (context, snapshot) {
+                if (snapshot.data == true) {
+                  return OutlinedButton.icon(
+                    onPressed: busy || sources.isEmpty
+                        ? null
+                        : readSelectedPage,
+                    icon: const Icon(Icons.text_snippet_outlined),
+                    label: const Text('Read printed text from selected page'),
+                  );
+                }
+                return const Text(
+                  'Offline text recognition needs a supported local engine and verified English/Bangla files. It is unavailable on this installation.',
+                );
+              },
+            ),
           ],
           if (widget.tool == Tool.print) ...[
             TextFormField(
@@ -1193,33 +1314,118 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     ),
   );
   Future<void> saveDraft() async {
-    final directory=ref.read(dataDirectoryProvider);
-    if(directory==null){setState(()=>draftMessage='Local draft storage is unavailable.');return;}
-    final snapshot=sources.map((s)=>DraftPage(s.name,s.bytes,mode:s.scanMode,rotation:s.scanRotation,brightness:s.brightness,contrast:s.contrast)).toList();
-    setState(()=>busy=true);
-    try {
-      await ScanDrafts(directory).save(snapshot,draftDays);
-      if(mounted) { setState(()=>draftMessage='Draft saved on this device for $draftDays days. Your original files are unchanged.'); }
-    } catch(_){if(mounted) { setState(()=>draftMessage='Could not save the draft. Check free space and storage access.'); }}
-    finally{if(mounted) { setState(()=>busy=false); }}
-  }
-  Future<void> restoreDraft() async {
-    final directory=ref.read(dataDirectoryProvider);
-    if(directory==null){setState(()=>draftMessage='Local draft storage is unavailable.');return;}
-    final store=ScanDrafts(directory);
-    final id=await showDialog<String>(context:context,builder:(context)=>ScanDraftPicker(store:store));
-    if(id==null||!mounted) { return; }
-    if(sources.isNotEmpty){
-      final replace=await showDialog<bool>(context:context,builder:(context)=>AlertDialog(title:const Text('Replace the current scan session?'),content:const Text('Save a draft first if you want to keep your current page order and adjustments. Original files will stay unchanged.'),actions:[TextButton(onPressed:()=>Navigator.pop(context,false),child:const Text('Keep current scan')),FilledButton(onPressed:()=>Navigator.pop(context,true),child:const Text('Restore draft'))]));
-      if(replace!=true||!mounted) { return; }
+    final directory = ref.read(dataDirectoryProvider);
+    if (directory == null) {
+      setState(() => draftMessage = 'Local draft storage is unavailable.');
+      return;
     }
-    setState(()=>busy=true);
+    final snapshot = sources
+        .map(
+          (s) => DraftPage(
+            s.name,
+            s.bytes,
+            mode: s.scanMode,
+            rotation: s.scanRotation,
+            brightness: s.brightness,
+            contrast: s.contrast,
+          ),
+        )
+        .toList();
+    setState(() => busy = true);
     try {
-      final restored=await store.restore(id);
-      final incoming=restored.map((p)=>SelectedSource(p.name,p.bytes)..scanMode=p.mode..scanRotation=p.rotation..brightness=p.brightness..contrast=p.contrast).toList();
-      if(mounted) { setState((){sources=incoming;previewIndex=0;output=null;error=null;saved=null;draftMessage='Restored ${incoming.length} pages. The saved draft is still available.';}); }
-    } catch(_){if(mounted) { setState(()=>draftMessage='Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.'); }}
-    finally{if(mounted) { setState(()=>busy=false); }}
+      await ScanDrafts(directory).save(snapshot, draftDays);
+      if (mounted) {
+        setState(
+          () => draftMessage =
+              'Draft saved on this device for $draftDays days. Your original files are unchanged.',
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => draftMessage =
+              'Could not save the draft. Check free space and storage access.',
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => busy = false);
+      }
+    }
+  }
+
+  Future<void> restoreDraft() async {
+    final directory = ref.read(dataDirectoryProvider);
+    if (directory == null) {
+      setState(() => draftMessage = 'Local draft storage is unavailable.');
+      return;
+    }
+    final store = ScanDrafts(directory);
+    final id = await showDialog<String>(
+      context: context,
+      builder: (context) => ScanDraftPicker(store: store),
+    );
+    if (id == null || !mounted) {
+      return;
+    }
+    if (sources.isNotEmpty) {
+      final replace = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Replace the current scan session?'),
+          content: const Text(
+            'Save a draft first if you want to keep your current page order and adjustments. Original files will stay unchanged.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Keep current scan'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Restore draft'),
+            ),
+          ],
+        ),
+      );
+      if (replace != true || !mounted) {
+        return;
+      }
+    }
+    setState(() => busy = true);
+    try {
+      final restored = await store.restore(id);
+      final incoming = restored
+          .map(
+            (p) => SelectedSource(p.name, p.bytes)
+              ..scanMode = p.mode
+              ..scanRotation = p.rotation
+              ..brightness = p.brightness
+              ..contrast = p.contrast,
+          )
+          .toList();
+      if (mounted) {
+        setState(() {
+          sources = incoming;
+          previewIndex = 0;
+          output = null;
+          error = null;
+          saved = null;
+          draftMessage =
+              'Restored ${incoming.length} pages. The saved draft is still available.';
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => draftMessage = 'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => busy = false);
+      }
+    }
   }
 
   Widget scanControls() {

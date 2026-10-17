@@ -27,6 +27,7 @@
 
 // Section: imports
 
+use crate::api::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{Lifetimeable, Lockable, transform_result_dco};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -39,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 2139881156;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1450087555;
 
 // Section: executor
 
@@ -89,6 +90,52 @@ fn wire__crate__api__adjust_scan_page_impl(
                     std::result::Result::Ok(output_ok)
                 })())
             }
+        },
+    )
+}
+fn wire__crate__api__cancel_ocr_task_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "cancel_ocr_task",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_task = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_task_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_task, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_task_guard = Some(api_task.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_task_guard = api_task_guard.unwrap();
+                let output_ok = Ok::<_, ()>(crate::api::cancel_ocr_task(&*api_task_guard))?;
+                std::result::Result::Ok(output_ok)
+            })())
         },
     )
 }
@@ -231,6 +278,35 @@ fn wire__crate__api__create_application_pack_impl(
                     std::result::Result::Ok(output_ok)
                 })())
             }
+        },
+    )
+}
+fn wire__crate__api__create_ocr_task_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "create_ocr_task",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::create_ocr_task())?;
+                std::result::Result::Ok(output_ok)
+            })())
         },
     )
 }
@@ -377,6 +453,84 @@ fn wire__crate__api__load_preferences_impl(
         },
     )
 }
+fn wire__crate__api__ocr_available_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ocr_available",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Ok::<_, ()>(crate::api::ocr_available())?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__ocr_task_state_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ocr_task_state",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_task = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_task_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_task, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_task_guard = Some(api_task.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_task_guard = api_task_guard.unwrap();
+                let output_ok = Ok::<_, ()>(crate::api::ocr_task_state(&*api_task_guard))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__optimize_pdf_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -404,6 +558,91 @@ fn wire__crate__api__optimize_pdf_impl(
             move |context| {
                 transform_result_sse::<_, String>((move || {
                     let output_ok = crate::api::optimize_pdf(api_data)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__prepare_edited_text_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "prepare_edited_text",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::prepare_edited_text(api_data)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__recognize_text_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "recognize_text",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_task = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>,
+            >>::sse_decode(&mut deserializer);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_language = <crate::ocr::Language>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let mut api_task_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_task, 0, false,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_task_guard = Some(api_task.lockable_decode_sync_ref()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let api_task_guard = api_task_guard.unwrap();
+                    let output_ok =
+                        crate::api::recognize_text(&*api_task_guard, api_data, api_language)?;
                     std::result::Result::Ok(output_ok)
                 })())
             }
@@ -705,7 +944,31 @@ fn wire__crate__api__validate_prepared_output_impl(
     )
 }
 
+// Section: related_funcs
+
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>
+);
+
 // Section: dart2rust
+
+impl SseDecode for OcrTask {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
 
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -740,6 +1003,36 @@ impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_i32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for crate::jobs::JobState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::jobs::JobState::Queued,
+            1 => crate::jobs::JobState::Running,
+            2 => crate::jobs::JobState::Cancelling,
+            3 => crate::jobs::JobState::Cancelled,
+            4 => crate::jobs::JobState::Succeeded,
+            5 => crate::jobs::JobState::Failed,
+            6 => crate::jobs::JobState::PartiallySucceeded,
+            _ => unreachable!("Invalid variant for JobState: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::ocr::Language {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::ocr::Language::English,
+            1 => crate::ocr::Language::Bangla,
+            2 => crate::ocr::Language::Mixed,
+            _ => unreachable!("Invalid variant for Language: {}", inner),
+        };
     }
 }
 
@@ -879,6 +1172,13 @@ impl SseDecode for () {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {}
 }
 
+impl SseDecode for usize {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap() as _
+    }
+}
+
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -889,23 +1189,26 @@ fn pde_ffi_dispatcher_primary_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         1 => wire__crate__api__adjust_scan_page_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__clear_recent_history_impl(port, ptr, rust_vec_len, data_len),
-        3 => wire__crate__api__combine_pdfs_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire__crate__api__count_pdf_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__create_application_pack_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__create_print_sheet_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__export_pdf_images_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire__crate__api__list_recipes_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire__crate__api__load_preferences_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire__crate__api__optimize_pdf_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire__crate__api__render_pdf_page_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire__crate__api__resize_photo_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__run_recipe_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__clear_recent_history_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__combine_pdfs_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__count_pdf_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire__crate__api__create_application_pack_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__create_print_sheet_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire__crate__api__export_pdf_images_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire__crate__api__list_recipes_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire__crate__api__load_preferences_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire__crate__api__ocr_available_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire__crate__api__optimize_pdf_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__prepare_edited_text_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__recognize_text_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__render_pdf_page_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__resize_photo_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__run_recipe_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -918,12 +1221,68 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
+        2 => wire__crate__api__cancel_ocr_task_impl(ptr, rust_vec_len, data_len),
+        7 => wire__crate__api__create_ocr_task_impl(ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__ocr_task_state_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
 
 // Section: rust2dart
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<OcrTask> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<OcrTask> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<OcrTask>> for OcrTask {
+    fn into_into_dart(self) -> FrbWrapper<OcrTask> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::jobs::JobState {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Queued => 0.into_dart(),
+            Self::Running => 1.into_dart(),
+            Self::Cancelling => 2.into_dart(),
+            Self::Cancelled => 3.into_dart(),
+            Self::Succeeded => 4.into_dart(),
+            Self::Failed => 5.into_dart(),
+            Self::PartiallySucceeded => 6.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::jobs::JobState {}
+impl flutter_rust_bridge::IntoIntoDart<crate::jobs::JobState> for crate::jobs::JobState {
+    fn into_into_dart(self) -> crate::jobs::JobState {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::ocr::Language {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::English => 0.into_dart(),
+            Self::Bangla => 1.into_dart(),
+            Self::Mixed => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::ocr::Language {}
+impl flutter_rust_bridge::IntoIntoDart<crate::ocr::Language> for crate::ocr::Language {
+    fn into_into_dart(self) -> crate::ocr::Language {
+        self
+    }
+}
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::StudioOutput {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -965,6 +1324,22 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::StudioPreferences>
     }
 }
 
+impl SseEncode for OcrTask {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
+impl SseEncode for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -997,6 +1372,44 @@ impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_i32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for crate::jobs::JobState {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::jobs::JobState::Queued => 0,
+                crate::jobs::JobState::Running => 1,
+                crate::jobs::JobState::Cancelling => 2,
+                crate::jobs::JobState::Cancelled => 3,
+                crate::jobs::JobState::Succeeded => 4,
+                crate::jobs::JobState::Failed => 5,
+                crate::jobs::JobState::PartiallySucceeded => 6,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::ocr::Language {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::ocr::Language::English => 0,
+                crate::ocr::Language::Bangla => 1,
+                crate::ocr::Language::Mixed => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -1111,6 +1524,16 @@ impl SseEncode for () {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
 }
 
+impl SseEncode for usize {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer
+            .cursor
+            .write_u64::<NativeEndian>(self as _)
+            .unwrap();
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 mod io {
     // This file is automatically generated, so please do not edit it.
@@ -1119,6 +1542,7 @@ mod io {
     // Section: imports
 
     use super::*;
+    use crate::api::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -1128,6 +1552,20 @@ mod io {
     // Section: boilerplate
 
     flutter_rust_bridge::frb_generated_boilerplate_io!();
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_universal_studio_toolkit_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerOcrTask(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_universal_studio_toolkit_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerOcrTask(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>::decrement_strong_count(ptr as _);
+    }
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;

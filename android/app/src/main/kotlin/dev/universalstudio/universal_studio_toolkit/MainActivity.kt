@@ -43,7 +43,7 @@ class MainActivity : FlutterActivity() {
                 val bytes = call.argument<ByteArray>("bytes")
                 val name = call.argument<String>("name")
                 val mime = call.argument<String>("mime")
-                if (bytes == null || bytes.isEmpty() || bytes.size > 64 * 1024 * 1024 || name.isNullOrBlank() || name.contains('/') || name.contains('\\') || mime !in listOf("image/jpeg", "image/png", "application/pdf", "application/zip", "application/json")) {
+                if (bytes == null || bytes.isEmpty() || bytes.size > 64 * 1024 * 1024 || name.isNullOrBlank() || name.contains('/') || name.contains('\\') || mime !in listOf("image/jpeg", "image/png", "application/pdf", "application/zip", "application/json", "text/plain")) {
                     result.error("invalid", "The output or filename is invalid.", null); return@setMethodCallHandler
                 }
                 pending = result

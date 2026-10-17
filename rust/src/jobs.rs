@@ -96,3 +96,29 @@ pub fn serial_cancellable<T>(cancel: &Cancellation, f: impl FnOnce() -> Result<T
         }
     }
 }
+
+#[cfg(test)]
+mod cancellation_tests {
+    use super::*;
+    use std::{sync::mpsc, time::Duration};
+
+    #[test]
+    fn cancelling_a_queued_job_does_not_wait_for_the_engine_slot() {
+        let guard = ENGINE.lock().unwrap();
+        let cancel = Cancellation::default();
+        let worker_cancel = cancel.clone();
+        let (send, receive) = mpsc::channel();
+        let worker = std::thread::spawn(move || {
+            let result = serial_cancellable(&worker_cancel, || {
+                panic!("Cancelled queued work must never enter the engine")
+            });
+            send.send(matches!(result, Err::<(), _>(StudioError::Cancelled)))
+                .unwrap();
+        });
+        cancel.cancel();
+        // Keep ENGINE locked until the cancellation result arrives.
+        assert!(receive.recv_timeout(Duration::from_secs(1)).unwrap());
+        drop(guard);
+        worker.join().unwrap();
+    }
+}

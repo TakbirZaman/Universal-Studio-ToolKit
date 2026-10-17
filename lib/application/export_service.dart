@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:file_selector/file_selector.dart';
+
 import '../src/rust/api.dart' as core;
 
 class ExportService {
@@ -17,6 +19,7 @@ class ExportService {
         'pdf' => 'application/pdf',
         'zip' => 'application/zip',
         'json' => 'application/json',
+        'txt' => 'text/plain',
         _ => throw const FormatException('Unsupported output format'),
       };
       return _documents.invokeMethod<String>('saveCopy', {
