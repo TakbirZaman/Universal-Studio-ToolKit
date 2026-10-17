@@ -2,7 +2,7 @@ name: Build Android development APK
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'scripts/*android*', '.github/workflows/build-android.yml']
+    paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'third_party/**', 'scripts/*android*', '.github/workflows/build-android.yml']
   workflow_dispatch:
 permissions:
   contents: read

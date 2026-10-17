@@ -17,6 +17,9 @@ void main() {
     await tester.enterText(find.byType(TextField), 'smaller');
     await tester.pump();
     expect(find.text('Get started'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'OCR');
+    await tester.pump();
+    expect(find.text('Get started'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   testWidgets(
@@ -66,21 +69,30 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Resize Photo'), findsWidgets);
   });
-  testWidgets('keyboard preview shortcut reports missing input without engine work', (tester) async {
-    tester.view.physicalSize = const Size(1280, 900);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(const ProviderScope(child: MaterialApp(
-      home: Scaffold(body: ToolWorkspace(tool: Tool.photo)),
-    )));
-    await tester.pump();
-    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
-    await tester.pump();
-    expect(find.textContaining('Choose a file to get started.'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
+  testWidgets(
+    'keyboard preview shortcut reports missing input without engine work',
+    (tester) async {
+      tester.view.physicalSize = const Size(1280, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(body: ToolWorkspace(tool: Tool.photo)),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+      await tester.pump();
+      expect(
+        find.textContaining('Choose a file to get started.'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

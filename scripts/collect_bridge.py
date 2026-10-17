@@ -4,6 +4,8 @@ from pathlib import Path
 
 paths = [
     "lib/src/rust/api.dart",
+    "lib/src/rust/jobs.dart",
+    "lib/src/rust/ocr.dart",
     "lib/src/rust/frb_generated.dart",
     "lib/src/rust/frb_generated.io.dart",
     "rust/src/frb_generated.rs",

@@ -1,0 +1,20 @@
+{
+  "source_commit": "96686d1f6f6b4fde0b76d623367640a497479ebe",
+  "run": 39023943472,
+  "artifact": 12098096286,
+  "outer_sha256": "ed1138f591807c1399075e2c1218121f84fe1d3ea168344b2b32c320c35cf53b",
+  "inner_sha256": "fc5ad6a3f296c7ccafc006dacc9d2e212f1d5b150a754189aa8ef54d0db8fb70",
+  "inner_bytes": 19600315,
+  "crc_verified": true,
+  "models_and_license_hashes_verified": true,
+  "provenance_present": true,
+  "native_libraries_present": true,
+  "startup": {
+    "startup_survived_seconds": 8,
+    "window_created": true,
+    "clean_system_verified": false,
+    "interactive_workflow_verified": false
+  },
+  "engine_bundled": false,
+  "scope": "Experimental Linux build-host startup plus actual native/widget OCR tests; clean-system and full interactive application workflows unverified"
+}

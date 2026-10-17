@@ -352,3 +352,87 @@ pub fn optimize_pdf(data: Vec<u8>) -> std::result::Result<StudioOutput, String> 
         .map(Into::into)
         .map_err(|e| e.to_string())
 }
+
+/// A single-use operation handle. Atomics and the small state mutex never hold
+/// image bytes or wait on the processing slot. Dropping a handle does not cancel.
+#[flutter_rust_bridge::frb(opaque)]
+pub struct OcrTask {
+    cancel: jobs::Cancellation,
+    status: std::sync::Mutex<(jobs::JobState, bool)>,
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn create_ocr_task() -> OcrTask {
+    OcrTask {
+        cancel: jobs::Cancellation::default(),
+        status: std::sync::Mutex::new((jobs::JobState::Queued, false)),
+    }
+}
+
+/// Accepted cancellation wins a race with completion. The engine is killed and
+/// reaped before recognition returns; the UI must await that return.
+#[flutter_rust_bridge::frb(sync)]
+pub fn cancel_ocr_task(task: &OcrTask) -> bool {
+    let mut status = task.status.lock().unwrap_or_else(|e| e.into_inner());
+    match status.0 {
+        jobs::JobState::Queued | jobs::JobState::Running => {
+            task.cancel.cancel();
+            status.0 = jobs::JobState::Cancelling;
+            true
+        }
+        _ => false,
+    }
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn ocr_task_state(task: &OcrTask) -> jobs::JobState {
+    task.status.lock().unwrap_or_else(|e| e.into_inner()).0
+}
+
+pub fn ocr_available() -> bool {
+    crate::ocr::available()
+}
+
+pub fn recognize_text(
+    task: &OcrTask,
+    data: Vec<u8>,
+    language: crate::ocr::Language,
+) -> std::result::Result<StudioOutput, String> {
+    {
+        let mut status = task.status.lock().unwrap_or_else(|e| e.into_inner());
+        if status.1 {
+            return Err("This text recognition job has already been used. Start a new job.".into());
+        }
+        status.1 = true;
+    }
+    let result = jobs::serial_cancellable(&task.cancel, || {
+        {
+            let mut status = task.status.lock().unwrap_or_else(|e| e.into_inner());
+            if task.cancel.is_cancelled() {
+                return Err(StudioError::Cancelled);
+            }
+            status.0 = jobs::JobState::Running;
+        }
+        let output = crate::ocr::recognize(&data, language, &task.cancel)?;
+        export::verify_output(&output)?;
+        Ok(output)
+    });
+    let mut status = task.status.lock().unwrap_or_else(|e| e.into_inner());
+    if task.cancel.is_cancelled() {
+        status.0 = jobs::JobState::Cancelled;
+        return Err(StudioError::Cancelled.to_string());
+    }
+    status.0 = if result.is_ok() {
+        jobs::JobState::Succeeded
+    } else {
+        jobs::JobState::Failed
+    };
+    result.map(Into::into).map_err(|e| e.to_string())
+}
+
+/// Validate edited UTF-8 on the worker before sharing the normal save service.
+pub fn prepare_edited_text(data: Vec<u8>) -> std::result::Result<StudioOutput, String> {
+    let output = crate::ocr::text_output(data).map_err(|e| e.to_string())?;
+    export::verify_output(&output).map_err(|e| e.to_string())?;
+    Ok(output.into())
+}

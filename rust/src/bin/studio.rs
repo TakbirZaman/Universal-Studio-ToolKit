@@ -22,6 +22,12 @@ enum Request {
         directory: String,
         filename: String,
     },
+    Ocr {
+        input: String,
+        directory: String,
+        filename: String,
+        language: studio_core::ocr::Language,
+    },
     Scan {
         inputs: Vec<String>,
         directory: String,
@@ -46,7 +52,22 @@ enum Request {
     },
 }
 fn read(path: &str) -> Result<Vec<u8>> {
-    let f = std::fs::File::open(path)?;
+    if !std::fs::symlink_metadata(path)?.file_type().is_file() {
+        return Err(invalid(
+            "Choose a regular local file, not a link, pipe or device.",
+        ));
+    }
+    let mut options = std::fs::OpenOptions::new();
+    options.read(true);
+    #[cfg(target_os = "linux")]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+    }
+    let f = options.open(path)?;
+    if !f.metadata()?.is_file() {
+        return Err(invalid("Choose a regular local file."));
+    }
     if f.metadata()?.len() > MAX_INPUT_BYTES as u64 {
         return Err(invalid("Input exceeds 64 MiB."));
     }
@@ -93,6 +114,16 @@ fn run() -> Result<OutputInfo> {
             directory,
             filename,
         } => (pdf::optimize_lossless(&read(&input)?)?, directory, filename),
+        Request::Ocr {
+            input,
+            directory,
+            filename,
+            language,
+        } => (
+            studio_core::ocr::recognize(&read(&input)?, language, &Default::default())?,
+            directory,
+            filename,
+        ),
         Request::Scan {
             inputs,
             directory,
@@ -148,5 +179,22 @@ fn main() {
             eprintln!("{e}");
             std::process::exit(1);
         }
+    }
+}
+
+#[cfg(test)]
+mod request_security_tests {
+    use super::Request;
+    #[test]
+    fn ocr_requests_cannot_supply_executables_or_engine_arguments() {
+        let mut request = serde_json::json!({
+            "operation": "ocr", "input": "page.png", "directory": "out",
+            "filename": "recognized.txt", "language": "english", "engine": "sh"
+        });
+        assert!(serde_json::from_value::<Request>(request.clone()).is_err());
+        request.as_object_mut().unwrap().remove("engine");
+        assert!(serde_json::from_value::<Request>(request.clone()).is_ok());
+        request["language"] = "eng --psm 0".into();
+        assert!(serde_json::from_value::<Request>(request).is_err());
     }
 }

@@ -1,4 +1,4 @@
-# Checkpoint — 2026-10-16 UTC
+# Checkpoint — 2026-10-17 UTC
 
 Full scope remains in REQUIREMENTS.md. This is functioning development software, not launch completion. Continue ordinary implementation without phase-by-phase approval.
 
@@ -15,13 +15,24 @@ Golden rendering is capture-only; approved regression baselines remain unavailab
 
 ## Work in progress: work/offline-ocr
 
-The experimental branch contains a real Linux Rust CLI Tesseract adapter, UTF-8 text validation/export, bounded model verification, private job staging and child limits. It uses only /usr/bin/tesseract; request/recipe files cannot specify executables or shell commands. It has no Flutter controls yet and no Windows/Android OCR engine packaging. See that branch's OCR-IMPLEMENTATION.md and rust-ocr-cli-smoke.json. The local full suite and actual English/Bangla CLI output checks are recorded separately; do not confuse those with app OCR support.
+Current application code 96686d1f6f6b4fde0b76d623367640a497479ebe includes the Linux Rust Tesseract adapter, typed FRB opaque single-use jobs, cancellable queue waiting, named job states, verified UTF-8 text export and an editable Scanner Studio result screen. Windows/Android OCR capability remains false. The entry is hidden unless the Linux engine exists and all pinned local model/license files verify. The current selected page is freshly adjusted before OCR. No searchable PDF claims.
 
-Experimental commit e467093ef5f52dd80a04e51bcc6453979d1c1d6b passed hosted Linux and Windows compile/boundary checks in run 38948658931. The local full suite passed 32 Rust tests; real English, Bangla and mixed-language CLI checks passed with verified private model copies, source preservation and non-clobber export.
+Verification this session:
+- All 35 local Rust tests passed with real PDFium, including queued cancellation and six OCR boundary/export tests.
+- All 19 selected Flutter behavioral/native tests passed, including real English, Bangla and mixed-language OCR through FRB and editable result population.
+- Additional native tests passed actual Bangla-named UTF-8 save, non-overwrite and invalid-filename recovery without losing edits.
+- Three model-staging boundary tests passed. Actual pinned English/Bangla models and LICENSE staged successfully. Host Tesseract 5.3.4 again returned both clean synthetic phrases exactly; this is narrow integration evidence, not representative accuracy.
+- Two capture-only layout checks passed and were visually inspected: desktop light and 390px dark at 200% text. Captures remain local, not uploaded or treated as approved golden baselines.
+- Flutter analysis is clean after removing unused imports and fixing braces.
+- API commit 84bcbf0 passed hosted Linux/Windows core checks (39022900303); generated bridge source from 39022900304 was SHA-256/ZIP/allowlist verified before applying all six files. Later core run 39023339613 also passed.
 
-Exact next action: implement typed asynchronous OCR/capability APIs, extend the pinned bridge generator workflow to this branch and regenerate FRB bindings, stage only checksum-verified local models and LICENSE for Linux, and add editable recognized-text results only where engine capability is available. Add truthful cancellation, resource/timeout tests, representative accuracy/performance checks and separately audited platform engine packaging before completion claims.
+A real-engine widget test caught an unsendable widget-closure transfer and premature ready status. Text conversion now uses top-level compute callbacks; ready is reported only after the editor transfer settles. Cancellation clears cancellation-only error text, keeps old edited text, and waits for cleanup.
 
-Models were checked from official tessdata_fast commit 87416418657359cb625c412a48b6e1d6d41c29bd. See OCR-ASSETS.md for all hashes and license requirements. Reproducible development-only engine smoke: scripts/verify_ocr_engine.py. No app or test helper silently downloads models.
+The new Linux integration workflow initially needed an unavailable job-level runner context corrected, then an unused-import analysis fix. Run 39023943472 targeting 96686d1 passed all integration/build/startup steps. Artifact 12098096286 was independently checked against outer SHA-256, ZIP CRC, native inventory, all model/license hashes, provenance and its eight-second window startup report; see evidence/experimental-ocr-build-96686d1.json. The workflow explicitly downloads pinned development models; normal application use and the local staging helper never download. Models ship with Apache-2.0 LICENSE and provenance. `/usr/bin/tesseract` remains a system runtime prerequisite and is not bundled.
+
+Model discovery without UST_OCR_TESSDATA also passed through the real Rust CLI using the same executable-parent lookup; output bytes/hash and original preservation are recorded in evidence/ocr-integration-20261017.json. OCR home search/copy corrections passed the four home/workspace tests and clean analysis. Exact next action: integrate this verified slice into main, inspect its Linux/Windows/Android build gates and independently verify each new artifact. Persist the verified new bundle separately from older saved stable builds. Continue the full requirements checklist after this slice; no phase approval is needed.
+
+See ADR-008-offline-ocr.md, OCR-IMPLEMENTATION.md, OCR-ASSETS.md. Models are from official tessdata_fast commit 87416418657359cb625c412a48b6e1d6d41c29bd. The staging helper accepts only checksum-verified local files and refuses existing destinations. System engine redistribution/audit on all platforms, local model import/retention, abnormal-exit temp cleanup, hard parser isolation and broader accuracy/resource/device gates remain open.
 
 ## Recovery details
 
@@ -29,6 +40,6 @@ GitHub is authoritative; user messages have repeatedly reset the scratch checkou
 
 ## Remaining launch work and blockers
 
-OpenCV boundary/perspective/deskew and face assistance; OCR GUI and native engines; manual signature refinement/storage/PDF placement; remaining PDF forms/watermarks/numbering/compression/OCR geometry; flexible photo constraints and fuller print controls; editable application packs and managed cross-studio sources; drag/drop, complete localization, screen-reader/focus/reduced-motion/large-text checks and representative usability; hard isolation for PDF parsers; clean-device/runtime and full transitive license clearance; AppImage and production APK signing. Unchecked requirements are retained, not removed from scope.
+OpenCV boundary/perspective/deskew and face assistance; Windows/Android OCR engines and searchable-PDF geometry; manual signature refinement/storage/PDF placement; remaining PDF forms/watermarks/numbering/compression/OCR geometry; flexible photo constraints and fuller print controls; editable application packs and managed cross-studio sources; drag/drop, complete localization, screen-reader/focus/reduced-motion/large-text checks and representative usability; hard isolation for PDF parsers; clean-device/runtime and full transitive license clearance; AppImage and production APK signing. Unchecked requirements are retained, not removed from scope.
 
 PDF parsing remains in-process and is a production blocker. No perfect OCR, passport acceptance, universal compatibility, secure erasure or commercial-product parity claim.

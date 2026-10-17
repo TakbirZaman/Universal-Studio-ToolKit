@@ -10,6 +10,9 @@ cp rust/target/release/libstudio_core.so "$bundle/lib/"
 test -f native/linux-x64/libpdfium.so
 cp native/linux-x64/libpdfium.so "$bundle/lib/"
 cp -R third_party "$bundle/third_party"
+if [ -n "${UST_OCR_MODEL_SOURCE:-}" ]; then
+  python3 scripts/stage_ocr_models.py --source "$UST_OCR_MODEL_SOURCE" --bundle "$bundle"
+fi
 cp LICENSE README.md "$bundle/"
 cp docs/LIMITATIONS.md "$bundle/KNOWN-LIMITATIONS.md"
 mkdir -p dist

@@ -14,17 +14,17 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 
 No account, service endpoint, telemetry or document upload is implemented. Processing uses the native Rust engine through typed asynchronous Flutter bindings. Original inputs are not modified.
 
-Camera capture, perspective correction, OCR, advanced PDF tools, editable pack presets and the complete recipe/batch interface remain unfinished. Existing forms, annotations, signatures and other unsupported PDF structures are rejected rather than silently discarded. ICC-profiled images are rejected pending validated colour management.
+Android delegated camera capture is compiled but still needs device validation. Perspective correction, platform-complete OCR, advanced PDF tools and editable pack presets remain unfinished. Saved photo recipes, batch retry and scan draft recovery are implemented. Existing forms, annotations, signatures and other unsupported PDF structures are rejected rather than silently discarded. ICC-profiled images are rejected pending validated colour management.
 
 ## Linux development bundle
 
 When included in the delivery archive, extract `dist/universal-studio-linux-x64.tar.gz` into an empty folder, keep its `lib` and `data` directories beside the executable, then run `./universal_studio_toolkit`.
 
-Built on Ubuntu 24.04 x86_64. Requires a graphical session and the usual GTK 3, GL/EGL, GLib, fontconfig and C/C++ runtime libraries. The binary and its library resolution were checked in the build environment; desktop launch and clean-machine verification remain outstanding because display-server sockets were blocked there. Do not infer support for all Linux distributions.
+Built on Ubuntu 24.04 x86_64. Requires a graphical session and the usual GTK 3, GL/EGL, GLib, fontconfig and C/C++ runtime libraries. The packaged application created a window and survived an eight-second startup check on the Ubuntu build host. Clean-machine verification remains outstanding. Do not infer support for all Linux distributions.
 
 `UST_PORTABLE=1 ./universal_studio_toolkit` requests settings storage in `studio-data` beside the executable. A non-writable folder currently falls back to application support storage; the Appearance and privacy dialog explains the fallback. Documents are saved only to the destination you select.
 
-Windows and Android source projects are included, but no verified Windows executable or Android APK is supplied. The Android SAF save adapter still needs compilation and device/provider tests. Release signing must use a private key; no key is included.
+Windows x64 portable ZIP and Android ARM64 APK packaging pass their hosted workflows. Windows packaged-window startup passed on the build host. Android device/camera/document-provider behavior remains unverified. The debug APK is installable for development; the release APK requires private signing. No private signing key is included.
 
 ## Build and test
 
@@ -36,12 +36,13 @@ flutter pub get --enforce-lockfile
 cargo build --locked --manifest-path rust/Cargo.toml
 export UST_PDFIUM_LIBRARY="$PWD/native/linux-x64/libpdfium.so"
 cargo test --locked --manifest-path rust/Cargo.toml
-flutter test
+# Approved visual baselines remain pending; run behavioral/native tests separately.
+flutter test $(find test -name '*_test.dart' ! -name 'visual_test.dart' | sort)
 flutter analyze
 bash scripts/build_linux.sh
 ```
 
-Install Flutter's Linux development prerequisites (Clang, CMake, Ninja, pkg-config, GTK 3 headers). `scripts/linux_sysroot_environment.sh` is an optional environment helper for a locally unpacked development sysroot; development packages are not redistributed as application dependencies. `scripts/dev_environment.sh` describes the original workspace only, not a portable installation path.
+Install Flutter's Linux development prerequisites (Clang, CMake, Ninja, pkg-config, GTK 3 headers). `scripts/linux_sysroot_environment.sh` is an optional environment helper for a locally unpacked development sysroot; development packages are not redistributed as application dependencies. `scripts/dev_environment.sh` locates an adjacent development toolchain directory, optionally overridden by `UST_TOOLCHAIN_ROOT`. It is not needed to run the packaged application.
 
 Regenerate bindings after Rust API changes using `flutter_rust_bridge_codegen generate` with the included configuration. Review generated changes and rebuild the native library before bridge tests.
 
@@ -63,10 +64,16 @@ No representative user tests, accessibility certification, clean-device compatib
 
 ### Lossless PDF optimization (CLI)
 
-Use a request with `operation: "optimize_pdf"`, `input`, `directory`, and `filename`. This uses supported structural optimization only, never rasterizes, and keeps the original bytes if rewriting does not reduce size. Existing conservative PDF structure/protection checks apply. The desktop interface for this operation is pending.
+Use a request with `operation: "optimize_pdf"`, `input`, `directory`, and `filename`. This uses supported structural optimization only, never rasterizes, and keeps the original bytes if rewriting does not reduce size. Existing conservative PDF structure/protection checks apply. The Combine PDFs workspace exposes an opt-in lossless optimization control. It reports actual output size and never silently rasterizes.
 
 ### Hosted development builds
 
 Open the repository Actions tab and select a successful Linux run to download its development artifact. Extract the ZIP, verify SHA256SUMS, then extract the contained tar.gz and run `./universal_studio_toolkit`. The executable needs its adjacent `lib`, `data`, and notices folders. These are development bundles, not clean-device-certified releases. Artifacts expire after three days; a new workflow run reproduces them.
 
-The Android workflow produces an explicitly unsigned ARM64 release candidate. It requires private release signing before installation/distribution. No keystore or signing credentials are stored in this repository.
+The Android workflow produces an installable debug-signed ARM64 APK and an unsigned release candidate. The release candidate requires private signing before installation/distribution. Debug keys can differ across builds; uninstalling to resolve a signing mismatch deletes app-local drafts/settings. No keystore or signing credentials are stored in this repository.
+
+### Experimental offline OCR (Linux)
+
+The Linux OCR integration adds typed English/Bangla/mixed recognition, truthful job states/cancellation and an editable plain-text result screen in Scanner Studio. Its entry is available only with verified local models and `/usr/bin/tesseract`. Current Windows/Android OCR capability is false. This does not produce searchable PDFs.
+
+Explicitly provision model files and their Apache-2.0 license as described in `docs/OCR-ASSETS.md`. `UST_OCR_MODEL_SOURCE=/absolute/local/models bash scripts/build_linux.sh` verifies and stages them beside the executable. Normal application processing never downloads anything. The system Tesseract engine remains a runtime prerequisite; it is not bundled. Recognition is approximate: review the result before saving a UTF-8 `.txt` copy. See `docs/CHECKPOINT.md` for the latest test/build evidence and remaining platform work.

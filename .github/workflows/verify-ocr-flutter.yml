@@ -1,0 +1,65 @@
+name: Verify Linux OCR integration
+on:
+  push:
+    branches: [work/offline-ocr]
+    paths: ['rust/**', 'lib/**', 'test/**', 'scripts/*ocr*', 'scripts/build_linux.sh', '.github/workflows/verify-ocr-flutter.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      UST_CORE_LIBRARY: ${{ github.workspace }}/rust/target/debug/libstudio_core.so
+      UST_PDFIUM_LIBRARY: ${{ github.workspace }}/native/linux-x64/libpdfium.so
+      UST_OCR_TESSDATA: ${{ github.workspace }}/build-ocr-models
+      UST_OCR_MODEL_SOURCE: ${{ github.workspace }}/build-ocr-models
+      UST_OCR_SMOKE_DIR: ${{ github.workspace }}/build/synthetic-ocr-pages
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install development prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev xvfb x11-utils tesseract-ocr python3-pil libraqm0
+          rustup toolchain install 1.99.0 --profile minimal --component rustfmt
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = abaf9c523780a608bd46686fd5e53740a07077f8
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Fetch pinned development models (never an application runtime action)
+        run: |
+          mkdir -p "$UST_OCR_TESSDATA"
+          for name in eng.traineddata ben.traineddata LICENSE; do
+            curl --fail --location --silent --show-error "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/$name" --output "$UST_OCR_TESSDATA/$name"
+          done
+          /usr/bin/python3 scripts/stage_ocr_models.py --source "$UST_OCR_TESSDATA" --bundle "$RUNNER_TEMP/verified-ocr-stage"
+          /usr/bin/python3 scripts/test_stage_ocr_models.py
+          /usr/bin/python3 scripts/create_ocr_test_pages.py --output "$UST_OCR_SMOKE_DIR"
+          /usr/bin/tesseract --version
+      - name: Verify Rust and actual Flutter OCR integration
+        run: |
+          cargo fmt --manifest-path rust/Cargo.toml --check
+          cargo test --locked --manifest-path rust/Cargo.toml
+          cargo build --locked --manifest-path rust/Cargo.toml
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          mapfile -t tests < <(find test -name '*_test.dart' ! -name 'visual_test.dart' | sort)
+          flutter test --no-pub "${tests[@]}"
+      - name: Package and launch experimental application
+        run: |
+          bash scripts/build_linux.sh
+          # Test bundle asset discovery without the development model override.
+          test -f build/linux/x64/release/bundle/ocr/tessdata/LICENSE
+          env -u UST_OCR_TESSDATA xvfb-run -a bash scripts/smoke_linux.sh
+          sha256sum dist/universal-studio-linux-x64.tar.gz > dist/SHA256SUMS
+      - name: Upload experimental bundle (no test pages or recognized text)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: universal-studio-linux-x64-experimental-ocr
+          path: dist/
+          retention-days: 3
+          if-no-files-found: error

@@ -4,6 +4,8 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import 'frb_generated.dart';
+import 'jobs.dart';
+import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`, `from`
@@ -160,6 +162,35 @@ Future<void> validatePreparedOutput({
 /// Lossless structure optimization; retains original bytes if no smaller result exists.
 Future<StudioOutput> optimizePdf({required List<int> data}) =>
     RustLib.instance.api.crateApiOptimizePdf(data: data);
+
+OcrTask createOcrTask() => RustLib.instance.api.crateApiCreateOcrTask();
+
+/// Accepted cancellation wins a race with completion. The engine is killed and
+/// reaped before recognition returns; the UI must await that return.
+bool cancelOcrTask({required OcrTask task}) =>
+    RustLib.instance.api.crateApiCancelOcrTask(task: task);
+
+JobState ocrTaskState({required OcrTask task}) =>
+    RustLib.instance.api.crateApiOcrTaskState(task: task);
+
+Future<bool> ocrAvailable() => RustLib.instance.api.crateApiOcrAvailable();
+
+Future<StudioOutput> recognizeText({
+  required OcrTask task,
+  required List<int> data,
+  required Language language,
+}) => RustLib.instance.api.crateApiRecognizeText(
+  task: task,
+  data: data,
+  language: language,
+);
+
+/// Validate edited UTF-8 on the worker before sharing the normal save service.
+Future<StudioOutput> prepareEditedText({required List<int> data}) =>
+    RustLib.instance.api.crateApiPrepareEditedText(data: data);
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
+abstract class OcrTask implements RustOpaqueInterface {}
 
 /// Byte-based source boundary: Android URIs are resolved by the platform, never treated as paths.
 class StudioOutput {

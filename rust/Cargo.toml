@@ -20,6 +20,9 @@ tempfile = "3"
 zip = { version = "4", default-features = false, features = ["deflate"] }
 sha2 = "0.10"
 
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "=0.2.190"
+
 [dev-dependencies]
 
 # Avoid zero-length object output observed with LLVM 23 parallel code generation.
@@ -30,3 +33,6 @@ codegen-units = 1
 
 [profile.release]
 codegen-units = 1
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

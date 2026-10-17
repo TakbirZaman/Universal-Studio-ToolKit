@@ -1,0 +1,25 @@
+{
+  "date_utc": "2026-10-17",
+  "source_commit": "96686d1f6f6b4fde0b76d623367640a497479ebe",
+  "rust_tests": 35,
+  "flutter_behavioral_native_tests": 19,
+  "staging_tests": 3,
+  "capture_only_layout_checks": 2,
+  "capture_scope": "Desktop light and narrow dark at 200% text; no approved golden regression baseline",
+  "engine": "tesseract 5.3.4 system dependency, not bundled",
+  "accuracy_scope": "Clean synthetic phrases only; representative accuracy unmeasured",
+  "bridge_generation": {
+    "run": 39022900304,
+    "artifact": 12097054247,
+    "sha256": "9e1018c7f22410aa4b41b385362a8560c93c3633d6b0cfde8e1afdaf80f66669",
+    "allowlisted_source_files": 6
+  },
+  "adjacent_model_discovery": {
+    "override_unset": true,
+    "matched_expected_text": true,
+    "saved_bytes": 21,
+    "sha256": "22f111095bd8e62fb105d8c6dbad6bd176411b0852c3168ccb0d594ed3d0691e",
+    "source_unchanged": true,
+    "scope": "Actual Rust CLI uses identical executable-parent asset discovery; packaged GUI startup gate is separate"
+  }
+}

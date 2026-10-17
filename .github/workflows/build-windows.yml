@@ -2,7 +2,7 @@ name: Verify and build Windows
 on:
   push:
     branches: [main]
-    paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'scripts/*windows*', '.github/workflows/build-windows.yml']
+    paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'third_party/**', 'scripts/*windows*', '.github/workflows/build-windows.yml']
   workflow_dispatch:
 permissions:
   contents: read

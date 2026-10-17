@@ -1,0 +1,88 @@
+   Compiling studio_core v0.1.0 (/workspace/scratch/72c326c6fe81/universal-studio-current/rust)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 30.57s
+     Running unittests src/lib.rs (rust/target/debug/deps/studio_core-65dbb9fd5b0fc0bc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/studio.rs (rust/target/debug/deps/studio-5bca4b562e2be1ec)
+
+running 1 test
+test request_security_tests::ocr_requests_cannot_supply_executables_or_engine_arguments ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ocr.rs (rust/target/debug/deps/ocr-5033859b623c53bd)
+
+running 4 tests
+test pre_cancelled_ocr_does_not_decode_or_start_engine ... ok
+test corrupted_local_models_are_rejected ... ok
+test model_devices_and_pipes_do_not_block_validation ... ok
+test editable_text_is_verified_utf8_and_saved_without_overwrite ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/recipes_export.rs (rust/target/debug/deps/recipes_export-a52ba5bb2f5640e1)
+
+running 1 test
+test crop_roundtrip_and_checked_bounds ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/rendering.rs (rust/target/debug/deps/rendering-7d1a2fe31e5755f1)
+
+running 2 tests
+test lossless_optimization_preserves_selectable_text_and_rendering ... ok
+test pdfium_renders_real_pages_and_exports_images ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.55s
+
+     Running tests/scanner.rs (rust/target/debug/deps/scanner-a275434862809b3e)
+
+running 3 tests
+test scan_session_reorders_and_checks_edits ... ok
+test scan_modes_rotate_without_mutating_source ... ok
+test quality_warnings_are_advisory_and_detect_known_cases ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
+
+     Running tests/storage.rs (rust/target/debug/deps/storage-9a46ca4488f1b9ce)
+
+running 3 tests
+test settings_reject_unsupported_values ... ok
+test recipes_roundtrip_with_unicode_names_and_bound_parameters ... ok
+test settings_survive_restart_and_history_is_opt_in ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/workflows.rs (rust/target/debug/deps/workflows-d084ab6aafee8447)
+
+running 18 tests
+test exact_limit_semantics ... ok
+test exif_normalizes_all_eight_orientations ... ok
+test merge_extract_reorder_rotation ... ok
+test batch_keeps_successes ... ok
+test pdf_rejects_structures_it_cannot_preserve ... ok
+test physical_dimensions_use_explicit_dpi ... ok
+test pack_manifest_matches_actual_archive ... ok
+test ranges_are_bounded ... ok
+test exports_preserve_existing_and_support_bangla ... ok
+test reject_invalid_dimensions_and_untrusted_bytes ... ok
+test pack_slots_enforce_constraints ... ok
+test archive_validation_reopens_document_instead_of_trusting_manifest_hash ... ok
+test recipes_reject_code_and_wrong_order ... ok
+test impossible_constraints_do_not_return_violating_output ... ok
+test print_sheet_validates_geometry ... ok
+test signature_has_transparency ... ok
+test pack_rejects_mislabeled_formats_and_extensions ... ok
+test fixed_dimensions_and_actual_limit ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.29s
+
+   Doc-tests studio_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
