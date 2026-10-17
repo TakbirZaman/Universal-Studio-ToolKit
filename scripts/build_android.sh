@@ -27,3 +27,19 @@ cp build/app/outputs/flutter-apk/app-debug.apk dist/universal-studio-android-arm
 
 "$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 4 dist/universal-studio-android-arm64-unsigned.apk
 "$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 4 dist/universal-studio-android-arm64-debug.apk
+
+# Installable optimized development build. Uses only the standard, locally
+# generated debug identity; production signing remains a separate private step.
+studio_debug_key="$HOME/.android/debug.keystore"
+test -f "$studio_debug_key"
+"$ANDROID_HOME/build-tools/36.0.0/apksigner" sign \
+  --ks "$studio_debug_key" --ks-key-alias androiddebugkey \
+  --ks-pass pass:android --key-pass pass:android --v4-signing-enabled false \
+  --out dist/universal-studio-android-arm64-development-release.apk \
+  dist/universal-studio-android-arm64-unsigned.apk
+"$ANDROID_HOME/build-tools/36.0.0/apksigner" verify dist/universal-studio-android-arm64-development-release.apk
+"$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 4 dist/universal-studio-android-arm64-development-release.apk
+python3 scripts/test_android_privacy.py
+for studio_apk in dist/universal-studio-android-arm64-unsigned.apk dist/universal-studio-android-arm64-debug.apk dist/universal-studio-android-arm64-development-release.apk; do
+  python3 scripts/verify_android_privacy.py "$studio_apk" "$ANDROID_HOME/build-tools/36.0.0/aapt2"
+done
