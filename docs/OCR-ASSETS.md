@@ -1,4 +1,4 @@
-# Offline OCR assets — audited prerequisites, app integration pending
+# Offline OCR assets — pinned models and platform prerequisites
 
 Official tessdata_fast commit 87416418657359cb625c412a48b6e1d6d41c29bd provides English `eng` and Bangla/Bengali `ben` integer LSTM models. Primary documentation requires OEM 1 for these models. The repository's Apache 2.0 license was read separately from the Tesseract engine license and Noto font license. Retain copyright/license notices when bundling; do not treat a free download alone as redistribution permission.
 
@@ -12,7 +12,7 @@ Host Tesseract 5.3.4 recognized one clean synthetic English phrase and one clean
 
 Noto Sans Bengali is separately bundled as the app's offline fallback font, unchanged under SIL OFL 1.1, with copyright, license and pinned source/hash records in third_party. Sample glyph coverage was checked with FontTools. This does not establish complete Bangla localization or screen-reader support.
 
-Remaining work: resource-limited Tesseract adapter, typed application workflow, editable OCR results, verified packaging of engine and its transitive native dependencies on each platform, local asset import/retention, broader printed-document accuracy/performance evaluation. Searchable PDF remains unavailable until geometry and reading order are validated. No OCR control is exposed as functional before integration.
+The experimental Linux branch implements a resource-limited Tesseract subprocess adapter, typed Flutter workflow and editable plain-text export. The model staging helper verifies all three pinned files, retains the license and writes provenance. Remaining work includes verified engine/native-dependency packaging on each platform, model import/retention controls and broader printed-document accuracy/performance evaluation. Searchable PDF remains unavailable until geometry and reading order are validated. Scanner Studio exposes recognition only when the local Linux engine and verified models are available. Windows/Android OCR remains unavailable.
 
 Primary sources:
 - https://github.com/tesseract-ocr/tessdata_fast/tree/87416418657359cb625c412a48b6e1d6d41c29bd

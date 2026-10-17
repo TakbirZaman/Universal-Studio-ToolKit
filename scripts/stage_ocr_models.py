@@ -4,6 +4,7 @@ The Linux engine remains a separately installed /usr/bin/tesseract dependency.
 """
 import argparse
 import hashlib
+import json
 import os
 from pathlib import Path
 import shutil
@@ -44,6 +45,14 @@ def stage(source: Path, bundle: Path):
                 os.fsync(output.fileno())
             if (temporary / name).read_bytes() != data:
                 raise IOError('Staged OCR file failed read-back verification.')
+        provenance = {
+            'source': 'https://github.com/tesseract-ocr/tessdata_fast',
+            'revision': '87416418657359cb625c412a48b6e1d6d41c29bd',
+            'license': 'Apache-2.0; see LICENSE',
+            'files': {name: {'bytes': length, 'sha256': digest} for name, (length, digest) in MODELS.items()},
+            'engine': 'Not bundled; requires system /usr/bin/tesseract on Linux',
+        }
+        (temporary / 'PROVENANCE.json').write_text(json.dumps(provenance, indent=2) + '\n', encoding='utf-8')
         temporary.rename(destination)
     finally:
         if temporary.exists():

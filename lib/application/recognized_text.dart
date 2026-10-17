@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
+import 'package:flutter/foundation.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -9,6 +9,18 @@ import '../src/rust/api.dart' as core;
 import '../src/rust/jobs.dart';
 import '../src/rust/ocr.dart';
 import 'export_service.dart';
+
+String _decodeText(Uint8List bytes) => utf8.decode(bytes);
+Uint8List _encodeText(String edited) {
+  if (edited.length > 4 * 1024 * 1024) {
+    throw const FormatException('Text must be at most 4 MiB in UTF-8.');
+  }
+  final encoded = Uint8List.fromList(utf8.encode(edited));
+  if (encoded.length > 4 * 1024 * 1024) {
+    throw const FormatException('Text must be at most 4 MiB in UTF-8.');
+  }
+  return encoded;
+}
 
 /// Plain text only. Searchable PDF export needs separate geometry validation.
 class RecognizedTextScreen extends StatefulWidget {
@@ -47,8 +59,17 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       saved = null;
     });
     timer = Timer.periodic(const Duration(milliseconds: 150), (_) {
-      if (mounted) setState(() => state = core.ocrTaskState(task: handle));
+      final progress = core.ocrTaskState(task: handle);
+      // The engine can finish before UTF-8 transfer/editor preparation. Only
+      // report a terminal state after the entire UI operation has settled.
+      if (mounted &&
+          (progress == JobState.queued ||
+              progress == JobState.running ||
+              progress == JobState.cancelling)) {
+        setState(() => state = progress);
+      }
     });
+    var transferred = false;
     try {
       final result = await core.recognizeText(
         task: handle,
@@ -56,7 +77,8 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
         language: language,
       );
       final bytes = result.bytes;
-      final recognized = await Isolate.run(() => utf8.decode(bytes));
+      final recognized = await compute(_decodeText, bytes);
+      transferred = true;
       if (mounted) setState(() => text.text = recognized);
     } catch (e) {
       if (mounted) setState(() => error = e.toString());
@@ -67,7 +89,9 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       if (mounted) {
         setState(() {
           task = null;
-          state = finalState;
+          state = finalState == JobState.succeeded && !transferred
+              ? JobState.failed
+              : finalState;
           if (finalState == JobState.cancelled) error = null;
           busy = false;
         });
@@ -88,13 +112,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       if (edited.length > 4 * 1024 * 1024) {
         throw const FormatException('Text must be at most 4 MiB in UTF-8.');
       }
-      final bytes = await Isolate.run(() {
-        final encoded = Uint8List.fromList(utf8.encode(edited));
-        if (encoded.length > 4 * 1024 * 1024) {
-          throw const FormatException('Text must be at most 4 MiB in UTF-8.');
-        }
-        return encoded;
-      });
+      final bytes = await compute(_encodeText, edited);
       final output = await core.prepareEditedText(data: bytes);
       final location = await ExportService.saveCopy(output, filename.text);
       if (mounted && location != null) {

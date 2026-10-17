@@ -1,6 +1,6 @@
 # Feature / platform status
 
-Updated 2026-10-16. This is an implementation in progress, not launch completion.
+Updated 2026-10-17. This is an implementation in progress, not launch completion.
 
 | Capability | Rust Linux evidence | Flutter integration | Windows | Android |
 |---|---|---|---|---|
@@ -21,7 +21,8 @@ Updated 2026-10-16. This is an implementation in progress, not launch completion
 | Local scan drafts and retention | Hosted storage tests passed | Save, restore and delete connected | Unverified | Device testing pending |
 | PNG preview backgrounds | Hosted widget test passed | Checkerboard, light and dark | Unverified | Unverified |
 | Manual camera capture | Channel contract tests passed | Scoped Android adapter and capture control | Image import only | APK compiled; device behavior pending |
-| OpenCV geometry/OCR | Not implemented | Not exposed as working | Pending | Pending |
+| OpenCV geometry/face assistance | Not implemented | Not exposed as working | Pending | Pending |
+| Experimental printed-text OCR | Real English/Bangla/mixed recognition and UTF-8 validation tested | Typed bridge, cancellation and editable editor tested locally; hosted packaging pending | Core compiles; recognition unavailable | Recognition unavailable |
 | Distribution | Core executable compiled | Linux x64 release bundle built; display launch blocked | Portable ZIP built, startup gate passed | ARM64 debug and unsigned APKs built |
 
 Hosted Linux run 38862360058 passed 24 Rust tests, selected Flutter behavioral/native tests, analysis, capture-only rendering, release build and dependency resolution. Android run 38863568022 passed ARM64 APK packaging, debug signature and ZIP/ELF 16 KiB checks. Windows run 38864343687 passed its native tests, release build and packaged-window startup check with bundled release CRT. Exact hashes and source commits: evidence/development-builds-20261016.json.
