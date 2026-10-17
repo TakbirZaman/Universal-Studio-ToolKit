@@ -57,3 +57,28 @@ fn model_devices_and_pipes_do_not_block_validation() {
             .expect("Model validation blocked on a pipe")
     );
 }
+
+#[test]
+fn typed_ocr_handle_is_single_use_and_cancellation_is_truthful() {
+    use studio_core::{api, jobs::JobState};
+    let task = api::create_ocr_task();
+    assert_eq!(api::ocr_task_state(&task), JobState::Queued);
+    assert!(api::cancel_ocr_task(&task));
+    assert_eq!(api::ocr_task_state(&task), JobState::Cancelling);
+    assert!(!api::cancel_ocr_task(&task));
+    assert!(api::recognize_text(&task, vec![], ocr::Language::English).is_err());
+    assert_eq!(api::ocr_task_state(&task), JobState::Cancelled);
+    assert!(!api::cancel_ocr_task(&task));
+    assert!(api::recognize_text(&task, vec![], ocr::Language::English).is_err());
+    assert_eq!(api::ocr_task_state(&task), JobState::Cancelled);
+}
+
+#[test]
+fn edited_text_uses_the_verified_export_boundary() {
+    use studio_core::api;
+    let output = api::prepare_edited_text("বাংলা edited".as_bytes().to_vec()).unwrap();
+    assert_eq!(output.format, "txt");
+    assert_eq!(output.bytes, "বাংলা edited".as_bytes());
+    assert!(api::prepare_edited_text(vec![0xff]).is_err());
+    assert!(api::prepare_edited_text(vec![b'a'; 4 * 1024 * 1024 + 1]).is_err());
+}

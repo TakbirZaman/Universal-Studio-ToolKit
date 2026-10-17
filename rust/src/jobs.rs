@@ -72,3 +72,27 @@ pub fn serial<T>(f: impl FnOnce() -> Result<T>) -> Result<T> {
         .map_err(|_| invalid("Processing service needs to be restarted."))?;
     f()
 }
+
+/// Wait for the bounded engine slot without making a queued cancellation wait
+/// for an unrelated document to finish. Running engines own their stop policy.
+pub fn serial_cancellable<T>(cancel: &Cancellation, f: impl FnOnce() -> Result<T>) -> Result<T> {
+    loop {
+        if cancel.is_cancelled() {
+            return Err(StudioError::Cancelled);
+        }
+        match ENGINE.try_lock() {
+            Ok(_guard) => {
+                if cancel.is_cancelled() {
+                    return Err(StudioError::Cancelled);
+                }
+                return f();
+            }
+            Err(std::sync::TryLockError::WouldBlock) => {
+                std::thread::sleep(std::time::Duration::from_millis(25));
+            }
+            Err(std::sync::TryLockError::Poisoned(_)) => {
+                return Err(invalid("Processing service needs to be restarted."));
+            }
+        }
+    }
+}
