@@ -4,6 +4,7 @@ cd "$(dirname "$0")/.."
 : "${ANDROID_HOME:?Set ANDROID_HOME to the installed Android SDK}"
 : "${UST_PDFIUM_ANDROID_ARCHIVE:?Supply the audited PDFium Android arm64 archive}"
 export CI=true FLUTTER_SUPPRESS_ANALYTICS=true
+python3 scripts/notice_provenance.py
 ndk="$ANDROID_HOME/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin"
 test -x "$ndk/aarch64-linux-android24-clang"
 export CC_aarch64_linux_android="$ndk/aarch64-linux-android24-clang"

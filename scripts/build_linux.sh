@@ -2,6 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export CI=true FLUTTER_SUPPRESS_ANALYTICS=true
+python3 scripts/notice_provenance.py
 cargo build --manifest-path rust/Cargo.toml --release --locked
 flutter pub get --enforce-lockfile
 flutter build linux --release --no-pub

@@ -1,0 +1,11 @@
+{
+  "date_utc": "2026-10-17",
+  "dependency_records": 256,
+  "notice_file_references": 471,
+  "dart_versions_recorded": 71,
+  "locked_source_checksums_recorded": 252,
+  "sdk_source_revisions_recorded": 4,
+  "boundary_tests_passed": 4,
+  "license_obligations_cleared": false,
+  "scope": "Lockfile coverage and exact retained notice integrity; no automatic license classification or redistribution clearance"
+}
