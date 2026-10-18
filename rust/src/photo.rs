@@ -203,7 +203,26 @@ pub fn process_cancellable(
     if cancel() {
         return Err(StudioError::Cancelled);
     }
+    let user_budget = o
+        .max_bytes
+        .map(|limit| {
+            limit.bytes().map(|bytes| {
+                if limit.strict {
+                    bytes.saturating_sub(1)
+                } else {
+                    bytes
+                }
+            })
+        })
+        .transpose()?;
+    let budget = user_budget
+        .unwrap_or(MAX_INPUT_BYTES as u64)
+        .min(MAX_INPUT_BYTES as u64) as usize;
+    if budget == 0 {
+        return Err(StudioError::Impossible);
+    }
     let img = prepare(data, o)?;
+    let mut resource_limited = false;
     let mut best = None;
     match o.format {
         OutputFormat::Jpeg => {
@@ -212,12 +231,19 @@ pub fn process_cancellable(
                 if cancel() {
                     return Err(StudioError::Cancelled);
                 }
-                let mut bytes = Vec::new();
-                let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, q);
+                let mut writer = crate::buffer::BoundedBuffer::new(budget);
+                let mut encoder =
+                    image::codecs::jpeg::JpegEncoder::new_with_quality(&mut writer, q);
                 if let Some(dpi) = o.output_dpi {
                     encoder.set_pixel_density(image::codecs::jpeg::PixelDensity::dpi(dpi));
                 }
-                encoder.encode_image(&img)?;
+                let encoded = encoder.encode_image(&img);
+                if writer.exceeded {
+                    resource_limited = true;
+                    continue;
+                }
+                encoded?;
+                let bytes = writer.into_inner();
                 if o.max_bytes
                     .map(|l| l.accepts(bytes.len()))
                     .transpose()?
@@ -229,12 +255,15 @@ pub fn process_cancellable(
             }
         }
         OutputFormat::Png => {
-            let bytes = if let Some(dpi) = o.output_dpi {
-                crate::density::encode_png(&img, dpi)?
-            } else {
-                let mut buf = Cursor::new(Vec::new());
-                img.write_to(&mut buf, ImageFormat::Png)?;
-                buf.into_inner()
+            let bytes = match crate::density::encode_png_limited(&img, o.output_dpi, budget) {
+                Ok(bytes) => bytes,
+                Err(StudioError::ResourceLimit(_))
+                    if user_budget.is_some_and(|limit| limit <= MAX_INPUT_BYTES as u64) =>
+                {
+                    return Err(StudioError::Impossible);
+                }
+                Err(StudioError::ResourceLimit(_))=>return Err(StudioError::ResourceLimit("PNG copy exceeds the 64 MiB export budget. Reduce dimensions or choose JPEG with an explicit background if needed.".into())),
+                Err(error) => return Err(error),
             };
             if o.max_bytes
                 .map(|l| l.accepts(bytes.len()))
@@ -245,7 +274,7 @@ pub fn process_cancellable(
             }
         }
     }
-    let (bytes, quality) = best.ok_or(StudioError::Impossible)?;
+    let (bytes, quality)=match best {Some(best)=>best,None if resource_limited && user_budget.is_none_or(|limit|limit>MAX_INPUT_BYTES as u64)=>return Err(StudioError::ResourceLimit("Image copy exceeds the 64 MiB export budget. Reduce dimensions or choose a smaller output format.".into())),None=>return Err(StudioError::Impossible)};
     if cancel() {
         return Err(StudioError::Cancelled);
     }
@@ -317,9 +346,11 @@ pub(crate) fn display_preview(img: &DynamicImage, max_pixels: u32) -> Result<Pre
         return Err(invalid("Image preview size must be 128–1600 pixels."));
     }
     let img = img.thumbnail(max_pixels, max_pixels).to_rgba8();
-    let mut bytes = Cursor::new(Vec::new());
-    DynamicImage::ImageRgba8(img.clone()).write_to(&mut bytes, ImageFormat::Png)?;
-    let data = bytes.into_inner();
+    let data = crate::density::encode_png_limited(
+        &DynamicImage::ImageRgba8(img.clone()),
+        None,
+        MAX_INPUT_BYTES,
+    )?;
     let output = PreparedOutput {
         info: OutputInfo {
             format: "png".into(),

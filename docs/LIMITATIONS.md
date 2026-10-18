@@ -23,3 +23,5 @@
 - Export names reject Windows reserved device names, including COM/LPT with superscript ¹/²/³ (Microsoft primary naming documentation checked 2026-10-18: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file). Bangla names remain accepted without renaming. This is not a claim of identical filename/collision behavior across every document provider or filesystem.
 
 - Custom print-sheet controls are implemented/tested on work/print-layout, with source pixels preserved by default and optional explicit resampling. They are not in the saved main27c8b3d builds until the candidate is packaged and integrated. Printer output remains unverified.
+
+- Streaming image encoding on work/image-encoding-limits removes full PNG compressed/pixel-copy intermediates and enforces encoded byte budgets while writing. Core and interface checks pass locally; platform packaging is pending. This is not a hard application-wide memory limit or hostile-parser sandbox.
