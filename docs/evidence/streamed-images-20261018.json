@@ -20,5 +20,44 @@
   "invalid_output_never_saved": true,
   "hard_process_memory_cap": false,
   "platform_packaging_verified": false,
-  "license_obligations_cleared": false
+  "license_obligations_cleared": false,
+  "independent_saved_density": {
+    "scope": "Synthetic saved outputs only; not printer or application acceptance testing",
+    "cases": [
+      {
+        "format": "jpeg",
+        "pixels": [
+          413,
+          531
+        ],
+        "pillow_dpi": [
+          300,
+          300
+        ],
+        "bytes": 48907,
+        "sha256": "0e1d37d4b151d07ae84070d3a9976348d4303e3d5c7e5e2fcc2343935df11af8",
+        "original_unchanged": true,
+        "existing_output_preserved": true,
+        "exif_absent": true,
+        "icc_absent": true
+      },
+      {
+        "format": "png",
+        "pixels": [
+          413,
+          531
+        ],
+        "pillow_dpi": [
+          299.9994,
+          299.9994
+        ],
+        "bytes": 8402,
+        "sha256": "4c7dc27d617d1d92f61ab5dc0dbefc9c5403a26bdf1dcb69d00817b9ae373a57",
+        "original_unchanged": true,
+        "existing_output_preserved": true,
+        "exif_absent": true,
+        "icc_absent": true
+      }
+    ]
+  }
 }
