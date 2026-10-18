@@ -16,3 +16,5 @@ Active next slice (2026-10-17): physical photo size with explicit DPI. Backend e
 Active 2026-10-18: scanner session streaming and validated display previews pass local native/interface checks. Finish platform packaging and Android compiled backup-resource verification before integration. Next implement manual scan corner/perspective correction with a validated native adapter; full OpenCV platform/license work remains required.
 
 2026-10-18 print slice: custom paper/margins/spacing/guides and explicit sampling DPI pass 52 Rust/27 Flutter tests and independent saved PDF inspection locally. Complete platform packaging before integration; keep original-pixel default and actual-size instructions. Next prioritize manual scan perspective correction/native OpenCV integration or editable application-pack slots, while preserving the full requirements checklist.
+
+2026-10-18 image resource slice: streamed PNG rows/chunks and early JPEG/PNG byte limits pass 57 Rust/27 Flutter checks locally. Run platform packaging and preserve the independently saved main27 artifacts until newer builds verify. Do not claim process-wide isolation from encoded-byte limits.

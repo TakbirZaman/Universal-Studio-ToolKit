@@ -74,9 +74,7 @@ fn prepare(data: &[u8], options: &ScanOptions) -> Result<(image::DynamicImage, V
 }
 pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
     let (img, advisories) = prepare(data, options)?;
-    let mut bytes = std::io::Cursor::new(Vec::new());
-    img.write_to(&mut bytes, image::ImageFormat::Png)?;
-    let bytes = bytes.into_inner();
+    let bytes = crate::density::encode_png_limited(&img, None, MAX_INPUT_BYTES)?;
     let mut findings=vec![ValidationFinding{advisory:false,code:"scan_adjusted".into(),message:"Page adjustments encoded to PNG and reopened. Original pixels are retained separately by the session.".into(),passed:true}];
     for a in advisories {
         findings.push(ValidationFinding {

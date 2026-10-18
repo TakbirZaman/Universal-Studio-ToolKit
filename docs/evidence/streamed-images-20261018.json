@@ -1,0 +1,24 @@
+{
+  "date_utc": "2026-10-18",
+  "rust_tests": 57,
+  "selected_flutter_tests": 27,
+  "analysis": "no issues",
+  "native_bridge": "existing print/scanner API signatures unchanged; actual interface suite passed",
+  "png_supported_layouts": [
+    "luma8",
+    "luma_alpha8",
+    "rgb8",
+    "rgba8",
+    "luma16",
+    "luma_alpha16",
+    "rgb16",
+    "rgba16"
+  ],
+  "exact_sample_and_density_roundtrip": true,
+  "exact_byte_budget_boundary": true,
+  "jpeg_candidates_verified_against_fresh_source_encoder": true,
+  "invalid_output_never_saved": true,
+  "hard_process_memory_cap": false,
+  "platform_packaging_verified": false,
+  "license_obligations_cleared": false
+}

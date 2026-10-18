@@ -12,78 +12,96 @@ pub fn validate_dpi(dpi: u16) -> Result<()> {
 }
 
 pub fn encode_png(image: &DynamicImage, dpi: u16) -> Result<Vec<u8>> {
-    validate_dpi(dpi)?;
-    let mut bytes = Vec::new();
-    let mut encoder = png::Encoder::new(&mut bytes, image.width(), image.height());
-    encoder.set_compression(png::Compression::Fast);
-    let per_metre = (f64::from(dpi) / 0.0254).round() as u32;
-    encoder.set_pixel_dims(Some(png::PixelDimensions {
-        xppu: per_metre,
-        yppu: per_metre,
-        unit: png::Unit::Meter,
-    }));
-    let (color, depth, pixels) = match image {
-        DynamicImage::ImageLuma8(value) => (
-            png::ColorType::Grayscale,
-            png::BitDepth::Eight,
-            value.as_raw().clone(),
-        ),
-        DynamicImage::ImageLumaA8(value) => (
-            png::ColorType::GrayscaleAlpha,
-            png::BitDepth::Eight,
-            value.as_raw().clone(),
-        ),
-        DynamicImage::ImageRgb8(value) => (
-            png::ColorType::Rgb,
-            png::BitDepth::Eight,
-            value.as_raw().clone(),
-        ),
-        DynamicImage::ImageRgba8(value) => (
-            png::ColorType::Rgba,
-            png::BitDepth::Eight,
-            value.as_raw().clone(),
-        ),
-        DynamicImage::ImageLuma16(value) => (
-            png::ColorType::Grayscale,
-            png::BitDepth::Sixteen,
-            big_endian(value.as_raw()),
-        ),
-        DynamicImage::ImageLumaA16(value) => (
-            png::ColorType::GrayscaleAlpha,
-            png::BitDepth::Sixteen,
-            big_endian(value.as_raw()),
-        ),
-        DynamicImage::ImageRgb16(value) => (
-            png::ColorType::Rgb,
-            png::BitDepth::Sixteen,
-            big_endian(value.as_raw()),
-        ),
-        DynamicImage::ImageRgba16(value) => (
-            png::ColorType::Rgba,
-            png::BitDepth::Sixteen,
-            big_endian(value.as_raw()),
-        ),
-        _ => return Err(invalid("This PNG pixel representation is not supported.")),
-    };
-    encoder.set_color(color);
-    encoder.set_depth(depth);
-    let mut writer = encoder
-        .write_header()
-        .map_err(|_| invalid("Couldn’t encode the PNG print settings."))?;
-    writer
-        .write_image_data(&pixels)
-        .map_err(|_| invalid("Couldn’t encode the PNG pixels."))?;
-    writer
-        .finish()
-        .map_err(|_| invalid("Couldn’t finish the PNG copy."))?;
-    Ok(bytes)
+    encode_png_limited(image, Some(dpi), MAX_INPUT_BYTES)
 }
 
-fn big_endian(values: &[u16]) -> Vec<u8> {
-    values
-        .iter()
-        .flat_map(|value| value.to_be_bytes())
-        .collect()
+/// Streaming IDAT output avoids png::write_image_data's full compressed-image
+/// intermediate. Borrow 8-bit pixels and convert 16-bit samples one row at a time.
+pub(crate) fn encode_png_limited(
+    image: &DynamicImage,
+    dpi: Option<u16>,
+    limit: usize,
+) -> Result<Vec<u8>> {
+    use std::io::Write;
+    if let Some(dpi) = dpi {
+        validate_dpi(dpi)?;
+    }
+    if image.width() == 0
+        || image.height() == 0
+        || image.width() > 12000
+        || image.height() > 12000
+        || image.width() as u64 * image.height() as u64 > MAX_PIXELS
+    {
+        return Err(invalid("PNG dimensions exceed the supported image limits."));
+    }
+    let (color, depth, channels) = match image {
+        DynamicImage::ImageLuma8(_) => (png::ColorType::Grayscale, png::BitDepth::Eight, 1),
+        DynamicImage::ImageLumaA8(_) => (png::ColorType::GrayscaleAlpha, png::BitDepth::Eight, 2),
+        DynamicImage::ImageRgb8(_) => (png::ColorType::Rgb, png::BitDepth::Eight, 3),
+        DynamicImage::ImageRgba8(_) => (png::ColorType::Rgba, png::BitDepth::Eight, 4),
+        DynamicImage::ImageLuma16(_) => (png::ColorType::Grayscale, png::BitDepth::Sixteen, 1),
+        DynamicImage::ImageLumaA16(_) => {
+            (png::ColorType::GrayscaleAlpha, png::BitDepth::Sixteen, 2)
+        }
+        DynamicImage::ImageRgb16(_) => (png::ColorType::Rgb, png::BitDepth::Sixteen, 3),
+        DynamicImage::ImageRgba16(_) => (png::ColorType::Rgba, png::BitDepth::Sixteen, 4),
+        _ => return Err(invalid("This PNG pixel representation is not supported.")),
+    };
+    let mut bytes = crate::buffer::BoundedBuffer::new(limit.min(MAX_INPUT_BYTES));
+    let encoded = (|| -> Result<()> {
+        let mut encoder = png::Encoder::new(&mut bytes, image.width(), image.height());
+        encoder.set_compression(png::Compression::Fast);
+        encoder.set_color(color);
+        encoder.set_depth(depth);
+        if let Some(dpi) = dpi {
+            let per_metre = (f64::from(dpi) / 0.0254).round() as u32;
+            encoder.set_pixel_dims(Some(png::PixelDimensions {
+                xppu: per_metre,
+                yppu: per_metre,
+                unit: png::Unit::Meter,
+            }));
+        }
+        let mut writer = encoder
+            .write_header()
+            .map_err(|_| invalid("Couldn’t encode the PNG header."))?;
+        {
+            let mut stream = writer
+                .stream_writer_with_size(16 * 1024)
+                .map_err(|_| invalid("Couldn’t start the PNG copy."))?;
+            if depth == png::BitDepth::Eight {
+                stream.write_all(image.as_bytes())?;
+            } else {
+                let samples = match image {
+                    DynamicImage::ImageLuma16(v) => v.as_raw(),
+                    DynamicImage::ImageLumaA16(v) => v.as_raw(),
+                    DynamicImage::ImageRgb16(v) => v.as_raw(),
+                    DynamicImage::ImageRgba16(v) => v.as_raw(),
+                    _ => unreachable!(),
+                };
+                let row_samples = image.width() as usize * channels;
+                let mut row = Vec::with_capacity(row_samples * 2);
+                for samples in samples.chunks(row_samples) {
+                    row.clear();
+                    for value in samples {
+                        row.extend_from_slice(&value.to_be_bytes());
+                    }
+                    stream.write_all(&row)?;
+                }
+            }
+            stream
+                .finish()
+                .map_err(|_| invalid("Couldn’t finish the PNG pixels."))?;
+        }
+        writer
+            .finish()
+            .map_err(|_| invalid("Couldn’t finish the PNG copy."))?;
+        Ok(())
+    })();
+    if bytes.exceeded {
+        return Err(StudioError::ResourceLimit("PNG copy exceeds the encoded byte budget. Reduce dimensions or change the file-size requirement.".into()));
+    }
+    encoded?;
+    Ok(bytes.into_inner())
 }
 
 fn density(x: f64, y: f64) -> Result<Option<PrintDensity>> {
@@ -180,4 +198,82 @@ fn read_jfif(data: &[u8]) -> Result<Option<PrintDensity>> {
         offset = end;
     }
     Err(invalid("JPEG header ended before image data."))
+}
+
+#[cfg(test)]
+mod streaming_tests {
+    use super::*;
+    #[test]
+    fn bounded_stream_preserves_samples_and_print_density() {
+        use image::{ImageBuffer, Luma, LumaA, Rgb, Rgba};
+        let cases = vec![
+            DynamicImage::ImageLuma8(ImageBuffer::from_fn(5, 3, |x, y| {
+                Luma([(x * 23 + y * 41) as u8])
+            })),
+            DynamicImage::ImageLumaA8(ImageBuffer::from_fn(5, 3, |x, y| {
+                LumaA([(x * 23) as u8, (y * 90) as u8])
+            })),
+            DynamicImage::ImageRgb8(ImageBuffer::from_fn(5, 3, |x, y| {
+                Rgb([x as u8, y as u8, 123])
+            })),
+            DynamicImage::ImageRgba8(ImageBuffer::from_fn(5, 3, |x, y| {
+                Rgba([x as u8, y as u8, 123, 77])
+            })),
+            DynamicImage::ImageLuma16(ImageBuffer::from_fn(5, 3, |x, y| {
+                Luma([(x * 4097 + y * 257) as u16])
+            })),
+            DynamicImage::ImageLumaA16(ImageBuffer::from_fn(5, 3, |x, y| {
+                LumaA([(x * 4097) as u16, (y * 12345) as u16])
+            })),
+            DynamicImage::ImageRgb16(ImageBuffer::from_fn(5, 3, |x, y| {
+                Rgb([x as u16 * 4097, y as u16 * 257, 12345])
+            })),
+            DynamicImage::ImageRgba16(ImageBuffer::from_fn(5, 3, |x, y| {
+                Rgba([x as u16 * 4097, y as u16 * 257, 12345, 65534])
+            })),
+        ];
+        for image in cases {
+            for dpi in [None, Some(300)] {
+                let bytes = encode_png_limited(&image, dpi, 1024 * 1024).unwrap();
+                let decoded = image::load_from_memory(&bytes).unwrap();
+                assert_eq!(decoded.color(), image.color());
+                assert_eq!(decoded.as_bytes(), image.as_bytes());
+                let actual = read(&bytes, OutputFormat::Png).unwrap();
+                if dpi.is_some() {
+                    assert!((actual.unwrap().x_dpi - 300.).abs() < 0.013);
+                } else {
+                    assert!(actual.is_none());
+                }
+            }
+        }
+    }
+    #[test]
+    fn exact_encoded_budget_succeeds_and_one_byte_less_returns_no_partial_copy() {
+        let mut seed = 123u32;
+        let image = DynamicImage::ImageRgba8(image::ImageBuffer::from_fn(64, 64, |_, _| {
+            let mut p = [0; 4];
+            for value in &mut p {
+                seed ^= seed << 13;
+                seed ^= seed >> 17;
+                seed ^= seed << 5;
+                *value = seed as u8;
+            }
+            image::Rgba(p)
+        }));
+        let original = image.as_bytes().to_vec();
+        let bytes = encode_png_limited(&image, None, MAX_INPUT_BYTES).unwrap();
+        assert_eq!(
+            encode_png_limited(&image, None, bytes.len()).unwrap(),
+            bytes
+        );
+        assert!(matches!(
+            encode_png_limited(&image, None, bytes.len() - 1),
+            Err(StudioError::ResourceLimit(_))
+        ));
+        assert!(matches!(
+            encode_png_limited(&image, Some(300), 32),
+            Err(StudioError::ResourceLimit(_))
+        ));
+        assert_eq!(image.as_bytes(), original);
+    }
 }

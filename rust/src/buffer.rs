@@ -24,9 +24,16 @@ impl Write for BoundedBuffer {
             self.exceeded = true;
             return Err(io::Error::other("Encoded output exceeds its byte budget."));
         }
-        self.bytes
-            .try_reserve_exact(data.len())
-            .map_err(io::Error::other)?;
+        let required = self.bytes.len() + data.len();
+        if required > self.bytes.capacity() {
+            let target = required
+                .max(self.bytes.capacity().saturating_mul(2))
+                .max(4096)
+                .min(self.limit);
+            self.bytes
+                .try_reserve_exact(target - self.bytes.len())
+                .map_err(io::Error::other)?;
+        }
         self.bytes.extend_from_slice(data);
         Ok(data.len())
     }
@@ -37,6 +44,23 @@ impl Write for BoundedBuffer {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn small_codec_writes_use_bounded_amortized_growth() {
+        let mut buffer = BoundedBuffer::new(35000);
+        let mut changes = 0;
+        let mut previous = 0;
+        for _ in 0..32000 {
+            buffer.write_all(b"x").unwrap();
+            let capacity = buffer.bytes.capacity();
+            assert!(capacity <= 35000);
+            if capacity != previous {
+                changes += 1;
+                previous = capacity;
+            }
+        }
+        assert!(changes < 16);
+        assert_eq!(buffer.into_inner().len(), 32000);
+    }
     #[test]
     fn budget_failure_does_not_append_partial_data() {
         let mut buffer = BoundedBuffer::new(5);
