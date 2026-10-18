@@ -41,3 +41,7 @@ All 256 locked dependency records and 471 retained notice references verify befo
 Linux runtime/startup evidence is Ubuntu 24.04 x64; Windows is a windows-2022 x64 build host. Neither is clean-system certification. Android is ARM64/API 24+, with no actual camera/SAF/device acceptance. Linux OCR uses separately installed /usr/bin/tesseract; Windows/Android OCR remains unavailable. No searchable PDF, perfect OCR, passport acceptance, universal compatibility, physical secure erasure or commercial feature-parity claim.
 
 Major production gates remain: PDF worker isolation, orphan-job cleanup, full license review, broader interoperability/colour management, localization and assistive-technology checks, representative users, clean devices, AppImage and private production signing. See LIMITATIONS.md.
+
+## Saved integration checkpoint 27c8b3d
+
+All main workflows passed: Linux 39164619821, Windows 39164619702, Android 39164619794 and bridge 39164619682. Sequential scanner preparation, bounded canonical previews, Android local-data backup policy/development signing and portable Windows names are included. The four saved downloads (including the optimized Android development release) independently verify against evidence/development-builds-27c8b3d.json. The new custom print-sheet candidate remains on work/print-layout and is not yet in these packages.
