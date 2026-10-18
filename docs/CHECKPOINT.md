@@ -2,13 +2,13 @@
 
 This is functioning development software, not the completed launch. Preserve the full scope in REQUIREMENTS.md and continue ordinary implementation without phase approval. GitHub is authoritative: user messages have repeatedly reset the scratch checkout and removed unpushed work/toolchains.
 
-## Source and current integration
+## Current source and builds
 
-- Main before this integration: 28163d4aedaa19cd43ce0f504dc7cb8e57601763. This includes physical photo mm/DPI and notice provenance gates.
-- Scanner candidate: work/safe-scan-session, 3276e3cf5e642daa3764eea93c00fd42e60965aa (tree 661c84a516a524b2c545e4506ae5c6e708875494).
-- Candidate Linux 39163851304 and Windows 39163851241 passed native/interface tests, packaging, dependencies/notices and eight-second packaged-window startup. Android 39163851248 also passed its complete build, signing, compiled privacy, native/alignment and artifact workflow.
-- Android privacy repair 6629bbe9f4f16f679a6ae25840242c72149cf59a passed run 39163380699. It is included in the scanner candidate.
-- Final local integration additionally rejects Windows COM/LPT superscript device names, improves file/page accessibility labels, clarifies scanner selection, loads bundled fonts in the scanner workflow test and waits for actual decoded preview pixels. It must pass its own main platform gates before download replacement.
+Main processing baseline: 27c8b3daa3514e01a73d1c9f49c3d9697fa6f9f2 (tree fa68bbc0351849c881e852f8090379605e6b9ecf). It integrates sequential scans, canonical previews, Android backup/signing protection, Windows reserved-name validation and the bundled-font scanner workflow checks.
+
+All final main workflows passed: Linux 39164619821, Windows 39164619702, Android 39164619794 and bridge 39164619682. Native/local checks: 48 Rust tests, 25 selected Flutter tests, clean analysis/formatting, five Android policy/parser tests, actual keytool lifecycle and notice provenance. Desktop startup is build-host only; Android device/provider/camera/OEM behavior remains unverified.
+
+Next feature branch: work/print-layout, backend 3b09a8db73d281a9648aabc91488a7b97aa96e1c. Its custom physical layout/cutting guides/DPI backend and regenerated bridge pass initial checks. Local UI/native/independent-PDF work continues in universal-studio-print. See next actions below; these new print controls are not in the saved main 27 builds.
 
 ## Implemented and verified changes
 
@@ -24,12 +24,15 @@ Android explicitly disables backup, excludes all nine app-data domains in legacy
 
 ## Saved downloads
 
-Latest successfully saved files are main28163d4 builds, each version 4:
+Successfully saved application builds from main 27c8b3d:
 - Universal-Studio-Windows-x64.zip
 - Universal-Studio-Linux-x64.tar.gz
 - Universal-Studio-Android-debug.apk
+- Universal-Studio-Android-development-release.apk
 
-Their exact inner/outer SHA-256, bytes and startup records are in evidence/development-builds-28163d4.json. Independent checks covered archive CRC, all 471 retained notice hashes, native inventory, font/model/license and Windows CRT hashes. Android debug signature and ZIP/ELF 16 KiB alignment were independently checked with official SDK build tools. These downloads do not yet contain the scanner/Android privacy candidate. Update them only after the new source passes packaging and independent artifact checks.
+The first three preserve their previous file identities; the new optimized Android development APK has its own identity. Exact bytes/hashes and build checks are in evidence/development-builds-27c8b3d.json. Outer artifact SHA-256 and archive CRC match. All 471 retained notice hashes, native inventory, OCR model/license/font hashes, Windows CRT hashes and eight-second desktop startup reports independently verify. All three Android APKs pass local official-SDK structural/ELF/ZIP 16 KiB and compiled backup-policy checks; debug and optimized development signatures verify. The unsigned APK is a separate signing input, not the recommended installable download.
+
+Main bridge artifact 12150073462 (SHA-256 dcb2296bba1ad4e1321128c0661ea6141e68e58624ba349230fb8f5fdde2e48e) was independently verified. All eight freshly generated source files exactly match the committed sources. Keys are never committed or included in artifacts. Development signing identities can change between builds; uninstalling to resolve mismatch deletes local drafts/settings.
 
 ## Runtime and privacy limits
 
@@ -41,10 +44,14 @@ All 256 locked dependency records and 471 retained notice references verify. Tha
 
 ## Exact next actions
 
-1. All three scanner candidate platform jobs passed. Integrate verified source plus the locally verified filename/font/accessibility refinements into main; retain expected-SHA guards.
-2. Inspect resulting main Linux/Windows/Android workflows, fix any failures, independently verify artifacts and replace the existing saved downloads. An optimized development-signed release APK is also produced; it is not production signing. CI identities can change; uninstalling to resolve mismatch deletes local drafts/settings.
-3. Continue remaining requirements: OpenCV manual/automatic boundary and perspective/deskew adapters; custom print-sheet controls; editable pack slots and managed cross-studio sources; remaining photo/signature/PDF operations; platform OCR/searchable geometry; accessibility/localization/user checks; cleanup/isolation/license and clean-device gates. Do not expose unfinished controls as working.
+1. Complete work/print-layout. Backend3b09a8d generated bridge 39165065326 successfully; artifact 12150228437 SHA-256 9eb98be694847b77e4c875cbf25c6ae6d07b9f7d1e3c5b6d896815627d358d76 was ZIP/allowlist verified and applied to universal-studio-print. The new UI tests pass desktop and 390px dark/200% text with real processing, invalid-spacing recovery and actual decoded PDF preview. The Rust geometry tests verify capacity, placements, guide clearance, source preservation, embedding and rendering. Independent pypdf/Poppler output verification and the complete native/interface suite are running; inspect their logs next. Add short ADR/status/evidence, push candidate, run all three platform workflows, and integrate only after passing.
+2. Keep the saved main 27 downloads labelled with that source until the new print candidate passes packaging and independent artifact checks. Copy only changed feature files onto current main so this newer evidence/checkpoint is not lost.
+3. Continue OpenCV manual/automatic boundaries/perspective/deskew, editable pack slots and managed cross-studio references, remaining photo/signature/PDF operations, platform OCR/searchable geometry, accessibility/localization/user checks, cleanup/isolation/license and clean-device gates. Do not expose unfinished controls as working.
 
 ## Recovery tools
 
 Active checkout: universal-studio-current. A separate universal-studio-filenames worktree contains the tested small filename fix, also copied into the active integration. Older universal-studio-toolkit is an obsolete skeleton. Fetch main/feature refs before edits and preserve unexpected local changes. Rust 1.99.0 and Flutter 3.47.7 are in adjacent toolchains; they are transient. Local Linux release prerequisites lack GTK/pkg-config development setup, so hosted builds supply release/startup evidence. Do not bypass permission/approval failures or publish held screenshot/fixture assets through alternate routes.
+
+## Print-sheet candidate verification
+
+The current work/print-layout candidate adds standard/custom paper, margins/spacing/copies, optional vector cutting guides and optional explicit DPI resampling. Source pixels stay unchanged by default; images are encoded once as JPEG95 inside a PDF and aspect ratio is preserved. Invalid fields open advanced controls and show inline errors. All 52 Rust and 27 selected Flutter tests pass, and analysis/formatting/notice checks pass. Independent pypdf/Pillow/Poppler verification measured actual saved geometry/pixels and rendered output, inspected locally. No printer/device/user certification. Evidence: custom-print-20261018.json. Push this candidate, inspect all platform workflows, then integrate only after passing, preserving the saved main27 build evidence.

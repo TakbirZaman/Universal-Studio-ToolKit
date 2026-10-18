@@ -17,7 +17,7 @@ Legend: [x] verified core implementation; [~] partial / implementation in progre
 - [~] 14. Threshold signature background removal and transparent export; manual refinement/consented storage/PDF placement remain; numeric crop and preview backgrounds implemented.
 - [~] 15. Verified ZIP with report/manifest; typed slots and complete constraint enforcement, preset provenance, builder UI remain.
 - [~] 16. Declarative safe recipe schema/order checks; per-item core results; recipe persistence/import-export and selective batch retry implemented; broader recipe types and collision workflows remain.
-- [~] 17. Validated print layout and PDF core; custom paper UI, guides, preview and actual-size instructions remain.
+- [~] 17. Validated standard/custom paper, physical photo sizes, optional DPI resampling, margins, spacing, copies, cutting guides, real PDF preview/export and actual-size instructions implemented and tested locally; platform packaging and printer acceptance remain.
 - [~] 18. Experimental Linux English/Bangla/mixed OCR, editable text and pinned model/license verification implemented; platform-complete engines, searchable-PDF geometry, face ambiguity handling and representative evaluation remain.
 - [ ] 19. Managed internal references across all studios; integrated workflows and explicit lifetimes.
 - [~] 20. No overwrite, safe filenames, no content logs, bounds; process isolation, cleanup/recovery, optional history and retention settings remain.

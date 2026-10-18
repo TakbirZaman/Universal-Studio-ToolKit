@@ -1,7 +1,7 @@
 name: Verify and build Linux
 on:
   push:
-    branches: [main, work/safe-scan-session]
+    branches: [main, work/safe-scan-session, work/print-layout]
     paths: ['rust/**', 'lib/**', 'test/**', 'pubspec*', 'third_party/**', 'linux/**', 'scripts/build_linux.sh', 'scripts/smoke_linux.sh', '.github/workflows/verify-linux.yml']
   workflow_dispatch:
 permissions:

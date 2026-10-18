@@ -1,0 +1,89 @@
+{
+  "paper_mm": [
+    120.0,
+    90.0
+  ],
+  "copies": 9,
+  "cutting_segments": 72,
+  "embedded_pixels": [
+    354,
+    236
+  ],
+  "placements_mm": [
+    [
+      5.0,
+      65.0,
+      30.0,
+      20.0
+    ],
+    [
+      45.0,
+      65.0,
+      30.0,
+      20.0
+    ],
+    [
+      85.0,
+      65.0,
+      30.0,
+      20.0
+    ],
+    [
+      5.0,
+      35.0,
+      30.0,
+      20.0
+    ],
+    [
+      45.0,
+      35.0,
+      30.0,
+      20.0
+    ],
+    [
+      85.0,
+      35.0,
+      30.0,
+      20.0
+    ],
+    [
+      5.0,
+      5.0,
+      30.0,
+      20.0
+    ],
+    [
+      45.0,
+      5.0,
+      30.0,
+      20.0
+    ],
+    [
+      85.0,
+      5.0,
+      30.0,
+      20.0
+    ]
+  ],
+  "bytes": 12200,
+  "sha256": "5debff22689883f1fadbfaf2a5170fafecb4aee9363c6bd6ade18b04c1fb67d0",
+  "source_unchanged": true,
+  "existing_output_preserved": true,
+  "invalid_constraints_saved_nothing": true,
+  "independent_parser": "pypdf",
+  "independent_render": "Poppler",
+  "printer_acceptance_verified": false,
+  "date_utc": "2026-10-18",
+  "rust_tests": 52,
+  "flutter_tests": 27,
+  "flutter_analysis": "no issues",
+  "ui_variants": [
+    "desktop light",
+    "390px dark with 200% text"
+  ],
+  "bridge_run": 39165065326,
+  "bridge_artifact": 12150228437,
+  "bridge_artifact_sha256": "9eb98be694847b77e4c875cbf25c6ae6d07b9f7d1e3c5b6d896815627d358d76",
+  "platform_packaging_verified": false,
+  "representative_user_tested": false
+}

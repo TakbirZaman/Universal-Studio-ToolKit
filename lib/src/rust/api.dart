@@ -238,6 +238,30 @@ Future<StudioOutput> previewScanPage({
   maxPixels: maxPixels,
 );
 
+Future<StudioOutput> createCustomPrintSheet({
+  required List<int> data,
+  required double paperWidthMm,
+  required double paperHeightMm,
+  required double marginMm,
+  required double photoWidthMm,
+  required double photoHeightMm,
+  required double spacingMm,
+  required int copies,
+  required bool cuttingGuides,
+  int? rasterDpi,
+}) => RustLib.instance.api.crateApiCreateCustomPrintSheet(
+  data: data,
+  paperWidthMm: paperWidthMm,
+  paperHeightMm: paperHeightMm,
+  marginMm: marginMm,
+  photoWidthMm: photoWidthMm,
+  photoHeightMm: photoHeightMm,
+  spacingMm: spacingMm,
+  copies: copies,
+  cuttingGuides: cuttingGuides,
+  rasterDpi: rasterDpi,
+);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
 abstract class OcrTask implements RustOpaqueInterface {}
 

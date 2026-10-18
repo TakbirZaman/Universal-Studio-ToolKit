@@ -87,12 +87,24 @@ class StudioService {
     Uint8List data,
     double width,
     double height,
-    int copies,
-  ) => core.createPrintSheet(
+    int copies, {
+    required double paperWidth,
+    required double paperHeight,
+    required double margin,
+    required double spacing,
+    required bool guides,
+    required int? rasterDpi,
+  }) => core.createCustomPrintSheet(
     data: data,
-    widthMm: width,
-    heightMm: height,
+    paperWidthMm: paperWidth,
+    paperHeightMm: paperHeight,
+    marginMm: margin,
+    photoWidthMm: width,
+    photoHeightMm: height,
+    spacingMm: spacing,
     copies: copies,
+    cuttingGuides: guides,
+    rasterDpi: rasterDpi,
   );
   Future<void> save(
     String directory,
