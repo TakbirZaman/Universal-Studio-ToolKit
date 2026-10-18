@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 
 import 'application/scan_drafts.dart';
 import 'application/scan_draft_picker.dart';
-import 'application/transparency_preview.dart';
+import 'application/safe_image_preview.dart';
+import 'src/rust/scanner.dart';
 
 import 'dart:io';
 
@@ -436,7 +437,12 @@ class SelectedSource {
   String scanMode = 'original';
   int scanRotation = 0;
   double brightness = 0, contrast = 0;
-  StudioOutput? scanAdjusted;
+  ScanOptions get scanOptions => scanSettings(
+    mode: scanMode,
+    rotation: scanRotation,
+    brightness: brightness.round(),
+    contrast: contrast,
+  );
   SelectedSource(this.name, this.bytes);
 }
 
@@ -489,9 +495,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     }
     filename.text = suggestedName;
     if (widget.tool == Tool.scan) {
-      textRecognitionAvailable = Future<bool>(
-        () async => ocrAvailable(),
-      ).catchError((_) => false);
+      textRecognitionAvailable = ocrAvailable().catchError((_) => false);
     }
   }
 
@@ -541,6 +545,11 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ? await openFiles(acceptedTypeGroups: [type])
           : [?await _one(type)];
       if (files.isEmpty) return;
+      if (widget.tool == Tool.scan && sources.length + files.length > 200) {
+        throw const FormatException(
+          'A scan session supports at most 200 pages.',
+        );
+      }
       final incoming = <SelectedSource>[];
       int total =
           (widget.tool == Tool.merge ||
@@ -689,25 +698,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     });
     try {
       final service = ref.read(studioServiceProvider);
-      if (widget.tool == Tool.scan) {
-        for (final source in sources) {
-          source.scanAdjusted = await adjustScanPage(
-            data: source.bytes,
-            mode: source.scanMode,
-            rotation: source.scanRotation,
-            brightness: source.brightness.round(),
-            contrast: source.contrast,
-            threshold: 128,
-          );
-        }
-      }
-      final inputs = sources
-          .map(
-            (s) => widget.tool == Tool.scan
-                ? (s.scanAdjusted?.bytes ?? s.bytes)
-                : s.bytes,
-          )
-          .toList();
+      final inputs = sources.map((source) => source.bytes).toList();
       final value = switch (widget.tool) {
         Tool.photo ||
         Tool.signature => await preparePhoto(service, inputs.first),
@@ -719,7 +710,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           rotation * 90,
           optimize: optimizePdfStructures,
         ),
-        Tool.scan => await service.scan(inputs),
+        Tool.scan => await service.scan(
+          sources
+              .map(
+                (source) =>
+                    ScanPage(data: source.bytes, options: source.scanOptions),
+              )
+              .toList(),
+        ),
         Tool.pack => await service.pack(inputs, int.parse(limit.text)),
         Tool.print => await service.printSheet(
           inputs.first,
@@ -931,7 +929,13 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                 subtitle: Text(
                   '${(e.value.bytes.length / 1024).toStringAsFixed(1)} KiB',
                 ),
-                onTap: () => setState(() => previewIndex = e.key),
+                selected: previewIndex == e.key,
+                leading: Text(
+                  '${e.key + 1}',
+                  semanticsLabel:
+                      '${widget.tool == Tool.scan ? 'Page' : 'File'} ${e.key + 1}',
+                ),
+                onTap: busy ? null : () => setState(() => previewIndex = e.key),
                 trailing: widget.tool == Tool.pack
                     ? null
                     : Wrap(
@@ -943,9 +947,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                                   ? null
                                   : () {
                                       setState(() {
+                                        final selected =
+                                            sources[previewIndex.clamp(
+                                              0,
+                                              sources.length - 1,
+                                            )];
                                         final item = sources.removeAt(e.key);
                                         sources.insert(e.key - 1, item);
+                                        previewIndex = sources.indexOf(
+                                          selected,
+                                        );
                                         output = null;
+                                        saved = null;
                                       });
                                     },
                               icon: const Icon(Icons.arrow_upward),
@@ -956,9 +969,25 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                                 ? null
                                 : () {
                                     setState(() {
+                                      final selected =
+                                          sources[previewIndex.clamp(
+                                            0,
+                                            sources.length - 1,
+                                          )];
                                       sources.removeAt(e.key);
-                                      previewIndex = 0;
+                                      final retained = sources.indexOf(
+                                        selected,
+                                      );
+                                      previewIndex = retained >= 0
+                                          ? retained
+                                          : (e.key - 1).clamp(
+                                              0,
+                                              sources.isNotEmpty
+                                                  ? sources.length - 1
+                                                  : 0,
+                                            );
                                       output = null;
+                                      saved = null;
                                     });
                                   },
                             icon: const Icon(Icons.close),
@@ -1231,7 +1260,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ],
           if (widget.tool == Tool.scan) ...[
             const Text(
-              'Import page images, choose a page below its filename, adjust, then prepare the PDF. On Android, you can also capture pages with the device camera app. Save a draft before capturing to protect against Android closing the app. Perspective correction is still pending.',
+              'Import page images, select a page by its filename, adjust it, then prepare the PDF. On Android, you can also capture pages with the device camera app. Save a draft before capturing to protect against Android closing the app. Perspective correction is still pending.',
             ),
             ExpansionTile(
               title: const Text('Save or restore a scan draft'),
@@ -1581,6 +1610,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
           key: ValueKey('${source.name}-$previewIndex-${source.scanMode}'),
+          isExpanded: true,
           initialValue: source.scanMode,
           decoration: const InputDecoration(labelText: 'Page appearance'),
           items: const [
@@ -1638,41 +1668,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           label: Text('Rotate: ${source.scanRotation * 90}°'),
         ),
         const SizedBox(height: 8),
-        OutlinedButton(
-          onPressed: busy
-              ? null
-              : () async {
-                  setState(() => busy = true);
-                  try {
-                    final adjusted = await adjustScanPage(
-                      data: source.bytes,
-                      mode: source.scanMode,
-                      rotation: source.scanRotation,
-                      brightness: source.brightness.round(),
-                      contrast: source.contrast,
-                      threshold: 128,
-                    );
-                    if (mounted) {
-                      setState(() {
-                        source.scanAdjusted = adjusted;
-                        output = null;
-                        error = null;
-                      });
-                    }
-                  } catch (e) {
-                    if (mounted) setState(() => error = clean(e));
-                  } finally {
-                    if (mounted) setState(() => busy = false);
-                  }
-                },
-          child: const Text('Apply page adjustments'),
+        const Text(
+          'The preview updates with your page adjustments. Your original image stays unchanged.',
         ),
         TextButton(
           onPressed: busy
               ? null
               : () {
                   setState(() {
-                    source.scanAdjusted = null;
                     source.scanMode = 'original';
                     source.scanRotation = 0;
                     source.brightness = 0;
@@ -1682,7 +1685,6 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                 },
           child: const Text('Reset this page to original'),
         ),
-        if (source.scanAdjusted != null) Text(source.scanAdjusted!.validation),
       ],
     );
   }
@@ -1697,32 +1699,20 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       );
     }
     if (imageTool && output != null && !showOriginal) {
-      if (output!.format == 'png') {
-        return TransparencyPreview(bytes: Uint8List.fromList(output!.bytes));
-      }
-      return Image.memory(
-        Uint8List.fromList(output!.bytes),
-        height: 360,
-        fit: BoxFit.contain,
+      return SafeImagePreview(
+        bytes: output!.bytes,
+        transparency: output!.format == 'png',
         semanticLabel: 'Prepared output preview',
       );
     }
     if (sources.isNotEmpty &&
         widget.tool != Tool.merge &&
         widget.tool != Tool.pack) {
-      return Image.memory(
-        (widget.tool == Tool.scan
-                ? sources[previewIndex.clamp(0, sources.length - 1)]
-                      .scanAdjusted
-                      ?.bytes
-                : null) ??
-            sources[previewIndex.clamp(0, sources.length - 1)].bytes,
-        height: 360,
-        fit: BoxFit.contain,
+      final source = sources[previewIndex.clamp(0, sources.length - 1)];
+      return SafeImagePreview(
+        bytes: source.bytes,
+        scanOptions: widget.tool == Tool.scan ? source.scanOptions : null,
         semanticLabel: 'Selected source image',
-        errorBuilder: (_, e, s) => const Text(
-          'Image preview unavailable. The processing engine will validate this file.',
-        ),
       );
     }
     return Column(

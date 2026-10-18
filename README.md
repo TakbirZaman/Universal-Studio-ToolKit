@@ -4,10 +4,10 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 
 ## Implemented workflows
 
-- Resize JPEG/PNG images to exact pixel dimensions with fit or crop, EXIF normalization, explicit transparency handling and measured size constraints.
+- Resize JPEG/PNG images to exact pixels or physical mm/DPI dimensions with fit or crop, EXIF normalization, explicit transparency handling and measured size constraints.
 - Clean a plain signature background and export transparent PNG.
 - Combine, select, reorder and rotate supported PDF pages; render previews and export page PNGs using bundled PDFium.
-- Import scan images, reorder pages, adjust brightness/contrast, rotate, apply grayscale or black-and-white, and produce PDF. Quality warnings are advisory.
+- Import scan images, reorder pages, adjust brightness/contrast, rotate, apply grayscale or black-and-white, and produce PDF through bounded sequential page preparation. Quality warnings are advisory.
 - Lay out repeated photos on an A4 print sheet with validated physical dimensions.
 - Prepare the example photo/signature/certificate application ZIP with a validation report and hashed manifest.
 - Save copies without overwriting existing files. SQLite stores theme/settings; history is disabled by default.
@@ -24,7 +24,7 @@ Built on Ubuntu 24.04 x86_64. Requires a graphical session and the usual GTK 3, 
 
 `UST_PORTABLE=1 ./universal_studio_toolkit` requests settings storage in `studio-data` beside the executable. A non-writable folder currently falls back to application support storage; the Appearance and privacy dialog explains the fallback. Documents are saved only to the destination you select.
 
-Windows x64 portable ZIP and Android ARM64 APK packaging pass their hosted workflows. Windows packaged-window startup passed on the build host. Android device/camera/document-provider behavior remains unverified. The debug APK is installable for development; the release APK requires private signing. No private signing key is included.
+Windows x64 portable ZIP and Android ARM64 APK packaging pass their hosted workflows. Windows packaged-window startup passed on the build host. Android device/camera/document-provider behavior remains unverified. The debug APK is installable for development; an optimized release-mode APK is also installable with an explicitly temporary development identity. Production signing remains separate. No private signing key is included.
 
 ## Build and test
 
@@ -70,7 +70,7 @@ Use a request with `operation: "optimize_pdf"`, `input`, `directory`, and `filen
 
 Open the repository Actions tab and select a successful Linux run to download its development artifact. Extract the ZIP, verify SHA256SUMS, then extract the contained tar.gz and run `./universal_studio_toolkit`. The executable needs its adjacent `lib`, `data`, and notices folders. These are development bundles, not clean-device-certified releases. Artifacts expire after three days; a new workflow run reproduces them.
 
-The Android workflow produces an installable debug-signed ARM64 APK and an unsigned release candidate. The release candidate requires private signing before installation/distribution. Debug keys can differ across builds; uninstalling to resolve a signing mismatch deletes app-local drafts/settings. No keystore or signing credentials are stored in this repository.
+The Android workflow produces an installable debug-signed ARM64 APK, an unsigned release candidate and an optimized development-signed release APK. The unsigned candidate requires signing; the development-signed APK is for testing and is not a production signing identity. Debug keys can differ across builds; uninstalling to resolve a signing mismatch deletes app-local drafts/settings. No keystore or signing credentials are stored in this repository.
 
 ### Experimental offline OCR (Linux)
 

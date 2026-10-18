@@ -47,3 +47,27 @@ fn crop_roundtrip_and_checked_bounds() {
     bad["steps"][1]["filename"] = serde_json::json!("photo.jpg");
     assert!(Recipe::parse(bad.to_string().as_bytes()).is_err());
 }
+
+#[test]
+fn portable_exports_reject_windows_superscript_device_names_before_writing() {
+    let dir = tempfile::tempdir().unwrap();
+    let source = include_bytes!("fixtures/orientation-6.jpg");
+    let output = studio_core::photo::process(
+        source,
+        &PhotoOptions {
+            width: 24,
+            height: 24,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    for stem in ["COM¹", "COM²", "COM³", "LPT¹", "LPT²", "LPT³", "com¹"] {
+        let name = format!("{stem}.jpg");
+        assert!(export::safe_name(&name).is_err());
+        assert!(export::save_copy(dir.path(), &name, &output).is_err());
+        assert!(std::fs::read_dir(dir.path()).unwrap().next().is_none());
+        assert!(export::pack(vec![(name, output.clone())]).is_err());
+    }
+    export::safe_name("বাংলা-সনদ.jpg").unwrap();
+    export::safe_name("COM¹-photo.jpg").unwrap();
+}

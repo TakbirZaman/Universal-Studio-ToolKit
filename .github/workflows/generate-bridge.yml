@@ -1,7 +1,7 @@
 name: Generate typed Rust bridge
 on:
   push:
-    branches: [main, work/offline-ocr, work/photo-density]
+    branches: [main, work/offline-ocr, work/photo-density, work/safe-scan-session]
     paths: ['rust/src/api.rs', '.github/workflows/generate-bridge.yml']
   workflow_dispatch:
 permissions:

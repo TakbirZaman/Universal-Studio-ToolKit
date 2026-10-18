@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
     <application
+        android:allowBackup="false"
+        android:backupAgent=".LocalOnlyBackupAgent"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:label="Universal Studio Toolkit"
         android:name="${applicationName}"
         android:icon="@drawable/studio_mark"

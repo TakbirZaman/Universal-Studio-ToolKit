@@ -1,43 +1,43 @@
-# Feature / platform status
+# Feature / platform status — 2026-10-18
 
-Updated 2026-10-17. This is an implementation in progress, not launch completion.
+This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-| Capability | Rust Linux evidence | Flutter integration | Windows | Android |
+Main 28163d4 includes physical photo sizing, offline Linux OCR and notice provenance. Its independently verified, saved Windows/Linux/Android downloads are described in evidence/development-builds-28163d4.json. Scanner candidate 3276e3c adds sequential preparation, validated bounded previews and Android backup-policy protection; see CHECKPOINT.md for the current integration/build state.
+
+| Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
-| Fixed-size JPEG/PNG resize, bounded compression | Tested, real outputs | Tested bridge + controls | Built + native bridge tested | Built, device unverified |
-| Physical photo size / explicit DPI | 41-test suite includes saved-density, 16-bit and alpha-consent cases; Pillow independently checks JPEG/PNG | Typed bridge + real processing/result UI tested locally at desktop and narrow dark/200% | Packaging pending | Packaging pending |
-| EXIF orientation 1–8 | Tested dimensions | Engine integration | Unverified | Unverified |
-| Transparency consent and simple signature cleanup | Tested | Controls and preview | Unverified | Unverified |
-| PDF merge / keep-delete-reorder / rotate | Tested, sample output inspected | Controls | Unverified | Unverified |
-| Lossless PDF optimization | Text extraction and pixel-preservation tests passed | Opt-in control and typed bridge tested | Native bridge verification running | APK build running |
-| PDFium preview and page PNG export | Tested; reordered page pixel identity | Connected, bridge test passed | Bundled; startup checked | Checksum-verified ARM64 staging implemented |
-| Images to PDF / print sheets | Tested; Poppler visual inspection | Connected | Unverified | Unverified |
-| Scan modes, brightness/contrast, rotation | Three new tests pass | Non-destructive source plus derived page preview | Unverified | Manual capture compiled; device testing pending |
-| Advisory blur/exposure/edge warnings | Synthetic-case tests pass | Advisory text only | Unverified | Unverified |
-| Application ZIP / manifest / hashes | Tested | Fixed example pack connected | Unverified | Unverified |
-| Safe recipe processing and SQLite storage | Tested | Editor/import/export and batch controls; scheduler tested | Unverified | Unverified |
-| SQLite settings / history retention | Restart/opt-in/validation tests pass | Theme settings and clear-history connected | Unverified | Unverified |
-| Save copy | Non-clobber + read-back tested | Real bridge tested | Unverified | SAF compiled; device testing pending |
-| Desktop/mobile UI layouts | Flutter behavioral tests pass; visual capture only | Real rendered widgets | Built; window startup checked | Device testing pending |
-| Local scan drafts and retention | Hosted storage tests passed | Save, restore and delete connected | Unverified | Device testing pending |
-| PNG preview backgrounds | Hosted widget test passed | Checkerboard, light and dark | Unverified | Unverified |
-| Manual camera capture | Channel contract tests passed | Scoped Android adapter and capture control | Image import only | APK compiled; device behavior pending |
-| OpenCV geometry/face assistance | Not implemented | Not exposed as working | Pending | Pending |
-| Experimental printed-text OCR | Real English/Bangla/mixed recognition and UTF-8 validation tested | Typed bridge, cancellation and editable editor tested locally; hosted Linux build/startup passed (39023943472) | Core compiles; recognition unavailable | Recognition unavailable |
-| Distribution | Core executable compiled | Linux x64 release bundle built; display launch blocked | Portable ZIP built, startup gate passed | ARM64 debug and unsigned APKs built |
+| JPEG/PNG resize, compression and EXIF | Actual dimensions/bytes, orientation1–8 and same-source quality search tested | Native/UI checks pass | Native/interface gates pass | APK builds; device behavior pending |
+| Physical mm/DPI photo size | JPEG JFIF/PNG pHYs, pixel rounding, 16-bit/alpha and independent Pillow checks; real result UI tested | Packaged main 281 | Packaged main 281 | Packaged main 281; device/printer pending |
+| Fit/fill, rotate, numeric recipe crop/flip | Processing tests; basic controls and recipe editor | Implemented | Built | Built, device pending |
+| Flexible dimensions / direct crop gestures / face suggestions | Remaining | Unavailable | Unavailable | Unavailable |
+| Threshold signature cleanup and PNG backgrounds | Actual transparent pixels plus checkerboard/light/dark preview | Implemented | Built | Built, device pending |
+| Manual signature mask/storage/PDF placement | Remaining | Unavailable | Unavailable | Unavailable |
+| Supported PDF merge/select/delete/reorder/rotate | Reopen, page order/rotation, text and PDFium appearance checks | Implemented | Native/interface gates pass | Built, device pending |
+| PDFium preview / page PNG ZIP | Bounded render adapter, real page appearance tests | Bundled | Bundled | Audited ARM64 library staged; device pending |
+| Lossless PDF structure optimization | Preserves text/pixels, never rasterizes, returns original if no reduction | Implemented | Native/interface gates pass | Built, device pending |
+| Watermarks/numbers/forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
+| Scan modes, rotation, brightness/contrast and advisory quality checks | Native tests; non-destructive edits/drafts | Implemented | Built | Compiled system-camera/manual import; device pending |
+| Sequential scan PDF and canonical previews | Candidate: bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Candidate build/startup passed | Candidate build/startup passed | Candidate complete packaging workflow passed |
+| Manual corners / perspective / deskew / OpenCV | Remaining | Unavailable | Unavailable | Unavailable |
+| Camera capture and URI export | Scoped adapters and channel contracts | Image import; camera unavailable | Image import; camera unavailable | APK compiles; permissions/cancellation/recreation/provider testing pending |
+| Local scan drafts and retention | Save/restore/delete/clear, schema/hash and symlink protections tested | Implemented | Storage tests pass | Built, device pending |
+| English/Bangla/mixed printed OCR | Real engine/typed job cancellation, editable editor and verified UTF-8 export | Requires system Tesseract and pinned local models | Recognition unavailable | Recognition unavailable |
+| Print sheets | Physical layout/capacity/aspect validation and PDF export | A4 UI implemented | Built | Built, device pending |
+| Custom print paper / guides / full controls | Remaining | Unavailable | Unavailable | Unavailable |
+| Application pack | Fixed example photo/signature/certificate ZIP; actual report/manifest/hash validation | Implemented example | Built | Built, device pending |
+| Editable pack slots and managed studio references | Remaining | Unavailable | Unavailable | Unavailable |
+| Recipes/batches/settings | Schema/order/path safety, persistence/import/export, item results/retry, opt-in storage tests | Implemented | Native/interface gates pass | Built, device pending |
+| Save copies / Unicode names | No-clobber, staged/read-back verification, Bangla names; additional Windows reserved names fixed locally | Tested | Runtime/clean-system pending | SAF adapter compiled; provider/device pending |
+| Accessibility and usability | Goal search, text labels, keyboard shortcuts, contrast tests, responsive tokens; two real scanner/photo workflow layouts | Heuristic/widget evidence | Build-host only | Device/screen-reader/first-use observation pending |
 
-Hosted Linux run 38862360058 passed 24 Rust tests, selected Flutter behavioral/native tests, analysis, capture-only rendering, release build and dependency resolution. Android run 38863568022 passed ARM64 APK packaging, debug signature and ZIP/ELF 16 KiB checks. Windows run 38864343687 passed its native tests, release build and packaged-window startup check with bundled release CRT. Exact hashes and source commits: evidence/development-builds-20261016.json.
+## Current checks and practical limits
 
-All platform entries marked unverified concern per-feature interaction or clean-device behavior; compilation alone does not validate them. No real-user usability observation, accessibility certification, hostile-document process isolation, clean-device compatibility or complete dependency obligation clearance has been claimed. Golden baseline regression remains pending approved baselines.
+Local final integration: 48 Rust tests, 25 selected Flutter tests, clean analysis/formatting. Scanner tests compare actual generated PDF page pixels and save a Bangla-named copy; bundled-font captures are local inspection, not approved golden baselines or user observation. The ten-second discoverability target is unmeasured.
 
-Draft-clear controls and additional storage protection tests passed the current Linux and Windows suites.
+Android backup/signing repair 6629bbe passed run 39163380699: compiled backup opt-out, all app-data exclusions, actual release permissions, signatures and ZIP/ELF 16 KiB checks. The optimized release-mode APK uses a disposable development identity. This is not private production signing or an OEM transport test.
 
-Commit 7257778 passed Linux run 38900451000, Windows run 38900451112 and Android run 38900451024. Both desktop bundles created windows; 26 Rust tests and selected Flutter tests passed. See evidence/development-builds-7257778.json. Lossless optimization controls and additional text-layer preservation tests are entering a separate verification run.
+All 256 locked dependency records and 471 retained notice references verify before packaging. Integrity is not complete native/transitive license-obligation clearance. OCR model/license, font and Microsoft CRT provenance are separate retained records.
 
-Application checkpoint 98dbeac passed all three platform workflows: Linux 38943392106, Windows 38943392637, Android 38943392331. PDF optimization, keyboard/contrast tests and the licensed Bangla font are included. Independent download evidence: evidence/development-builds-98dbeac.json. Experimental Linux OCR CLI work lives on work/offline-ocr; Flutter OCR, Windows/Android engines and searchable PDF remain unavailable.
+Linux runtime/startup evidence is Ubuntu 24.04 x64; Windows is a windows-2022 x64 build host. Neither is clean-system certification. Android is ARM64/API 24+, with no actual camera/SAF/device acceptance. Linux OCR uses separately installed /usr/bin/tesseract; Windows/Android OCR remains unavailable. No searchable PDF, perfect OCR, passport acceptance, universal compatibility, physical secure erasure or commercial feature-parity claim.
 
-Experimental OCR branch: Linux Rust CLI recognition and verified UTF-8 export tested on clean synthetic English, Bangla and mixed-language cases. Local suite: 32 Rust tests. Hosted compile/boundary run 38948658931 passed Linux and Windows; Windows engine recognition remains unavailable. GUI integration, bundled model/engine workflows, timeout/resource/representative accuracy and device gates remain open.
-
-Linux OCR integration run 39023943472 (96686d1) passed 35 Rust tests, 19 selected Flutter tests, clean analysis, model-staged release packaging and build-host window startup. Artifact hashes/inventory: evidence/experimental-ocr-build-96686d1.json. The engine is a separately installed system dependency; Windows/Android OCR remains unavailable. Additional local recovery and 200% dark-layout capture checks are documented in evidence/ocr-integration-20261017.json.
-
-Main source cd474ed passed Linux 39024416796, Windows 39024416815 and Android 39024416794. New downloads were independently verified and saved; exact evidence is in development-builds-cd474ed.json. A separate notice-provenance mechanism passed Linux/Windows run 39024849049; refreshed main packaging with that gate and OCR finalization is the next verification step.
+Major production gates remain: PDF worker isolation, orphan-job cleanup, full license review, broader interoperability/colour management, localization and assistive-technology checks, representative users, clean devices, AppImage and private production signing. See LIMITATIONS.md.

@@ -34,4 +34,4 @@ with zipfile.ZipFile(p) as apk:
         if apk.getinfo(name).file_size == 0:
             raise SystemExit(f'Empty APK entry: {name}')
 p.with_suffix('.sha256').write_text(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n')
-print('APK entries, notices and CRC verified. Signing and device tests remain pending.')
+print('APK entries, notices, CRC and ELF alignment verified. Device compatibility requires separate testing.')

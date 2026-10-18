@@ -1,6 +1,9 @@
 import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../src/rust/api.dart' as core;
+import '../src/rust/scanner.dart';
 
 final studioServiceProvider = Provider((ref) => StudioService());
 
@@ -71,8 +74,8 @@ class StudioService {
     return optimize ? core.optimizePdf(data: output.bytes) : output;
   }
 
-  Future<core.StudioOutput> scan(List<Uint8List> inputs) =>
-      core.scanPdf(inputs: inputs);
+  Future<core.StudioOutput> scan(List<ScanPage> pages) =>
+      core.prepareScanPdf(pages: pages);
   Future<core.StudioOutput> pack(List<Uint8List> inputs, int limit) =>
       core.createApplicationPack(
         photo: inputs[0],
@@ -98,3 +101,22 @@ class StudioService {
   ) =>
       core.saveOutput(directory: directory, filename: filename, output: output);
 }
+
+ScanOptions scanSettings({
+  required String mode,
+  required int rotation,
+  required int brightness,
+  required double contrast,
+}) => ScanOptions(
+  mode: switch (mode) {
+    'original' => ScanMode.original,
+    'colour' => ScanMode.colour,
+    'grayscale' => ScanMode.grayscale,
+    'black_white' => ScanMode.blackWhite,
+    _ => throw const FormatException('Choose a supported scan mode.'),
+  },
+  rotateQuarters: rotation,
+  brightness: brightness,
+  contrast: contrast,
+  threshold: 128,
+);

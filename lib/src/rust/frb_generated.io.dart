@@ -12,6 +12,7 @@ import 'jobs.dart';
 import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
+import 'scanner.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -51,6 +52,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PrintDensity dco_decode_box_autoadd_print_density(dynamic raw);
+
+  @protected
+  ScanOptions dco_decode_box_autoadd_scan_options(dynamic raw);
 
   @protected
   StudioOutput dco_decode_box_autoadd_studio_output(dynamic raw);
@@ -98,6 +102,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<ScanPage> dco_decode_list_scan_page(dynamic raw);
+
+  @protected
   PrintDensity? dco_decode_opt_box_autoadd_print_density(dynamic raw);
 
   @protected
@@ -111,6 +118,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PrintDensity dco_decode_print_density(dynamic raw);
+
+  @protected
+  ScanMode dco_decode_scan_mode(dynamic raw);
+
+  @protected
+  ScanOptions dco_decode_scan_options(dynamic raw);
+
+  @protected
+  ScanPage dco_decode_scan_page(dynamic raw);
 
   @protected
   StudioOutput dco_decode_studio_output(dynamic raw);
@@ -161,6 +177,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PrintDensity sse_decode_box_autoadd_print_density(
     SseDeserializer deserializer,
   );
+
+  @protected
+  ScanOptions sse_decode_box_autoadd_scan_options(SseDeserializer deserializer);
 
   @protected
   StudioOutput sse_decode_box_autoadd_studio_output(
@@ -214,6 +233,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<ScanPage> sse_decode_list_scan_page(SseDeserializer deserializer);
+
+  @protected
   PrintDensity? sse_decode_opt_box_autoadd_print_density(
     SseDeserializer deserializer,
   );
@@ -231,6 +253,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PrintDensity sse_decode_print_density(SseDeserializer deserializer);
+
+  @protected
+  ScanMode sse_decode_scan_mode(SseDeserializer deserializer);
+
+  @protected
+  ScanOptions sse_decode_scan_options(SseDeserializer deserializer);
+
+  @protected
+  ScanPage sse_decode_scan_page(SseDeserializer deserializer);
 
   @protected
   StudioOutput sse_decode_studio_output(SseDeserializer deserializer);
@@ -283,6 +314,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_print_density(
     PrintDensity self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_box_autoadd_scan_options(
+    ScanOptions self,
     SseSerializer serializer,
   );
 
@@ -350,6 +387,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_scan_page(List<ScanPage> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_print_density(
     PrintDensity? self,
     SseSerializer serializer,
@@ -369,6 +409,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_print_density(PrintDensity self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_scan_mode(ScanMode self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_scan_options(ScanOptions self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_scan_page(ScanPage self, SseSerializer serializer);
 
   @protected
   void sse_encode_studio_output(StudioOutput self, SseSerializer serializer);

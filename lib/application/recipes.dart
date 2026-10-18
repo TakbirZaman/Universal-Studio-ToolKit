@@ -1,8 +1,12 @@
+import 'safe_image_preview.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../src/rust/api.dart' as core;
 import 'preferences.dart';
 import 'export_service.dart';
@@ -560,10 +564,9 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
           if (message != null)
             Semantics(liveRegion: true, child: Text(message!)),
           if (output != null) ...[
-            Image.memory(
-              output!.bytes,
+            SafeImagePreview(
+              bytes: output!.bytes,
               height: 320,
-              fit: BoxFit.contain,
               semanticLabel: 'Prepared recipe output',
             ),
             Text(

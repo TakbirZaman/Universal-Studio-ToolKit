@@ -1,7 +1,7 @@
 name: Build Android development APK
 on:
   push:
-    branches: [main]
+    branches: [main, work/android-privacy, work/safe-scan-session]
     paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'third_party/**', 'scripts/*android*', '.github/workflows/build-android.yml']
   workflow_dispatch:
 permissions:
@@ -40,6 +40,7 @@ jobs:
         run: |
           python3 scripts/verify_android_apk.py dist/universal-studio-android-arm64-unsigned.apk
           python3 scripts/verify_android_apk.py dist/universal-studio-android-arm64-debug.apk
+          python3 scripts/verify_android_apk.py dist/universal-studio-android-arm64-development-release.apk
       - name: Upload development builds
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

@@ -485,3 +485,29 @@ pub fn resize_physical_photo(
     .map(Into::into)
     .map_err(|e| e.to_string())
 }
+
+pub fn prepare_scan_pdf(
+    pages: Vec<crate::scanner::ScanPage>,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| crate::scanner::session_pages_pdf(&pages))
+        .map(Into::into)
+        .map_err(|error| error.to_string())
+}
+
+pub fn preview_source_image(
+    data: Vec<u8>,
+    max_pixels: u32,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| crate::photo::source_preview(&data, max_pixels))
+        .map(Into::into)
+        .map_err(|error| error.to_string())
+}
+pub fn preview_scan_page(
+    data: Vec<u8>,
+    options: crate::scanner::ScanOptions,
+    max_pixels: u32,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| crate::scanner::preview(&data, &options, max_pixels))
+        .map(Into::into)
+        .map_err(|error| error.to_string())
+}

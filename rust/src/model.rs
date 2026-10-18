@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 pub enum StudioError {
     #[error("{0}")]
     Invalid(String),
+    #[error("{0}")]
+    ResourceLimit(String),
     #[error("Couldn’t meet both requirements. Increase the size limit or change the dimensions.")]
     Impossible,
     #[error("Processing was cancelled; no output was saved.")]

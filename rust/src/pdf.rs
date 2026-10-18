@@ -83,8 +83,15 @@ fn inherited(doc: &Document, id: ObjectId, key: &[u8]) -> Result<Option<Object>>
 fn finish(mut doc: Document, count: usize) -> Result<PreparedOutput> {
     doc.prune_objects();
     doc.compress();
-    let mut bytes = Vec::new();
-    doc.save_to(&mut bytes)?;
+    let mut writer = crate::buffer::BoundedBuffer::new(MAX_INPUT_BYTES);
+    let saved = doc.save_to(&mut writer);
+    if writer.exceeded {
+        return Err(StudioError::ResourceLimit(
+            "PDF exceeds the 64 MiB export limit. Export fewer pages at once.".into(),
+        ));
+    }
+    saved?;
+    let bytes = writer.into_inner();
     let check = load(&bytes)?;
     if check.get_pages().len() != count {
         return Err(invalid("PDF page count verification failed."));
@@ -96,7 +103,23 @@ fn finish(mut doc: Document, count: usize) -> Result<PreparedOutput> {
 pub fn optimize_lossless(data: &[u8]) -> Result<PreparedOutput> {
     let document = load(data)?;
     let pages = document.get_pages().len();
-    let mut output = finish(document, pages)?;
+    let mut output = match finish(document, pages) {
+        Ok(output) => output,
+        Err(StudioError::ResourceLimit(_)) => PreparedOutput {
+            data: data.to_vec(),
+            info: OutputInfo {
+                format: "pdf".into(),
+                bytes: data.len() as u64,
+                width: None,
+                height: None,
+                pages: Some(pages as u32),
+                quality: None,
+                print_density: None,
+                findings: vec![],
+            },
+        },
+        Err(error) => return Err(error),
+    };
     let reduced = output.data.len() < data.len();
     if !reduced {
         output.data = data.to_vec();
@@ -255,35 +278,65 @@ fn paper(p: &Paper) -> Result<(f32, f32, f32)> {
 }
 fn add_image(doc: &mut Document, data: &[u8]) -> Result<(ObjectId, u32, u32)> {
     let img = photo::decode(data)?;
-    let rgba = img.to_rgba8();
-    if rgba.pixels().any(|p| p[3] != 255) {
+    add_prepared_image(doc, &img, MAX_INPUT_BYTES)
+}
+fn add_prepared_image(
+    doc: &mut Document,
+    img: &image::DynamicImage,
+    budget: usize,
+) -> Result<(ObjectId, u32, u32)> {
+    if photo::has_transparency(img) {
         return Err(invalid(
             "Transparent images need an explicit background before PDF conversion.",
         ));
     }
-    let mut bytes = Vec::new();
-    image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, 95)
-        .encode_image(&img.to_rgb8())?;
-    let id=doc.add_object(Stream::new(dictionary!{"Type"=>"XObject","Subtype"=>"Image","Width"=>img.width(),"Height"=>img.height(),"ColorSpace"=>"DeviceRGB","BitsPerComponent"=>8,"Filter"=>"DCTDecode"},bytes));
+    let mut bytes = crate::buffer::BoundedBuffer::new(budget);
+    let encoded = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, 95)
+        .encode_image(&img.to_rgb8());
+    if bytes.exceeded {
+        return Err(StudioError::ResourceLimit(
+            "Encoded page images exceed 64 MiB. Export fewer pages at once.".into(),
+        ));
+    }
+    encoded?;
+    let id = doc.add_object(Stream::new(dictionary!{"Type"=>"XObject","Subtype"=>"Image","Width"=>img.width(),"Height"=>img.height(),"ColorSpace"=>"DeviceRGB","BitsPerComponent"=>8,"Filter"=>"DCTDecode"}, bytes.into_inner()));
     Ok((id, img.width(), img.height()))
 }
-pub fn images_to_pdf(inputs: &[Vec<u8>], p: &Paper) -> Result<PreparedOutput> {
-    if inputs.iter().map(Vec::len).sum::<usize>() > MAX_INPUT_BYTES {
-        return Err(invalid("Combined inputs exceed 64 MiB."));
+/// Own only encoded PDF objects. Callers release each decoded page before the next.
+pub(crate) struct ImagePdfBuilder {
+    doc: Document,
+    pages: ObjectId,
+    kids: Vec<Object>,
+    bounds: (f32, f32, f32),
+    image_bytes: usize,
+}
+impl ImagePdfBuilder {
+    pub(crate) fn new(p: &Paper) -> Result<Self> {
+        let bounds = paper(p)?;
+        let mut doc = Document::with_version("1.7");
+        let pages = doc.new_object_id();
+        Ok(Self {
+            doc,
+            pages,
+            kids: vec![],
+            bounds,
+            image_bytes: 0,
+        })
     }
-    if inputs.is_empty() || inputs.len() > MAX_PAGES {
-        return Err(invalid("Select 1–200 images."));
-    }
-    let (w, h, m) = paper(p)?;
-    let mut doc = Document::with_version("1.7");
-    let pages = doc.new_object_id();
-    let mut kids = Vec::new();
-    for data in inputs {
-        let (image, iw, ih) = add_image(&mut doc, data)?;
+    pub(crate) fn add(&mut self, img: &image::DynamicImage) -> Result<()> {
+        if self.kids.len() >= MAX_PAGES {
+            return Err(invalid("Select 1–200 images."));
+        }
+        let (w, h, m) = self.bounds;
+        let (image, iw, ih) = add_prepared_image(
+            &mut self.doc,
+            img,
+            MAX_INPUT_BYTES.saturating_sub(self.image_bytes),
+        )?;
+        self.image_bytes += self.doc.get_object(image)?.as_stream()?.content.len();
         let scale = ((w - 2. * m) / iw as f32).min((h - 2. * m) / ih as f32);
-        let pw = iw as f32 * scale;
-        let ph = ih as f32 * scale;
-        let ops = vec![
+        let (pw, ph) = (iw as f32 * scale, ih as f32 * scale);
+        let operations = vec![
             Operation::new("q", vec![]),
             Operation::new(
                 "cm",
@@ -299,21 +352,49 @@ pub fn images_to_pdf(inputs: &[Vec<u8>], p: &Paper) -> Result<PreparedOutput> {
             Operation::new("Do", vec![Object::Name(b"Photo".to_vec())]),
             Operation::new("Q", vec![]),
         ];
-        let stream = doc.add_object(Stream::new(
+        let stream = self.doc.add_object(Stream::new(
             Dictionary::new(),
-            Content { operations: ops }.encode()?,
+            Content { operations }.encode()?,
         ));
-        let page=doc.add_object(dictionary!{"Type"=>"Page","Parent"=>pages,"MediaBox"=>vec![0.into(),0.into(),w.into(),h.into()],"Resources"=>dictionary!{"XObject"=>dictionary!{"Photo"=>image}},"Contents"=>stream});
-        kids.push(page.into());
+        let page=self.doc.add_object(dictionary!{"Type"=>"Page","Parent"=>self.pages,"MediaBox"=>vec![0.into(),0.into(),w.into(),h.into()],"Resources"=>dictionary!{"XObject"=>dictionary!{"Photo"=>image}},"Contents"=>stream});
+        self.kids.push(page.into());
+        Ok(())
     }
-    let count = kids.len();
-    doc.objects.insert(
-        pages,
-        Object::Dictionary(dictionary! {"Type"=>"Pages","Kids"=>kids,"Count"=>count as i64}),
-    );
-    let root = doc.add_object(dictionary! {"Type"=>"Catalog","Pages"=>pages});
-    doc.trailer.set("Root", root);
-    finish(doc, count)
+    pub(crate) fn finish(mut self) -> Result<PreparedOutput> {
+        let count = self.kids.len();
+        if count == 0 {
+            return Err(invalid("Select 1–200 images."));
+        }
+        self.doc.objects.insert(
+            self.pages,
+            Object::Dictionary(
+                dictionary! {"Type"=>"Pages","Kids"=>self.kids,"Count"=>count as i64},
+            ),
+        );
+        let root = self
+            .doc
+            .add_object(dictionary! {"Type"=>"Catalog","Pages"=>self.pages});
+        self.doc.trailer.set("Root", root);
+        finish(self.doc, count)
+    }
+}
+pub fn images_to_pdf(inputs: &[Vec<u8>], p: &Paper) -> Result<PreparedOutput> {
+    if inputs.is_empty() || inputs.len() > MAX_PAGES {
+        return Err(invalid("Select 1–200 images."));
+    }
+    let total = inputs
+        .iter()
+        .try_fold(0usize, |total, data| total.checked_add(data.len()))
+        .ok_or_else(|| invalid("Combined inputs exceed 64 MiB."))?;
+    if total > MAX_INPUT_BYTES {
+        return Err(invalid("Combined inputs exceed 64 MiB."));
+    }
+    let mut builder = ImagePdfBuilder::new(p)?;
+    for data in inputs {
+        let img = photo::decode(data)?;
+        builder.add(&img)?;
+    }
+    builder.finish()
 }
 pub fn extract_text(data: &[u8]) -> Result<String> {
     let d = load(data)?;
@@ -390,4 +471,20 @@ pub fn print_sheet(
     let root = d.add_object(dictionary! {"Type"=>"Catalog","Pages"=>pages});
     d.trailer.set("Root", root);
     finish(d, 1)
+}
+
+#[cfg(test)]
+mod budget_tests {
+    use super::*;
+    #[test]
+    fn exhausted_budget_does_not_append_pdf_objects() {
+        let mut doc = Document::with_version("1.7");
+        let img = image::DynamicImage::new_rgb8(16, 16);
+        assert!(matches!(
+            add_prepared_image(&mut doc, &img, 1),
+            Err(StudioError::ResourceLimit(_))
+        ));
+        assert!(doc.objects.is_empty());
+        assert!(add_prepared_image(&mut doc, &img, 4096).is_ok());
+    }
 }

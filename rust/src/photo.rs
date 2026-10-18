@@ -33,7 +33,7 @@ pub fn decode(data: &[u8]) -> Result<DynamicImage> {
     img.apply_orientation(orientation);
     Ok(img)
 }
-fn has_transparency(image: &DynamicImage) -> bool {
+pub(crate) fn has_transparency(image: &DynamicImage) -> bool {
     match image {
         DynamicImage::ImageRgba8(value) => value.pixels().any(|pixel| pixel[3] < u8::MAX),
         DynamicImage::ImageLumaA8(value) => value.pixels().any(|pixel| pixel[1] < u8::MAX),
@@ -308,4 +308,37 @@ pub fn process_physical(
     options.height = physical_pixels(spec.height_mm, f64::from(spec.dpi))?;
     options.output_dpi = Some(spec.dpi);
     process(data, &options)
+}
+
+/// Canonical display PNG: validated source, normalized orientation and bounded
+/// pixels. Display bytes are never used as the prepared export.
+pub(crate) fn display_preview(img: &DynamicImage, max_pixels: u32) -> Result<PreparedOutput> {
+    if !(128..=1600).contains(&max_pixels) {
+        return Err(invalid("Image preview size must be 128–1600 pixels."));
+    }
+    let img = img.thumbnail(max_pixels, max_pixels).to_rgba8();
+    let mut bytes = Cursor::new(Vec::new());
+    DynamicImage::ImageRgba8(img.clone()).write_to(&mut bytes, ImageFormat::Png)?;
+    let data = bytes.into_inner();
+    let output = PreparedOutput {
+        info: OutputInfo {
+            format: "png".into(),
+            bytes: data.len() as u64,
+            width: Some(img.width()),
+            height: Some(img.height()),
+            pages: None,
+            quality: None,
+            print_density: None,
+            findings: vec![],
+        },
+        data,
+    };
+    crate::export::verify_output(&output)?;
+    Ok(output)
+}
+pub fn source_preview(data: &[u8], max_pixels: u32) -> Result<PreparedOutput> {
+    if !(128..=1600).contains(&max_pixels) {
+        return Err(invalid("Image preview size must be 128–1600 pixels."));
+    }
+    display_preview(&decode(data)?, max_pixels)
 }

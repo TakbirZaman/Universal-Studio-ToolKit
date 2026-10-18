@@ -1,5 +1,8 @@
+import 'safe_image_preview.dart';
+
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
@@ -174,7 +177,11 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
                     height: 300,
                     padding: const EdgeInsets.all(12),
                     color: Theme.of(context).colorScheme.surfaceContainer,
-                    child: Image.memory(widget.page, fit: BoxFit.contain),
+                    child: SafeImagePreview(
+                      bytes: widget.page,
+                      height: 240,
+                      semanticLabel: 'Selected adjusted scan',
+                    ),
                   ),
                 );
                 final controls = Column(
