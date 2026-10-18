@@ -13,6 +13,7 @@ import 'jobs.dart';
 import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'scanner.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -67,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -427922543;
+  int get rustContentHash => 1559731165;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -135,6 +136,19 @@ abstract class RustLibApi extends BaseApi {
   Future<StudioOutput> crateApiOptimizePdf({required List<int> data});
 
   Future<StudioOutput> crateApiPrepareEditedText({required List<int> data});
+
+  Future<StudioOutput> crateApiPrepareScanPdf({required List<ScanPage> pages});
+
+  Future<StudioOutput> crateApiPreviewScanPage({
+    required List<int> data,
+    required ScanOptions options,
+    required int maxPixels,
+  });
+
+  Future<StudioOutput> crateApiPreviewSourceImage({
+    required List<int> data,
+    required int maxPixels,
+  });
 
   Future<StudioOutput> crateApiRecognizeText({
     required OcrTask task,
@@ -693,6 +707,104 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "prepare_edited_text", argNames: ["data"]);
 
   @override
+  Future<StudioOutput> crateApiPrepareScanPdf({required List<ScanPage> pages}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_scan_page(pages, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 16,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_studio_output,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiPrepareScanPdfConstMeta,
+        argValues: [pages],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiPrepareScanPdfConstMeta =>
+      const TaskConstMeta(debugName: "prepare_scan_pdf", argNames: ["pages"]);
+
+  @override
+  Future<StudioOutput> crateApiPreviewScanPage({
+    required List<int> data,
+    required ScanOptions options,
+    required int maxPixels,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(data, serializer);
+          sse_encode_box_autoadd_scan_options(options, serializer);
+          sse_encode_u_32(maxPixels, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 17,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_studio_output,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiPreviewScanPageConstMeta,
+        argValues: [data, options, maxPixels],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiPreviewScanPageConstMeta => const TaskConstMeta(
+    debugName: "preview_scan_page",
+    argNames: ["data", "options", "maxPixels"],
+  );
+
+  @override
+  Future<StudioOutput> crateApiPreviewSourceImage({
+    required List<int> data,
+    required int maxPixels,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(data, serializer);
+          sse_encode_u_32(maxPixels, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 18,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_studio_output,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiPreviewSourceImageConstMeta,
+        argValues: [data, maxPixels],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiPreviewSourceImageConstMeta => const TaskConstMeta(
+    debugName: "preview_source_image",
+    argNames: ["data", "maxPixels"],
+  );
+
+  @override
   Future<StudioOutput> crateApiRecognizeText({
     required OcrTask task,
     required List<int> data,
@@ -711,7 +823,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 16,
+            funcId: 19,
             port: port_,
           );
         },
@@ -747,7 +859,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 17,
+            funcId: 20,
             port: port_,
           );
         },
@@ -797,7 +909,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 18,
+            funcId: 21,
             port: port_,
           );
         },
@@ -871,7 +983,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 19,
+            funcId: 22,
             port: port_,
           );
         },
@@ -930,7 +1042,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 20,
+            funcId: 23,
             port: port_,
           );
         },
@@ -966,7 +1078,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 21,
+            funcId: 24,
             port: port_,
           );
         },
@@ -1000,7 +1112,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 22,
+            funcId: 25,
             port: port_,
           );
         },
@@ -1034,7 +1146,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 23,
+            funcId: 26,
             port: port_,
           );
         },
@@ -1064,7 +1176,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 24,
+            funcId: 27,
             port: port_,
           );
         },
@@ -1096,7 +1208,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 25,
+            funcId: 28,
             port: port_,
           );
         },
@@ -1168,6 +1280,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PrintDensity dco_decode_box_autoadd_print_density(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_print_density(raw);
+  }
+
+  @protected
+  ScanOptions dco_decode_box_autoadd_scan_options(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_scan_options(raw);
   }
 
   @protected
@@ -1261,6 +1379,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ScanPage> dco_decode_list_scan_page(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_scan_page).toList();
+  }
+
+  @protected
   PrintDensity? dco_decode_opt_box_autoadd_print_density(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_print_density(raw);
@@ -1293,6 +1417,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return PrintDensity(
       xDpi: dco_decode_f_64(arr[0]),
       yDpi: dco_decode_f_64(arr[1]),
+    );
+  }
+
+  @protected
+  ScanMode dco_decode_scan_mode(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ScanMode.values[raw as int];
+  }
+
+  @protected
+  ScanOptions dco_decode_scan_options(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return ScanOptions(
+      mode: dco_decode_scan_mode(arr[0]),
+      rotateQuarters: dco_decode_u_8(arr[1]),
+      brightness: dco_decode_i_32(arr[2]),
+      contrast: dco_decode_f_32(arr[3]),
+      threshold: dco_decode_u_8(arr[4]),
+    );
+  }
+
+  @protected
+  ScanPage dco_decode_scan_page(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ScanPage(
+      data: dco_decode_list_prim_u_8_strict(arr[0]),
+      options: dco_decode_scan_options(arr[1]),
     );
   }
 
@@ -1415,6 +1572,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ScanOptions sse_decode_box_autoadd_scan_options(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_scan_options(deserializer));
+  }
+
+  @protected
   StudioOutput sse_decode_box_autoadd_studio_output(
     SseDeserializer deserializer,
   ) {
@@ -1529,6 +1694,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ScanPage> sse_decode_list_scan_page(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ScanPage>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_scan_page(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   PrintDensity? sse_decode_opt_box_autoadd_print_density(
     SseDeserializer deserializer,
   ) {
@@ -1582,6 +1759,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_xDpi = sse_decode_f_64(deserializer);
     var var_yDpi = sse_decode_f_64(deserializer);
     return PrintDensity(xDpi: var_xDpi, yDpi: var_yDpi);
+  }
+
+  @protected
+  ScanMode sse_decode_scan_mode(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ScanMode.values[inner];
+  }
+
+  @protected
+  ScanOptions sse_decode_scan_options(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_mode = sse_decode_scan_mode(deserializer);
+    var var_rotateQuarters = sse_decode_u_8(deserializer);
+    var var_brightness = sse_decode_i_32(deserializer);
+    var var_contrast = sse_decode_f_32(deserializer);
+    var var_threshold = sse_decode_u_8(deserializer);
+    return ScanOptions(
+      mode: var_mode,
+      rotateQuarters: var_rotateQuarters,
+      brightness: var_brightness,
+      contrast: var_contrast,
+      threshold: var_threshold,
+    );
+  }
+
+  @protected
+  ScanPage sse_decode_scan_page(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_options = sse_decode_scan_options(deserializer);
+    return ScanPage(data: var_data, options: var_options);
   }
 
   @protected
@@ -1714,6 +1923,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_scan_options(
+    ScanOptions self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_scan_options(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_studio_output(
     StudioOutput self,
     SseSerializer serializer,
@@ -1839,6 +2057,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_scan_page(
+    List<ScanPage> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_scan_page(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_print_density(
     PrintDensity? self,
     SseSerializer serializer,
@@ -1889,6 +2119,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.xDpi, serializer);
     sse_encode_f_64(self.yDpi, serializer);
+  }
+
+  @protected
+  void sse_encode_scan_mode(ScanMode self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_scan_options(ScanOptions self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_scan_mode(self.mode, serializer);
+    sse_encode_u_8(self.rotateQuarters, serializer);
+    sse_encode_i_32(self.brightness, serializer);
+    sse_encode_f_32(self.contrast, serializer);
+    sse_encode_u_8(self.threshold, serializer);
+  }
+
+  @protected
+  void sse_encode_scan_page(ScanPage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+    sse_encode_scan_options(self.options, serializer);
   }
 
   @protected

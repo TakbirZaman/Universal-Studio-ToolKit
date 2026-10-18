@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -427922543;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1559731165;
 
 // Section: executor
 
@@ -597,6 +597,109 @@ fn wire__crate__api__prepare_edited_text_impl(
         },
     )
 }
+fn wire__crate__api__prepare_scan_pdf_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "prepare_scan_pdf",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_pages = <Vec<crate::scanner::ScanPage>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::prepare_scan_pdf(api_pages)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__preview_scan_page_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "preview_scan_page",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_options = <crate::scanner::ScanOptions>::sse_decode(&mut deserializer);
+            let api_max_pixels = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok =
+                        crate::api::preview_scan_page(api_data, api_options, api_max_pixels)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__preview_source_image_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "preview_source_image",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_max_pixels = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::preview_source_image(api_data, api_max_pixels)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__recognize_text_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1139,6 +1242,18 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::scanner::ScanPage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::scanner::ScanPage>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Option<crate::model::PrintDensity> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1191,6 +1306,50 @@ impl SseDecode for crate::model::PrintDensity {
         return crate::model::PrintDensity {
             x_dpi: var_xDpi,
             y_dpi: var_yDpi,
+        };
+    }
+}
+
+impl SseDecode for crate::scanner::ScanMode {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::scanner::ScanMode::Original,
+            1 => crate::scanner::ScanMode::Colour,
+            2 => crate::scanner::ScanMode::Grayscale,
+            3 => crate::scanner::ScanMode::BlackWhite,
+            _ => unreachable!("Invalid variant for ScanMode: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::scanner::ScanOptions {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_mode = <crate::scanner::ScanMode>::sse_decode(deserializer);
+        let mut var_rotateQuarters = <u8>::sse_decode(deserializer);
+        let mut var_brightness = <i32>::sse_decode(deserializer);
+        let mut var_contrast = <f32>::sse_decode(deserializer);
+        let mut var_threshold = <u8>::sse_decode(deserializer);
+        return crate::scanner::ScanOptions {
+            mode: var_mode,
+            rotate_quarters: var_rotateQuarters,
+            brightness: var_brightness,
+            contrast: var_contrast,
+            threshold: var_threshold,
+        };
+    }
+}
+
+impl SseDecode for crate::scanner::ScanPage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_options = <crate::scanner::ScanOptions>::sse_decode(deserializer);
+        return crate::scanner::ScanPage {
+            data: var_data,
+            options: var_options,
         };
     }
 }
@@ -1287,16 +1446,19 @@ fn pde_ffi_dispatcher_primary_impl(
         12 => wire__crate__api__ocr_available_impl(port, ptr, rust_vec_len, data_len),
         14 => wire__crate__api__optimize_pdf_impl(port, ptr, rust_vec_len, data_len),
         15 => wire__crate__api__prepare_edited_text_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__recognize_text_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__render_pdf_page_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__resize_photo_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__resize_physical_photo_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__run_recipe_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__prepare_scan_pdf_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__preview_scan_page_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__preview_source_image_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__recognize_text_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__render_pdf_page_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__resize_photo_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__resize_physical_photo_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__run_recipe_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1384,6 +1546,61 @@ impl flutter_rust_bridge::IntoDart for crate::model::PrintDensity {
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::model::PrintDensity {}
 impl flutter_rust_bridge::IntoIntoDart<crate::model::PrintDensity> for crate::model::PrintDensity {
     fn into_into_dart(self) -> crate::model::PrintDensity {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::scanner::ScanMode {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Original => 0.into_dart(),
+            Self::Colour => 1.into_dart(),
+            Self::Grayscale => 2.into_dart(),
+            Self::BlackWhite => 3.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::scanner::ScanMode {}
+impl flutter_rust_bridge::IntoIntoDart<crate::scanner::ScanMode> for crate::scanner::ScanMode {
+    fn into_into_dart(self) -> crate::scanner::ScanMode {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::scanner::ScanOptions {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.mode.into_into_dart().into_dart(),
+            self.rotate_quarters.into_into_dart().into_dart(),
+            self.brightness.into_into_dart().into_dart(),
+            self.contrast.into_into_dart().into_dart(),
+            self.threshold.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::scanner::ScanOptions {}
+impl flutter_rust_bridge::IntoIntoDart<crate::scanner::ScanOptions>
+    for crate::scanner::ScanOptions
+{
+    fn into_into_dart(self) -> crate::scanner::ScanOptions {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::scanner::ScanPage {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.data.into_into_dart().into_dart(),
+            self.options.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::scanner::ScanPage {}
+impl flutter_rust_bridge::IntoIntoDart<crate::scanner::ScanPage> for crate::scanner::ScanPage {
+    fn into_into_dart(self) -> crate::scanner::ScanPage {
         self
     }
 }
@@ -1558,6 +1775,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::scanner::ScanPage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::scanner::ScanPage>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::model::PrintDensity> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1603,6 +1830,43 @@ impl SseEncode for crate::model::PrintDensity {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <f64>::sse_encode(self.x_dpi, serializer);
         <f64>::sse_encode(self.y_dpi, serializer);
+    }
+}
+
+impl SseEncode for crate::scanner::ScanMode {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::scanner::ScanMode::Original => 0,
+                crate::scanner::ScanMode::Colour => 1,
+                crate::scanner::ScanMode::Grayscale => 2,
+                crate::scanner::ScanMode::BlackWhite => 3,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::scanner::ScanOptions {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::scanner::ScanMode>::sse_encode(self.mode, serializer);
+        <u8>::sse_encode(self.rotate_quarters, serializer);
+        <i32>::sse_encode(self.brightness, serializer);
+        <f32>::sse_encode(self.contrast, serializer);
+        <u8>::sse_encode(self.threshold, serializer);
+    }
+}
+
+impl SseEncode for crate::scanner::ScanPage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.data, serializer);
+        <crate::scanner::ScanOptions>::sse_encode(self.options, serializer);
     }
 }
 

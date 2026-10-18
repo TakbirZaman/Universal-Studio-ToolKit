@@ -36,31 +36,88 @@ def verify_source(root):
     exclusions(modern.find('device-transfer'))
 
 
+def resource_paths(table, resource_id):
+    """Resolve compiled IDs rather than assuming optimizer-preserved filenames."""
+    current = None
+    paths = []
+    for line in table.splitlines():
+        header = re.search(r'^\s*resource (0x[0-9a-fA-F]+)\b', line)
+        if header:
+            current = int(header.group(1), 16)
+        if current == int(resource_id, 16):
+            value = re.search(r'\(file\) (\S+) type=XML\s*$', line)
+            if value:
+                path = value.group(1)
+                if not path.startswith('res/') or '..' in path.split('/') or '\\' in path:
+                    raise ValueError('Invalid compiled XML resource path.')
+                paths.append(path)
+    if not paths:
+        raise ValueError('Compiled backup XML resource has no resolvable file.')
+    return sorted(set(paths))
+
+
+def xmltree_policy(text):
+    """Read the element hierarchy in SDK aapt2 xmltree output."""
+    stack = []
+    root = None
+    for line in text.splitlines():
+        element = re.match(r'^(\s*)E: ([A-Za-z0-9_.-]+)(?:\s|$)', line)
+        if element:
+            depth = len(element.group(1))
+            while stack and stack[-1][0] >= depth:
+                stack.pop()
+            node = ET.Element(element.group(2))
+            if stack:
+                stack[-1][1].append(node)
+            elif root is None:
+                root = node
+            else:
+                raise ValueError('Multiple compiled XML roots.')
+            stack.append((depth, node))
+        else:
+            attribute = re.match(r'^\s*A: (domain|path)(?:\([^)]*\))?="([^"\n]*)"', line)
+            if attribute and stack:
+                stack[-1][1].set(attribute.group(1), attribute.group(2))
+    if root is None:
+        raise ValueError('Could not parse compiled backup XML.')
+    return root
+
+
 def verify_compiled(apk, aapt2):
-    result = subprocess.run([str(aapt2), 'dump', 'xmltree', str(apk), '--file', 'AndroidManifest.xml'],
-                            capture_output=True, text=True, timeout=30, check=True)
-    lines = result.stdout.splitlines()
+    def dump(*args):
+        return subprocess.run([str(aapt2), 'dump', *args], capture_output=True,
+                              text=True, timeout=30, check=True).stdout
+    manifest = dump('xmltree', str(apk), '--file', 'AndroidManifest.xml')
+    lines = manifest.splitlines()
     backup = next((line for line in lines if re.search(r'\bandroid:allowBackup\b', line)), '')
     if not re.search(r'(?:false|0x0+)\s*$', backup):
         raise ValueError('Compiled APK does not explicitly disable Android backup.')
-    if any(permission in result.stdout for permission in ['android.permission.MANAGE_EXTERNAL_STORAGE', 'android.permission.READ_EXTERNAL_STORAGE', 'android.permission.WRITE_EXTERNAL_STORAGE']):
+    if any(permission in manifest for permission in ['android.permission.MANAGE_EXTERNAL_STORAGE', 'android.permission.READ_EXTERNAL_STORAGE', 'android.permission.WRITE_EXTERNAL_STORAGE']):
         raise ValueError('Broad filesystem permissions are not needed for document-provider access.')
     debugging = next((line for line in lines if 'android:debuggable' in line), '')
     is_debug = bool(re.search(r'(?:true|0xffffffff)\s*$', debugging))
-    if not is_debug and 'android.permission.INTERNET' in result.stdout:
+    if not is_debug and 'android.permission.INTERNET' in manifest:
         raise ValueError('Release processing must not request network permission.')
-    for key in ['backupAgent', 'fullBackupContent', 'dataExtractionRules']:
-        if not any('android:' + key in line for line in lines):
-            raise ValueError('Compiled manifest is missing the backup-policy adapter/rules.')
-    for resource, sections in [('backup_rules.xml', ['full-backup-content']),
-                               ('data_extraction_rules.xml', ['cloud-backup', 'device-transfer'])]:
-        xml = subprocess.run([str(aapt2), 'dump', 'xmltree', str(apk), '--file', 'res/xml/' + resource],
-                             capture_output=True, text=True, timeout=30, check=True).stdout
-        if any(section not in xml for section in sections) or 'include ' in xml:
-            raise ValueError('Compiled APK backup rules failed verification.')
-        for domain in DOMAINS:
-            if not re.search(r'domain="' + re.escape(domain) + r'"', xml):
-                raise ValueError('Compiled backup-rule domains are incomplete.')
+    agent = next((line for line in lines if 'android:backupAgent' in line), '')
+    if not re.search(r'="(?:dev\.universalstudio\.universal_studio_toolkit)?\.LocalOnlyBackupAgent"', agent):
+        raise ValueError('Compiled manifest is missing the local-only backup adapter.')
+    table = dump('resources', str(apk))
+    for key in ['fullBackupContent', 'dataExtractionRules']:
+        value = next((line for line in lines if 'android:' + key in line), '')
+        resource = re.search(r'=\s*@(0x[0-9a-fA-F]+)\b', value)
+        if not resource:
+            raise ValueError('Compiled manifest is missing a backup-rule resource reference.')
+        for path in resource_paths(table, resource.group(1)):
+            root = xmltree_policy(dump('xmltree', str(apk), '--file', path))
+            if key == 'fullBackupContent':
+                if root.tag != 'full-backup-content':
+                    raise ValueError('Invalid compiled legacy backup rules.')
+                exclusions(root)
+            else:
+                if root.tag != 'data-extraction-rules':
+                    raise ValueError('Invalid compiled modern backup rules.')
+                exclusions(root.find('cloud-backup'))
+                exclusions(root.find('device-transfer'))
 
 
 if __name__ == '__main__':

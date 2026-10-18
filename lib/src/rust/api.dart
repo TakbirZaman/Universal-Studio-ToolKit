@@ -8,6 +8,7 @@ import 'jobs.dart';
 import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'scanner.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`, `from`
 
@@ -214,6 +215,27 @@ Future<StudioOutput> resizePhysicalPhoto({
   flatten: flatten,
   rotation: rotation,
   signatureThreshold: signatureThreshold,
+);
+
+Future<StudioOutput> prepareScanPdf({required List<ScanPage> pages}) =>
+    RustLib.instance.api.crateApiPrepareScanPdf(pages: pages);
+
+Future<StudioOutput> previewSourceImage({
+  required List<int> data,
+  required int maxPixels,
+}) => RustLib.instance.api.crateApiPreviewSourceImage(
+  data: data,
+  maxPixels: maxPixels,
+);
+
+Future<StudioOutput> previewScanPage({
+  required List<int> data,
+  required ScanOptions options,
+  required int maxPixels,
+}) => RustLib.instance.api.crateApiPreviewScanPage(
+  data: data,
+  options: options,
+  maxPixels: maxPixels,
 );
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>

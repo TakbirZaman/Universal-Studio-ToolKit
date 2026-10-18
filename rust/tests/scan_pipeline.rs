@@ -87,3 +87,27 @@ fn preview_is_bounded_and_rejects_untrusted_formats() {
     .unwrap();
     assert_eq!(preview.info.height, Some(128));
 }
+
+#[test]
+fn nearly_opaque_sixteen_bit_pages_require_an_explicit_background() {
+    let img = DynamicImage::ImageRgba16(image::ImageBuffer::from_pixel(
+        8,
+        8,
+        image::Rgba([100u16, 200, 300, 65534]),
+    ));
+    let mut encoded = std::io::Cursor::new(Vec::new());
+    img.write_to(&mut encoded, ImageFormat::Png).unwrap();
+    let bytes = encoded.into_inner();
+    assert!(
+        process(&bytes, &Default::default())
+            .unwrap_err()
+            .to_string()
+            .contains("opaque background")
+    );
+    assert!(
+        pdf::images_to_pdf(&[bytes], &Default::default())
+            .unwrap_err()
+            .to_string()
+            .contains("explicit background")
+    );
+}

@@ -12,7 +12,7 @@ Legend: [x] verified core implementation; [~] partial / implementation in progre
 - [~] 9. Typed documents/constraints/recipes/jobs/results/manifests/capabilities; bounded concurrency; staged outputs; URI support.
 - [~] 10. PDF merge/extract/delete/reorder/rotate/images-to-PDF/text extraction; split UI, thumbnails/rendering, page geometry, watermarks/numbers, signature placement, form filling, searchable export, three compression modes and interoperability.
 - [~] 11. Camera and permissions, import, multipage sessions, manual corners/perspective/deskew, modes/adjustments, non-destructive recovery and quality advisories.
-- [~] 12. JPEG/PNG, EXIF normalization, resize/rotate/flip, fit/fill/padding, compression, metadata and transparency; physical mm/DPI export with verified JFIF/pHYs density implemented locally; full crop gestures, comparison, face suggestions, print customization; numeric recipe crop and batch controls implemented.
+- [~] 12. JPEG/PNG, EXIF normalization, resize/rotate/flip, fit/fill/padding, compression, metadata and transparency; physical mm/DPI export with verified JFIF/pHYs density implemented and platform-packaged; full crop gestures, comparison, face suggestions, print customization; numeric recipe crop and batch controls implemented.
 - [~] 13. Fixed compression constraints, KB/KiB/strict/inclusive, bounded same-source search and actual validation; flexible dimensions remain.
 - [~] 14. Threshold signature background removal and transparent export; manual refinement/consented storage/PDF placement remain; numeric crop and preview backgrounds implemented.
 - [~] 15. Verified ZIP with report/manifest; typed slots and complete constraint enforcement, preset provenance, builder UI remain.
@@ -25,3 +25,5 @@ Legend: [x] verified core implementation; [~] partial / implementation in progre
 - [~] 22. Windows portable ZIP, Linux runnable/AppImage, Android release APK, runtime verification, storage fallback, signing guide.
 
 Specific remaining checks: original-file hash unchanged; output hashes match ZIP; page order/rotation/appearance; cancellation timing; nested/malformed PDF resource exhaustion; oversized images; EXIF 1–8; transparent edges; Unicode normalization/case collisions; ICC/gamma handling; Android provider full/partial writes; text scaling 200%; keyboard-only use; screen-reader use; clean-device licenses and runtime dependencies.
+
+Verified scanner slice 2026-10-18: sequential per-page preparation, cumulative encoded-image/final-PDF byte limits, bounded canonical previews, reordered/adjusted PDF appearance and Bangla-named export. 47 Rust tests and 25 selected Flutter tests pass locally; platform/device acceptance is tracked separately. See ADR-011.

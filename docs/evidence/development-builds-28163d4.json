@@ -1,0 +1,51 @@
+{
+  "source_commit": "28163d4aedaa19cd43ce0f504dc7cb8e57601763",
+  "date_utc": "2026-10-18",
+  "clean_system_verified": false,
+  "android_device_behavior_verified": false,
+  "ocr_platform_scope": "Linux requires separately installed /usr/bin/tesseract; Windows/Android OCR unavailable",
+  "artifacts": [
+    {
+      "artifact": 12098894336,
+      "outer_sha256": "5cbe8d8673d4eeda02e25f88f2273fa238449f5f3b89bde60eb756abb33393b8",
+      "outer_bytes": 19604630,
+      "filename": "Universal-Studio-Linux-x64.tar.gz",
+      "sha256": "2f05a9d095ab7912cd19292abe5160a72ce41bb9e29f663e26f0282f0f596b42",
+      "bytes": 19659096,
+      "zip_crc_verified": true,
+      "notice_hashes_verified": 471,
+      "startup": {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      }
+    },
+    {
+      "artifact": 12099481708,
+      "outer_sha256": "32175dce232370690780db44858f756d98caaad8861c12c4e79c0e565550d81e",
+      "outer_bytes": 20190815,
+      "filename": "Universal-Studio-Windows-x64.zip",
+      "sha256": "a12c4643e8fd10971deca0acc72a8eb2866774e94574d4325553978b6f74abd7",
+      "bytes": 20735873,
+      "zip_crc_verified": true,
+      "notice_hashes_verified": 471,
+      "startup": {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      }
+    },
+    {
+      "artifact": 12098858167,
+      "outer_sha256": "9d19012610041e952c8f8640fbbd0b20beb8356c9e0dd8669e710c60637d0a2b",
+      "outer_bytes": 69355038,
+      "filename": "Universal-Studio-Android-debug.apk",
+      "sha256": "a16ba24922d978f19cf330e4b94c88ef0ee8b8ca07502458e27c6ccce3cbe5eb",
+      "bytes": 95609869,
+      "zip_crc_verified": true,
+      "notice_hashes_verified": 471
+    }
+  ]
+}
