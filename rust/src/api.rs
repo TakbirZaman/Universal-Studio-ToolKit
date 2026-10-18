@@ -545,3 +545,24 @@ pub fn create_custom_print_sheet(
     .map(Into::into)
     .map_err(|error| error.to_string())
 }
+
+pub fn decorate_pdf(
+    data: Vec<u8>,
+    page_numbers: bool,
+    watermark: Option<String>,
+    watermark_font_points: f64,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        crate::decorations::apply(
+            &data,
+            &crate::decorations::OverlayOptions {
+                page_numbers,
+                watermark,
+                watermark_font_points,
+                ..Default::default()
+            },
+        )
+    })
+    .map(Into::into)
+    .map_err(|error| error.to_string())
+}

@@ -66,7 +66,7 @@ pub fn load(data: &[u8]) -> Result<Document> {
     }
     Ok(doc)
 }
-fn inherited(doc: &Document, id: ObjectId, key: &[u8]) -> Result<Option<Object>> {
+pub(crate) fn inherited(doc: &Document, id: ObjectId, key: &[u8]) -> Result<Option<Object>> {
     let mut current = id;
     for _ in 0..64 {
         let d = doc.get_dictionary(current)?;
