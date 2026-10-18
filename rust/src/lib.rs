@@ -19,3 +19,5 @@ pub mod ocr;
 pub mod density;
 
 mod buffer;
+
+pub mod printing;

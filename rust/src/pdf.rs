@@ -80,7 +80,7 @@ fn inherited(doc: &Document, id: ObjectId, key: &[u8]) -> Result<Option<Object>>
     }
     Err(invalid("PDF page inheritance is cyclic or too deep."))
 }
-fn finish(mut doc: Document, count: usize) -> Result<PreparedOutput> {
+pub(crate) fn finish(mut doc: Document, count: usize) -> Result<PreparedOutput> {
     doc.prune_objects();
     doc.compress();
     let mut writer = crate::buffer::BoundedBuffer::new(MAX_INPUT_BYTES);
@@ -257,7 +257,7 @@ impl Default for Paper {
         }
     }
 }
-fn paper(p: &Paper) -> Result<(f32, f32, f32)> {
+pub(crate) fn paper(p: &Paper) -> Result<(f32, f32, f32)> {
     if ![p.width_mm, p.height_mm, p.margin_mm]
         .iter()
         .all(|n| n.is_finite())
@@ -276,11 +276,7 @@ fn paper(p: &Paper) -> Result<(f32, f32, f32)> {
         (p.margin_mm * 72. / 25.4) as f32,
     ))
 }
-fn add_image(doc: &mut Document, data: &[u8]) -> Result<(ObjectId, u32, u32)> {
-    let img = photo::decode(data)?;
-    add_prepared_image(doc, &img, MAX_INPUT_BYTES)
-}
-fn add_prepared_image(
+pub(crate) fn add_prepared_image(
     doc: &mut Document,
     img: &image::DynamicImage,
     budget: usize,
@@ -413,64 +409,18 @@ pub fn print_sheet(
     spacing_mm: f64,
     copies: u32,
 ) -> Result<PreparedOutput> {
-    let (w, h, m) = paper(p)?;
-    if ![photo_width_mm, photo_height_mm, spacing_mm]
-        .iter()
-        .all(|v| v.is_finite())
-        || photo_width_mm <= 0.
-        || photo_height_mm <= 0.
-        || spacing_mm < 0.
-        || copies == 0
-        || copies > 200
-    {
-        return Err(invalid("Enter positive photo dimensions and 1–200 copies."));
-    }
-    let pw = (photo_width_mm * 72. / 25.4) as f32;
-    let ph = (photo_height_mm * 72. / 25.4) as f32;
-    let gap = (spacing_mm * 72. / 25.4) as f32;
-    let cols = ((w - 2. * m + gap) / (pw + gap)).floor() as u32;
-    let rows = ((h - 2. * m + gap) / (ph + gap)).floor() as u32;
-    if cols == 0 || rows == 0 || copies > cols.saturating_mul(rows) {
-        return Err(invalid(
-            "The requested copies do not fit on this sheet. Reduce copies or photo dimensions.",
-        ));
-    }
-    let mut d = Document::with_version("1.7");
-    let pages = d.new_object_id();
-    let (image, iw, ih) = add_image(&mut d, data)?;
-    if ((iw as f64 / ih as f64) / (photo_width_mm / photo_height_mm) - 1.).abs() > 0.01 {
-        return Err(invalid(
-            "Crop the photo to the requested aspect ratio first; printing will not distort it.",
-        ));
-    }
-    let mut ops = Vec::new();
-    for i in 0..copies {
-        let x = m + (i % cols) as f32 * (pw + gap);
-        let y = h - m - ph - (i / cols) as f32 * (ph + gap);
-        ops.extend([
-            Operation::new("q", vec![]),
-            Operation::new(
-                "cm",
-                vec![pw.into(), 0.into(), 0.into(), ph.into(), x.into(), y.into()],
-            ),
-            Operation::new("Do", vec![Object::Name(b"Photo".to_vec())]),
-            Operation::new("Q", vec![]),
-        ]);
-    }
-    let content = d.add_object(Stream::new(
-        Dictionary::new(),
-        Content { operations: ops }.encode()?,
-    ));
-    let page=d.add_object(dictionary!{"Type"=>"Page","Parent"=>pages,"MediaBox"=>vec![0.into(),0.into(),w.into(),h.into()],"Resources"=>dictionary!{"XObject"=>dictionary!{"Photo"=>image}},"Contents"=>content});
-    d.objects.insert(
-        pages,
-        Object::Dictionary(
-            dictionary! {"Type"=>"Pages","Kids"=>vec![Object::Reference(page)],"Count"=>1},
-        ),
-    );
-    let root = d.add_object(dictionary! {"Type"=>"Catalog","Pages"=>pages});
-    d.trailer.set("Root", root);
-    finish(d, 1)
+    crate::printing::sheet(
+        data,
+        &crate::printing::PrintSheetSpec {
+            paper: p.clone(),
+            photo_width_mm,
+            photo_height_mm,
+            spacing_mm,
+            copies,
+            cutting_guides: false,
+            raster_dpi: None,
+        },
+    )
 }
 
 #[cfg(test)]
