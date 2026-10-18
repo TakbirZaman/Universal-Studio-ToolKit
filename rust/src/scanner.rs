@@ -33,7 +33,7 @@ pub struct ScanAdvisory {
     pub code: String,
     pub message: String,
 }
-pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
+fn prepare(data: &[u8], options: &ScanOptions) -> Result<(image::DynamicImage, Vec<ScanAdvisory>)> {
     if !(-100..=100).contains(&options.brightness)
         || !options.contrast.is_finite()
         || !(-100.0..=100.0).contains(&options.contrast)
@@ -43,7 +43,7 @@ pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
         ));
     }
     let mut img = crate::photo::decode(data)?;
-    if img.to_rgba8().pixels().any(|p| p[3] != 255) {
+    if crate::photo::has_transparency(&img) {
         return Err(invalid(
             "Scan pages need an opaque background. Add a background in Photo Studio first.",
         ));
@@ -70,6 +70,10 @@ pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
             image::DynamicImage::ImageLuma8(gray)
         }
     };
+    Ok((img, advisories))
+}
+pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
+    let (img, advisories) = prepare(data, options)?;
     let mut bytes = std::io::Cursor::new(Vec::new());
     img.write_to(&mut bytes, image::ImageFormat::Png)?;
     let bytes = bytes.into_inner();
@@ -158,20 +162,85 @@ pub fn session_pdf(sources: &[Vec<u8>], options: &[ScanOptions]) -> Result<Prepa
     if sources.len() != options.len() || sources.is_empty() {
         return Err(invalid("Every scan page needs matching edit settings."));
     }
-    if sources.iter().map(Vec::len).sum::<usize>() > MAX_INPUT_BYTES {
+    session_from_refs(
+        &sources
+            .iter()
+            .zip(options)
+            .map(|(data, options)| (data.as_slice(), options))
+            .collect::<Vec<_>>(),
+    )
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ScanPage {
+    pub data: Vec<u8>,
+    pub options: ScanOptions,
+}
+pub fn session_pages_pdf(pages: &[ScanPage]) -> Result<PreparedOutput> {
+    session_from_refs(
+        &pages
+            .iter()
+            .map(|page| (page.data.as_slice(), &page.options))
+            .collect::<Vec<_>>(),
+    )
+}
+fn session_from_refs(pages: &[(&[u8], &ScanOptions)]) -> Result<PreparedOutput> {
+    if pages.is_empty() || pages.len() > MAX_PAGES {
+        return Err(invalid("Select 1–200 scan pages."));
+    }
+    let total = pages
+        .iter()
+        .try_fold(0usize, |sum, (data, _)| sum.checked_add(data.len()))
+        .ok_or_else(|| invalid("Scan source images exceed 64 MiB."))?;
+    if total > MAX_INPUT_BYTES {
         return Err(invalid("Scan source images exceed 64 MiB."));
     }
-    let mut pages = Vec::new();
-    let mut total = 0usize;
-    for (source, edit) in sources.iter().zip(options) {
-        let out = process(source, edit)?;
-        total += out.data.len();
-        if total > MAX_INPUT_BYTES {
+    for (_, edit) in pages {
+        if !(-100..=100).contains(&edit.brightness)
+            || !edit.contrast.is_finite()
+            || !(-100.0..=100.0).contains(&edit.contrast)
+        {
             return Err(invalid(
-                "Adjusted pages exceed 64 MiB. Export fewer pages at once.",
+                "Brightness and contrast must be between -100 and 100.",
             ));
         }
-        pages.push(out.data);
     }
-    crate::pdf::images_to_pdf(&pages, &Default::default())
+    let mut builder = crate::pdf::ImagePdfBuilder::new(&Default::default())?;
+    let mut findings = vec![];
+    for (index, (source, edit)) in pages.iter().enumerate() {
+        let (img, advisories) = prepare(source, edit)
+            .map_err(|error| invalid(&format!("Page {}: {}", index + 1, error)))?;
+        builder.add(&img)?;
+        for advisory in advisories {
+            findings.push(ValidationFinding {
+                advisory: true,
+                code: advisory.code,
+                message: format!("Page {}: {}", index + 1, advisory.message),
+                passed: false,
+            });
+        }
+    }
+    let mut output = builder.finish()?;
+    output.info.findings.extend(findings);
+    output.info.findings.push(ValidationFinding { advisory: true, code: "scan_raster_pdf".into(), message: "Scan pages are encoded as JPEG at quality 95. This PDF contains page images, without selectable text.".into(), passed: true });
+    crate::export::verify_output(&output)?;
+    Ok(output)
+}
+
+pub fn preview(data: &[u8], options: &ScanOptions, max_pixels: u32) -> Result<PreparedOutput> {
+    if !(128..=1600).contains(&max_pixels) {
+        return Err(invalid("Image preview size must be 128–1600 pixels."));
+    }
+    let (img, advisories) = prepare(data, options)?;
+    let mut result = crate::photo::display_preview(&img, max_pixels)?;
+    result
+        .info
+        .findings
+        .extend(advisories.into_iter().map(|a| ValidationFinding {
+            advisory: true,
+            code: a.code,
+            message: a.message,
+            passed: false,
+        }));
+    Ok(result)
 }

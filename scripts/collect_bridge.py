@@ -7,6 +7,7 @@ paths = [
     "lib/src/rust/jobs.dart",
     "lib/src/rust/ocr.dart",
     "lib/src/rust/model.dart",
+    "lib/src/rust/scanner.dart",
     "lib/src/rust/frb_generated.dart",
     "lib/src/rust/frb_generated.io.dart",
     "rust/src/frb_generated.rs",
