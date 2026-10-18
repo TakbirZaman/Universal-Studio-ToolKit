@@ -43,6 +43,10 @@ enum Request {
         height_mm: f64,
         spacing_mm: f64,
         copies: u32,
+        #[serde(default)]
+        cutting_guides: bool,
+        #[serde(default)]
+        raster_dpi: Option<u16>,
     },
     Recipe {
         input: String,
@@ -146,14 +150,20 @@ fn run() -> Result<OutputInfo> {
             height_mm,
             spacing_mm,
             copies,
+            cutting_guides,
+            raster_dpi,
         } => (
-            pdf::print_sheet(
+            studio_core::printing::sheet(
                 &read(&input)?,
-                &paper,
-                width_mm,
-                height_mm,
-                spacing_mm,
-                copies,
+                &studio_core::printing::PrintSheetSpec {
+                    paper,
+                    photo_width_mm: width_mm,
+                    photo_height_mm: height_mm,
+                    spacing_mm,
+                    copies,
+                    cutting_guides,
+                    raster_dpi,
+                },
             )?,
             directory,
             filename,

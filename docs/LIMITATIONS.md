@@ -21,3 +21,5 @@
 - Scanner encoded image/PDF budgets and sequential preparation are tested locally. They do not cap all process memory: decoded transformations, originals, PDF objects, output and bridge copies can coexist. Native parser isolation remains a production blocker. New scanner packaging must pass before its development downloads are updated.
 
 - Export names reject Windows reserved device names, including COM/LPT with superscript ¹/²/³ (Microsoft primary naming documentation checked 2026-10-18: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file). Bangla names remain accepted without renaming. This is not a claim of identical filename/collision behavior across every document provider or filesystem.
+
+- Custom print-sheet controls are implemented/tested on work/print-layout, with source pixels preserved by default and optional explicit resampling. They are not in the saved main27c8b3d builds until the candidate is packaged and integrated. Printer output remains unverified.

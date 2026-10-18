@@ -511,3 +511,37 @@ pub fn preview_scan_page(
         .map(Into::into)
         .map_err(|error| error.to_string())
 }
+
+pub fn create_custom_print_sheet(
+    data: Vec<u8>,
+    paper_width_mm: f64,
+    paper_height_mm: f64,
+    margin_mm: f64,
+    photo_width_mm: f64,
+    photo_height_mm: f64,
+    spacing_mm: f64,
+    copies: u32,
+    cutting_guides: bool,
+    raster_dpi: Option<u16>,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        crate::printing::sheet(
+            &data,
+            &crate::printing::PrintSheetSpec {
+                paper: pdf::Paper {
+                    width_mm: paper_width_mm,
+                    height_mm: paper_height_mm,
+                    margin_mm,
+                },
+                photo_width_mm,
+                photo_height_mm,
+                spacing_mm,
+                copies,
+                cutting_guides,
+                raster_dpi,
+            },
+        )
+    })
+    .map(Into::into)
+    .map_err(|error| error.to_string())
+}

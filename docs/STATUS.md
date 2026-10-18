@@ -22,8 +22,8 @@ Main 28163d4 includes physical photo sizing, offline Linux OCR and notice proven
 | Camera capture and URI export | Scoped adapters and channel contracts | Image import; camera unavailable | Image import; camera unavailable | APK compiles; permissions/cancellation/recreation/provider testing pending |
 | Local scan drafts and retention | Save/restore/delete/clear, schema/hash and symlink protections tested | Implemented | Storage tests pass | Built, device pending |
 | English/Bangla/mixed printed OCR | Real engine/typed job cancellation, editable editor and verified UTF-8 export | Requires system Tesseract and pinned local models | Recognition unavailable | Recognition unavailable |
-| Print sheets | Physical layout/capacity/aspect validation and PDF export | A4 UI implemented | Built | Built, device pending |
-| Custom print paper / guides / full controls | Remaining | Unavailable | Unavailable | Unavailable |
+| Print sheets | Standard/custom paper, physical layout, guides, optional DPI, capacity/aspect and independently reopened PDF tested locally | New candidate; packaging pending | New candidate; packaging pending | New candidate; device pending |
+| Print-sheet actual-size instruction / recovery | Native workflow tests at desktop and 390px/200%; field errors open advanced settings | Tested locally | Packaging pending | Device/printer acceptance pending |
 | Application pack | Fixed example photo/signature/certificate ZIP; actual report/manifest/hash validation | Implemented example | Built | Built, device pending |
 | Editable pack slots and managed studio references | Remaining | Unavailable | Unavailable | Unavailable |
 | Recipes/batches/settings | Schema/order/path safety, persistence/import/export, item results/retry, opt-in storage tests | Implemented | Native/interface gates pass | Built, device pending |
@@ -45,3 +45,5 @@ Major production gates remain: PDF worker isolation, orphan-job cleanup, full li
 ## Saved integration checkpoint 27c8b3d
 
 All main workflows passed: Linux 39164619821, Windows 39164619702, Android 39164619794 and bridge 39164619682. Sequential scanner preparation, bounded canonical previews, Android local-data backup policy/development signing and portable Windows names are included. The four saved downloads (including the optimized Android development release) independently verify against evidence/development-builds-27c8b3d.json. The new custom print-sheet candidate remains on work/print-layout and is not yet in these packages.
+
+Custom print-sheet candidate: 52 Rust tests and 27 selected Flutter tests pass, with clean analysis. Independent pypdf/Poppler verification checks actual 120 × 90 mm paper, nine 30 × 20 mm placements, 72 cutting segments, resampled image dimensions and non-overwrite/failure behavior. Actual printer acceptance remains unverified. See ADR-012 and evidence/custom-print-20261018.json.

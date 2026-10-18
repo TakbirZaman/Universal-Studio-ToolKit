@@ -51,3 +51,7 @@ All 256 locked dependency records and 471 retained notice references verify. Tha
 ## Recovery tools
 
 Active checkout: universal-studio-current. A separate universal-studio-filenames worktree contains the tested small filename fix, also copied into the active integration. Older universal-studio-toolkit is an obsolete skeleton. Fetch main/feature refs before edits and preserve unexpected local changes. Rust 1.99.0 and Flutter 3.47.7 are in adjacent toolchains; they are transient. Local Linux release prerequisites lack GTK/pkg-config development setup, so hosted builds supply release/startup evidence. Do not bypass permission/approval failures or publish held screenshot/fixture assets through alternate routes.
+
+## Print-sheet candidate verification
+
+The current work/print-layout candidate adds standard/custom paper, margins/spacing/copies, optional vector cutting guides and optional explicit DPI resampling. Source pixels stay unchanged by default; images are encoded once as JPEG95 inside a PDF and aspect ratio is preserved. Invalid fields open advanced controls and show inline errors. All 52 Rust and 27 selected Flutter tests pass, and analysis/formatting/notice checks pass. Independent pypdf/Pillow/Poppler verification measured actual saved geometry/pixels and rendered output, inspected locally. No printer/device/user certification. Evidence: custom-print-20261018.json. Push this candidate, inspect all platform workflows, then integrate only after passing, preserving the saved main27 build evidence.

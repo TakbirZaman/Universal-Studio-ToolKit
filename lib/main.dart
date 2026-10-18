@@ -1,3 +1,4 @@
+import 'application/print_layout_controls.dart';
 import 'application/camera_capture.dart';
 import 'application/recognized_text.dart';
 
@@ -173,7 +174,7 @@ extension ToolLabel on Tool {
     Tool.merge => 'Combine files, choose page order, and rotate pages.',
     Tool.scan => 'Turn imported page images into one organised PDF.',
     Tool.pack => 'Prepare a photo, signature and certificate together.',
-    Tool.print => 'Place repeated photos on an A4 sheet at actual size.',
+    Tool.print => 'Arrange photo copies for actual-size printing.',
   };
   IconData get icon => switch (this) {
     Tool.photo => Icons.photo_size_select_large_outlined,
@@ -205,7 +206,7 @@ extension ToolLabel on Tool {
       'scan certificate pages document camera ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
-    Tool.print => 'print sheet copies paper',
+    Tool.print => 'print sheet printing copies paper a4 letter dpi',
   };
 }
 
@@ -462,7 +463,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       copies = TextEditingController(text: '12'),
       widthMm = TextEditingController(text: '35'),
       heightMm = TextEditingController(text: '45'),
-      dpi = TextEditingController(text: '300');
+      dpi = TextEditingController(text: '300'),
+      paperWidth = TextEditingController(text: '210'),
+      paperHeight = TextEditingController(text: '297'),
+      printMargin = TextEditingController(text: '12'),
+      printSpacing = TextEditingController(text: '4');
+  final printAdvanced = ExpansibleController();
+  String printPaper = 'a4';
+  bool cuttingGuides = false, printResample = false;
   final form = GlobalKey<FormState>();
   List<SelectedSource> sources = [];
   StudioOutput? output;
@@ -519,9 +527,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       widthMm,
       heightMm,
       dpi,
+      paperWidth,
+      paperHeight,
+      printMargin,
+      printSpacing,
     ]) {
       c.dispose();
     }
+    printAdvanced.dispose();
     super.dispose();
   }
 
@@ -681,7 +694,13 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   }
 
   Future<void> process() async {
-    if (!form.currentState!.validate()) return;
+    if (!form.currentState!.validate()) {
+      if (widget.tool == Tool.print) {
+        printAdvanced.expand();
+        setState(() => error = 'Check the highlighted print settings.');
+      }
+      return;
+    }
     if (sources.isEmpty) {
       setState(() => error = 'Choose a file to get started.');
       return;
@@ -724,6 +743,12 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           double.parse(width.text),
           double.parse(height.text),
           int.parse(copies.text),
+          paperWidth: double.parse(paperWidth.text),
+          paperHeight: double.parse(paperHeight.text),
+          margin: double.parse(printMargin.text),
+          spacing: double.parse(printSpacing.text),
+          guides: cuttingGuides,
+          rasterDpi: printResample ? int.parse(dpi.text) : null,
         ),
       };
       if (mounted) setState(() => output = value);
@@ -1321,13 +1346,54 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             TextFormField(
               controller: copies,
               enabled: !busy,
-              validator: positive,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                final number = int.tryParse(value ?? '');
+                return number == null || number < 1 || number > 200
+                    ? 'Use 1–200 copies.'
+                    : null;
+              },
               onChanged: (_) => changed(),
               decoration: const InputDecoration(labelText: 'Number of copies'),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'A4 paper · 12 mm margins · 4 mm spacing. Crop your photo to the same aspect ratio first. Print at Actual size / 100%, not Fit to page.',
+            PrintLayoutControls(
+              preset: printPaper,
+              paperWidth: paperWidth,
+              paperHeight: paperHeight,
+              margin: printMargin,
+              spacing: printSpacing,
+              dpi: dpi,
+              enabled: !busy,
+              guides: cuttingGuides,
+              resample: printResample,
+              advanced: printAdvanced,
+              onChanged: changed,
+              onPreset: (value) {
+                setState(() {
+                  printPaper = value;
+                  final size = switch (value) {
+                    'a4' => (210.0, 297.0),
+                    'a5' => (148.0, 210.0),
+                    'letter' => (215.9, 279.4),
+                    'photo' => (101.6, 152.4),
+                    _ => (
+                      double.tryParse(paperWidth.text) ?? 210.0,
+                      double.tryParse(paperHeight.text) ?? 297.0,
+                    ),
+                  };
+                  paperWidth.text = size.$1.toString();
+                  paperHeight.text = size.$2.toString();
+                });
+                changed();
+              },
+              onGuides: (value) {
+                setState(() => cuttingGuides = value);
+                changed();
+              },
+              onResample: (value) {
+                setState(() => printResample = value);
+                changed();
+              },
             ),
           ],
           const SizedBox(height: 20),

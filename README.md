@@ -8,7 +8,7 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 - Clean a plain signature background and export transparent PNG.
 - Combine, select, reorder and rotate supported PDF pages; render previews and export page PNGs using bundled PDFium.
 - Import scan images, reorder pages, adjust brightness/contrast, rotate, apply grayscale or black-and-white, and produce PDF through bounded sequential page preparation. Quality warnings are advisory.
-- Lay out repeated photos on an A4 print sheet with validated physical dimensions.
+- Lay out repeated photos on standard or custom paper with physical dimensions, margins, spacing, optional cutting guides and explicit sampling DPI. Source pixels are retained by default.
 - Prepare the example photo/signature/certificate application ZIP with a validation report and hashed manifest.
 - Save copies without overwriting existing files. SQLite stores theme/settings; history is disabled by default.
 
