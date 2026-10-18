@@ -15,3 +15,7 @@ Primary Android documentation checked 2026-10-17:
 - https://developer.android.com/about/versions/12/behavior-changes-12 (OEM device-to-device behavior)
 
 Compilation/static inspection is not a transport test and does not establish clean-device compatibility. Do not mark the APK gate passed until actual build output and compiled manifests are checked.
+
+## Packaging recovery — 2026-10-18
+
+Hosted run 39028960308 compiled both release and debug APKs, then exited in the post-build packaging section without identifying the command. The script assumed a debug keystore at $HOME/.android, although SDK user-home overrides can change its location. Generate an explicit ephemeral development key instead, remove it on exit, and label failing packaging stages. A local boundary test uses real keytool and substitutes only absent Android signing/alignment binaries; it verifies the key alias, restrictive permissions, output and cleanup without a conventional Gradle key. This does not replace real APK signature/device checks. Rerun the hosted Android build before merging or claiming this packaging change works.
