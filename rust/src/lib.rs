@@ -23,3 +23,5 @@ mod buffer;
 pub mod printing;
 
 pub mod decorations;
+
+pub mod text;

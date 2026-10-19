@@ -566,3 +566,20 @@ pub fn decorate_pdf(
     .map(Into::into)
     .map_err(|error| error.to_string())
 }
+
+/// Extract an existing PDF text layer, using the bounded native engine queue.
+pub fn extract_pdf_text(data: Vec<u8>) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| crate::rendering::selectable_text(&data))
+        .map(Into::into)
+        .map_err(|e| e.to_string())
+}
+/// Validate user edits without adding an OCR-specific accuracy disclosure.
+pub fn prepare_plain_text(data: Vec<u8>) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        let output = crate::text::output(data)?;
+        export::verify_output(&output)?;
+        Ok(output)
+    })
+    .map(Into::into)
+    .map_err(|e| e.to_string())
+}

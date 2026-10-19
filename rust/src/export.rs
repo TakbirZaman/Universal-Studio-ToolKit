@@ -67,7 +67,7 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
             }
         }
         "txt" => {
-            if out.data.len() > crate::ocr::MAX_TEXT_BYTES {
+            if out.data.len() > crate::text::MAX_BYTES {
                 return Err(invalid("Plain text output exceeds 4 MiB."));
             }
             if out.info.width.is_some()
@@ -77,7 +77,7 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
             {
                 return Err(invalid("Plain text output has inconsistent metadata."));
             }
-            crate::ocr::text_output(out.data.clone())?;
+            crate::text::output(out.data.clone())?;
         }
         "json" => {
             crate::recipe::Recipe::parse(&out.data)?;
