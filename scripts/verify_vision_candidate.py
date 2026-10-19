@@ -41,6 +41,18 @@ def run(platform, work, toolchain=None):
     libraries = list((work / 'build/adapter').rglob(filename))
     if len(libraries) != 1:
         raise ValueError('Expected one candidate adapter.')
+    maps = list((work / 'build/adapter').glob('ust_cv*.map'))
+    if len(maps) != 1:
+        raise ValueError('Expected one native link map for component applicability review.')
+    map_bytes = maps[0].read_bytes()
+    map_text = map_bytes.decode('utf-8', errors='replace')
+    objects = sorted(set(re.findall(r'libopencv_(\w+)\.a\(([^)]+)\)', map_text)))
+    if platform == 'windows-x64':
+        objects = sorted(set(re.findall(r'opencv_(core|geometry|imgproc|flann)[0-9d]*:([^\s]+\.obj)', map_text)))
+    link_review = {'link_map_sha256': hashlib.sha256(map_bytes).hexdigest(),
+                   'opencv_archive_object_references': [list(item) for item in objects],
+                   'object_reference_parser_found_entries': bool(objects),
+                   'scope': 'Archive/object references may include discarded sections; not complete license clearance.'}
     if platform == 'android-arm64':
         ndk = toolchain.resolve().parents[2]
         properties = (ndk / 'source.properties').read_text()
@@ -64,14 +76,26 @@ def run(platform, work, toolchain=None):
             if not re.search(r'\b' + name + r'\s*$', symbols, re.M):
                 raise ValueError('Missing Android adapter entry point: ' + name)
         notice = ndk / 'NOTICE'
+        notice_directory = work / 'native-notices'
+        notice_directory.mkdir(exist_ok=True)
+        ndk_notices = {}
+        for name in ['NOTICE', 'NOTICE.toolchain']:
+            original = ndk / name
+            if not original.is_file():
+                raise ValueError('Required NDK/runtime notice is missing: ' + name)
+            content = original.read_bytes()
+            (notice_directory / ('Android-NDK28.2-' + name + '.txt')).write_bytes(content)
+            ndk_notices[name] = hashlib.sha256(content).hexdigest()
         report = {'platform': platform, 'source_archive_verified': True, 'opencv': policy['version'],
                   'ndk': '28.2.13676358', 'elf64_aarch64': True, 'minimum_load_alignment': min(int(line[-1], 16) for line in loads),
                   'required_symbols_present': True, 'needed_libraries': needed,
                   'library_bytes': library.stat().st_size,
                   'library_sha256': hashlib.file_digest(library.open('rb'), 'sha256').hexdigest(),
                   'ndk_notice_sha256': hashlib.file_digest(notice.open('rb'), 'sha256').hexdigest(),
+                  'ndk_notices': ndk_notices,
                   'runtime_pixel_processing_verified': False, 'application_staging_complete': False,
                   'complete_license_clearance': False}
+        report['link_review'] = link_review
         (work / 'pixel-verification.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         print(json.dumps(report, indent=2))
         return
@@ -80,6 +104,7 @@ def run(platform, work, toolchain=None):
     # Generic verification script never certifies app/platform integration.
     parsed['tested_adapter_platform'] = platform
     parsed['source_archive_verified'] = True
+    parsed['link_review'] = link_review
     (work / 'pixel-verification.json').write_text(json.dumps(parsed, indent=2) + '\n', encoding='utf-8')
     print(report)
 

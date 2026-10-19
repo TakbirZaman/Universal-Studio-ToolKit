@@ -43,6 +43,12 @@
       "sha256": "521fa3f83e0b1a4dc0163fff2d31445c6d38c103e47a19abc8f49b4f7b1818e4"
     },
     {
+      "source": "modules/geometry/src/geometry.cpp",
+      "kind": "complete_unmodified_source_retention",
+      "notice": "upstream-geometry.cpp.txt",
+      "sha256": "a659e962e7bb5693ac13070118ccaeb71817e95bb3b5be1c391ab2c2fde3d30b"
+    },
+    {
       "upstream_url": "https://www.boost.org/LICENSE_1_0.txt",
       "source_reference": "modules/flann/include/opencv2/flann/any.h",
       "notice": "Boost-1.0.txt",

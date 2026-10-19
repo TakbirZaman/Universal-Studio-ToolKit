@@ -26,6 +26,15 @@ def collect(source: Path, output: Path):
         (output / name).write_bytes(data)
         entries.append({'source': relative, 'notice': name,
                         'sha256': hashlib.sha256(data).hexdigest()})
+    # Preserve the complete, unmodified upstream file in addition to its notices.
+    # This is conservative source retention for its redistribution-in-entirety
+    # wording, not an assertion that every native obligation is cleared.
+    geometry_source = (source / 'modules/geometry/src/geometry.cpp').read_bytes()
+    (output / 'upstream-geometry.cpp.txt').write_bytes(geometry_source)
+    entries.append({'source': 'modules/geometry/src/geometry.cpp',
+                    'kind': 'complete_unmodified_source_retention',
+                    'notice': 'upstream-geometry.cpp.txt',
+                    'sha256': hashlib.sha256(geometry_source).hexdigest()})
     boost = root / 'third_party/opencv-candidate/Boost-1.0.txt'
     boost_data = boost.read_bytes()
     boost_sha = 'c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566'

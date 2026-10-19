@@ -1,7 +1,7 @@
 name: Verify and build Windows
 on:
   push:
-    branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text]
+    branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective]
     paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'third_party/**', 'scripts/*windows*', '.github/workflows/build-windows.yml']
   workflow_dispatch:
 permissions:

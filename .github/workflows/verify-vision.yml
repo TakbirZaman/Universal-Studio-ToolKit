@@ -50,6 +50,8 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: vision-verification-android-arm64-build-only
-          path: vision-verification/pixel-verification.json
+          path: |
+            vision-verification/pixel-verification.json
+            vision-verification/native-notices/*.txt
           retention-days: 3
           if-no-files-found: error
