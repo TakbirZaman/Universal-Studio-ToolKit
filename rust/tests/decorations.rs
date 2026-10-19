@@ -19,7 +19,7 @@ fn source(rotation: i64, unit: f32) -> Vec<u8> {
 #[test]
 fn numbering_stays_at_visual_bottom_for_rotated_cropped_and_scaled_pages() {
     for rotation in [0, 90, 180, 270, -90] {
-        for unit in [1., 2.] {
+        for unit in [0.5, 1., 2.] {
             let input = source(rotation, unit);
             let original = input.clone();
             let output = apply(
@@ -39,10 +39,27 @@ fn numbering_stays_at_visual_bottom_for_rotated_cropped_and_scaled_pages() {
                     .unwrap()
                     .to_rgba8();
             assert_eq!(before.dimensions(), after.dimensions());
+            let source_doc = pdf::load(&input).unwrap();
+            let page = *source_doc.get_pages().values().next().unwrap();
+            let g = geometry(&source_doc, page).unwrap();
+            assert!(
+                (f64::from(before.width()) / f64::from(before.height()) - g.width / g.height).abs()
+                    < 0.005
+            );
+            let pixels_per_unit = f64::from(before.height()) / g.height;
+            let margin = 2. * 72. / 25.4 / g.unit;
+            let font_size = 10. / g.unit;
+            let minimum_y =
+                f64::from(before.height()) - (margin + 1.3 * font_size) * pixels_per_unit - 2.;
+            let maximum_y = f64::from(before.height()) - margin * pixels_per_unit + 2.;
             let mut changed = 0;
             for (x, y, pixel) in before.enumerate_pixels() {
                 if pixel != after.get_pixel(x, y) {
                     changed += 1;
+                    assert!(
+                        f64::from(y) >= minimum_y && f64::from(y) <= maximum_y,
+                        "Label outside crop-box footer for rotation {rotation}, unit {unit}: {y}"
+                    );
                     assert!(
                         y > before.height() * 3 / 4,
                         "Number left the visual footer for rotation {rotation}, unit {unit}"
@@ -182,4 +199,33 @@ fn page_labels_follow_saved_order_after_merge_and_reorder() {
         assert!(text.contains(label));
         assert!(text.contains(&format!("Page {} of 3", index + 1)));
     }
+}
+
+#[test]
+fn overlay_version_declares_transparency_and_validates_page_units() {
+    fn encoded(doc: &mut Document) -> Vec<u8> {
+        let mut bytes = Vec::new();
+        doc.save_to(&mut bytes).unwrap();
+        bytes
+    }
+    let mut old = pdf::load(&source(0, 1.)).unwrap();
+    old.version = "1.3".into();
+    old.reference_table.cross_reference_type = lopdf::xref::XrefType::CrossReferenceTable;
+    let options = OverlayOptions {
+        page_numbers: true,
+        margin_mm: 2.,
+        ..Default::default()
+    };
+    let output = apply(&encoded(&mut old), &options).unwrap();
+    assert_eq!(pdf::load(&output.data).unwrap().version, "1.7");
+    let page = *old.get_pages().values().next().unwrap();
+    old.get_dictionary_mut(page).unwrap().set("UserUnit", 2);
+    assert!(apply(&encoded(&mut old), &options).is_err());
+    old.catalog_mut()
+        .unwrap()
+        .set("Version", Object::Name(b"1.7".to_vec()));
+    assert!(apply(&encoded(&mut old), &options).is_ok());
+    old.version = "2.0".into();
+    let output = apply(&encoded(&mut old), &options).unwrap();
+    assert_eq!(pdf::load(&output.data).unwrap().version, "2.0");
 }

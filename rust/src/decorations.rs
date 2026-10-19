@@ -30,6 +30,22 @@ pub struct PageGeometry {
     pub unit: f64,
     pub transform: [f64; 6],
 }
+fn effective_version(doc: &Document) -> (u32, u32) {
+    fn parse(value: &str) -> Option<(u32, u32)> {
+        let (major, minor) = value.split_once('.')?;
+        Some((major.parse().ok()?, minor.parse().ok()?))
+    }
+    let header = parse(&doc.version).unwrap_or((1, 0));
+    let catalog = doc
+        .catalog()
+        .ok()
+        .and_then(|c| c.get(b"Version").ok())
+        .and_then(|v| v.as_name().ok())
+        .and_then(|n| std::str::from_utf8(n).ok())
+        .and_then(parse)
+        .unwrap_or(header);
+    header.max(catalog)
+}
 fn number(value: &Object) -> Result<f64> {
     let n = match value {
         Object::Integer(n) => *n as f64,
@@ -89,6 +105,11 @@ pub fn geometry(doc: &Document, page: ObjectId) -> Result<PageGeometry> {
         Ok(value) => number(&doc.dereference(value)?.1)?,
         Err(_) => 1.,
     };
+    if unit != 1. && effective_version(doc) < (1, 6) {
+        return Err(invalid(
+            "This PDF declares page units unsupported by its version. Re-export it as a modern PDF first.",
+        ));
+    }
     if unit <= 0. || unit > 75000. {
         return Err(invalid("PDF page units are outside the supported range."));
     }
@@ -205,6 +226,13 @@ pub fn apply(data: &[u8], options: &OverlayOptions) -> Result<PreparedOutput> {
             },
         });
     }
+    // Validate before upgrading the output: unsupported source unit declarations
+    // must not become silently repaired just because an overlay was requested.
+    for page in pages.values() {
+        geometry(&doc, *page)?;
+    }
+    let version = effective_version(&doc).max((1, 7));
+    doc.version = format!("{}.{}", version.0, version.1);
     let font=doc.add_object(dictionary!{"Type"=>"Font","Subtype"=>"Type1","BaseFont"=>"Courier","Encoding"=>"WinAnsiEncoding"});
     let opaque = doc.add_object(dictionary! {"Type"=>"ExtGState","ca"=>1.0,"CA"=>1.0});
     let translucent = doc.add_object(dictionary! {"Type"=>"ExtGState","ca"=>0.18,"CA"=>0.18});

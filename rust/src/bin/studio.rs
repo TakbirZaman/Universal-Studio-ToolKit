@@ -17,6 +17,17 @@ enum Request {
         pages: Option<Vec<u32>>,
         rotation: i32,
     },
+    DecoratePdf {
+        input: String,
+        directory: String,
+        filename: String,
+        #[serde(default)]
+        page_numbers: bool,
+        #[serde(default)]
+        watermark: Option<String>,
+        #[serde(default = "watermark_font_points")]
+        watermark_font_points: f64,
+    },
     OptimizePdf {
         input: String,
         directory: String,
@@ -54,6 +65,9 @@ enum Request {
         directory: String,
         filename: String,
     },
+}
+fn watermark_font_points() -> f64 {
+    32.
 }
 fn read(path: &str) -> Result<Vec<u8>> {
     if !std::fs::symlink_metadata(path)?.file_type().is_file() {
@@ -109,6 +123,26 @@ fn run() -> Result<OutputInfo> {
                 &inputs.iter().map(|s| read(s)).collect::<Result<Vec<_>>>()?,
                 pages.as_deref(),
                 rotation,
+            )?,
+            directory,
+            filename,
+        ),
+        Request::DecoratePdf {
+            input,
+            directory,
+            filename,
+            page_numbers,
+            watermark,
+            watermark_font_points,
+        } => (
+            studio_core::decorations::apply(
+                &read(&input)?,
+                &studio_core::decorations::OverlayOptions {
+                    page_numbers,
+                    watermark,
+                    watermark_font_points,
+                    ..Default::default()
+                },
             )?,
             directory,
             filename,
