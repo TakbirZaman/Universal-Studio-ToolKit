@@ -2,7 +2,7 @@
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Main 10d46cc includes sequential scans, bounded canonical previews, physical photo DPI, custom print-sheet layouts and streamed image encoding. Windows, Linux and Android packaging workflows passed. Saved downloads were independently verified; see evidence/development-builds-10d46cc.json. PDF overlays from verified candidate1a657f6 are now integrated; its Linux, Windows and Android packaging workflows passed. Updated downloads are under independent verification.
+Main 10d46cc includes sequential scans, bounded canonical previews, physical photo DPI, custom print-sheet layouts and streamed image encoding. Windows, Linux and Android packaging workflows passed. Saved downloads were independently verified; see evidence/development-builds-10d46cc.json. PDF overlays from verified candidate1a657f6 are now integrated; its Linux, Windows and Android packaging workflows passed. All four updated downloads were independently verified and saved; see evidence/development-builds-1a657f6.json.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|

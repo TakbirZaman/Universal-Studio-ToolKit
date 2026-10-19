@@ -4,9 +4,9 @@ The complete launch scope is retained in REQUIREMENTS.md. This is functioning de
 
 ## Main integration and verification
 
-Main now integrates PDF page numbers/visible ASCII watermarks from runtime candidate1a657f64013ffc3b271bca1fbf7b4e0ee4d6448d, preserving the newer main81d13b9 build evidence. All62 Rust tests,29 selected Flutter tests, clean analysis/formatting, independent pypdf/Poppler saved-output checks and three platform workflows passed. Linux39251795389 artifact12185179567, Windows39251795282 artifact12186183091, Android39251795377 artifact12186357927. Desktop startup is eight seconds on build hosts, not clean-system acceptance. Independent desktop CRC/SHA,471 notices, fonts/native assets, Linux OCR assets and Windows CRT inventory checks pass. Android artifact checks and saving the updated package set are next.
+Main now integrates PDF page numbers/visible ASCII watermarks from runtime candidate1a657f64013ffc3b271bca1fbf7b4e0ee4d6448d, preserving the newer main81d13b9 build evidence. All62 Rust tests,29 selected Flutter tests, clean analysis/formatting, independent pypdf/Poppler saved-output checks and three platform workflows passed. Linux39251795389 artifact12185179567, Windows39251795282 artifact12186183091, Android39251795377 artifact12186357927. Desktop startup is eight seconds on build hosts, not clean-system acceptance. Independent desktop CRC/SHA,471 notices, fonts/native assets, Linux OCR assets and Windows CRT inventory checks pass. Android CRC/native/16KiB alignment, compiled privacy and both installable signatures verify independently. All four updated downloads were successfully saved. See evidence/development-builds-1a657f6.json.
 
-The main runtime also includes physical photo DPI, sequential scans/canonical previews, Android backup/development-signing protection, custom print layouts/guides and streamed PNG/JPEG byte bounds. Saved downloads still correspond to main10d46cc until replacements succeed. Keep evidence/development-builds-10d46cc.json and historical output evidence.
+The main runtime also includes physical photo DPI, sequential scans/canonical previews, Android backup/development-signing protection, custom print layouts/guides and streamed PNG/JPEG byte bounds. Saved downloads now correspond to runtime candidate1a657f6 integrated into main04e03a3. Keep evidence/development-builds-10d46cc.json and historical output evidence.
 
 ## Active next feature: existing PDF text
 
@@ -16,7 +16,7 @@ Bridge generator39252445602 passed for backend15600d7. Artifact12187280337 SHA-2
 
 ## Exact next actions
 
-1. Independently verify the downloaded overlay Android artifact and all three APKs, then save the four updated application downloads with existing identities/version guards. Update the package evidence with actual bytes/hashes and report any failed save accurately.
+1. Overlay package verification and saving are complete. Keep their source label1a657f6 and actual build evidence; source main04e03a3 integrates that runtime. Inspect the next candidate platform runs.
 2. Inspect all three text-candidate platform runs. Fix failures, integrate only after passing, independently verify the new packages and update downloads again as appropriate. New main platform runs are independent checks; do not mislabel feature artifacts as built from a different commit.
 3. Continue manual scan corners/perspective/deskew and OpenCV adapter/license work; editable pack slots/managed studio references; remaining photo/signature/PDF operations and flexible compression; platform OCR/searchable geometry; accessibility/localization/user checks; isolation/cleanup/license and clean-device release gates.
 
