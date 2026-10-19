@@ -21,3 +21,5 @@ pub mod density;
 mod buffer;
 
 pub mod printing;
+
+pub mod decorations;

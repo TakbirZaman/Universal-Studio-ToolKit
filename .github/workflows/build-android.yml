@@ -1,7 +1,7 @@
 name: Build Android development APK
 on:
   push:
-    branches: [main, work/android-privacy, work/safe-scan-session, work/print-layout, work/image-encoding-limits]
+    branches: [main, work/android-privacy, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays]
     paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'third_party/**', 'scripts/*android*', '.github/workflows/build-android.yml']
   workflow_dispatch:
 permissions:

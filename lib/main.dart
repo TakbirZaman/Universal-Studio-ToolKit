@@ -16,6 +16,7 @@ import 'application/recipes.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'application/pdf_preview.dart';
+import 'application/pdf_overlay_controls.dart';
 import 'application/preferences.dart';
 import 'application/export_service.dart';
 
@@ -171,7 +172,7 @@ extension ToolLabel on Tool {
   String get description => switch (this) {
     Tool.photo => 'A smaller file. The exact dimensions you need.',
     Tool.signature => 'Remove a plain background and save a transparent PNG.',
-    Tool.merge => 'Combine files, choose page order, and rotate pages.',
+    Tool.merge => 'Combine, arrange, number, and watermark supported PDFs.',
     Tool.scan => 'Turn imported page images into one organised PDF.',
     Tool.pack => 'Prepare a photo, signature and certificate together.',
     Tool.print => 'Arrange photo copies for actual-size printing.',
@@ -201,7 +202,7 @@ extension ToolLabel on Tool {
   String get synonyms => switch (this) {
     Tool.photo => 'smaller compress image picture passport resize crop',
     Tool.merge =>
-      'merge join combine extract delete split reorder compress optimize pdf',
+      'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number',
     Tool.scan =>
       'scan certificate pages document camera ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
@@ -467,8 +468,12 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       paperWidth = TextEditingController(text: '210'),
       paperHeight = TextEditingController(text: '297'),
       printMargin = TextEditingController(text: '12'),
-      printSpacing = TextEditingController(text: '4');
+      printSpacing = TextEditingController(text: '4'),
+      watermarkText = TextEditingController(text: 'DRAFT'),
+      watermarkFont = TextEditingController(text: '32');
   final printAdvanced = ExpansibleController();
+  final pdfAdvanced = ExpansibleController();
+  bool pageNumbers = false, watermarkEnabled = false;
   String printPaper = 'a4';
   bool cuttingGuides = false, printResample = false;
   final form = GlobalKey<FormState>();
@@ -531,10 +536,13 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       paperHeight,
       printMargin,
       printSpacing,
+      watermarkText,
+      watermarkFont,
     ]) {
       c.dispose();
     }
     printAdvanced.dispose();
+    pdfAdvanced.dispose();
     super.dispose();
   }
 
@@ -699,6 +707,10 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         printAdvanced.expand();
         setState(() => error = 'Check the highlighted print settings.');
       }
+      if (widget.tool == Tool.merge) {
+        pdfAdvanced.expand();
+        setState(() => error = 'Check the highlighted PDF settings.');
+      }
       return;
     }
     if (sources.isEmpty) {
@@ -728,6 +740,11 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               : pages.text.split(',').map((s) => int.parse(s.trim())).toList(),
           rotation * 90,
           optimize: optimizePdfStructures,
+          pageNumbers: pageNumbers,
+          watermark: watermarkEnabled ? watermarkText.text : null,
+          watermarkFontPoints: watermarkEnabled
+              ? double.parse(watermarkFont.text)
+              : 32,
         ),
         Tool.scan => await service.scan(
           sources
@@ -1279,6 +1296,23 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               label: Text('Rotate all pages: ${rotation * 90}°'),
             ),
             const SizedBox(height: 8),
+            PdfOverlayControls(
+              enabled: !busy,
+              pageNumbers: pageNumbers,
+              watermarkEnabled: watermarkEnabled,
+              watermark: watermarkText,
+              fontSize: watermarkFont,
+              advanced: pdfAdvanced,
+              onPageNumbers: (value) {
+                setState(() => pageNumbers = value);
+                changed();
+              },
+              onWatermark: (value) {
+                setState(() => watermarkEnabled = value);
+                changed();
+              },
+              onChanged: changed,
+            ),
             const Text(
               'PDFs with forms, annotations, bookmarks, attachments or signatures are not supported yet.',
             ),

@@ -1,8 +1,8 @@
-# Feature / platform status — 2026-10-18
+# Feature / platform status — 2026-10-19
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Main 10d46cc includes sequential scans, bounded canonical previews, physical photo DPI, custom print-sheet layouts and streamed image encoding. Windows, Linux and Android packaging workflows passed. Saved downloads were independently verified; see evidence/development-builds-10d46cc.json. PDF overlays are a separate candidate, not included in these packages.
+Main 10d46cc includes sequential scans, bounded canonical previews, physical photo DPI, custom print-sheet layouts and streamed image encoding. Windows, Linux and Android packaging workflows passed. Saved downloads were independently verified; see evidence/development-builds-10d46cc.json. PDF overlays from verified candidate1a657f6 are now integrated; its Linux, Windows and Android packaging workflows passed. Updated downloads are under independent verification.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
@@ -15,7 +15,8 @@ Main 10d46cc includes sequential scans, bounded canonical previews, physical pho
 | Supported PDF merge/select/delete/reorder/rotate | Reopen, page order/rotation, text and PDFium appearance checks | Implemented | Native/interface gates pass | Built, device pending |
 | PDFium preview / page PNG ZIP | Bounded render adapter, real page appearance tests | Bundled | Bundled | Audited ARM64 library staged; device pending |
 | Lossless PDF structure optimization | Preserves text/pixels, never rasterizes, returns original if no reduction | Implemented | Native/interface gates pass | Built, device pending |
-| Watermarks/numbers/forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
+| Visible PDF page numbers / ASCII watermarks | Five focused native tests, independent saved-PDF checks, real desktop/narrow UI/save tests; all platform packaging passed | Implemented / startup checked | Built / startup checked | APK built; device pending |
+| Forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
 | Scan modes, rotation, brightness/contrast and advisory quality checks | Native tests; non-destructive edits/drafts | Implemented | Built | Compiled system-camera/manual import; device pending |
 | Sequential scan PDF and canonical previews | Bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Main build/startup passed | Main build/startup passed | Main complete packaging workflow passed |
 | Manual corners / perspective / deskew / OpenCV | Remaining | Unavailable | Unavailable | Unavailable |
@@ -47,3 +48,9 @@ Major production gates remain: PDF worker isolation, orphan-job cleanup, full li
 All main workflows passed: Linux 39167712992, Windows 39167713030 and Android 39167713009. Four saved downloads independently verify against evidence/development-builds-10d46cc.json, including all 471 retained notices, native inventory, OCR/font assets, Windows runtime inventory, Android signatures, compiled privacy settings and 16 KiB alignment. These are build-host/startup checks, not clean-device acceptance.
 
 Custom print sheets passed independent pypdf/Pillow/Poppler verification (actual paper and placement dimensions, cutting guides, image pixels and non-overwrite behavior). Streamed image encoders passed same-source compression and exact byte-budget tests. See ADR-012/013. Actual printer acceptance remains unverified.
+
+## Integrated PDF overlay slice
+
+Runtime source1a657f6 passed Linux39251795389, Windows39251795282 and Android39251795377. All62 Rust and29 selected Flutter tests pass, with clean analysis. Independent pypdf/Poppler output and desktop package checks pass. Page numbers follow the final saved order; visible ASCII watermark labels preserve original text/resources and account for crop/rotation/unit geometry. See ADR-014.
+
+A separate work/pdf-text candidate0d7d7a6 adds editable existing-text extraction. Its66 Rust/32 Flutter tests and independent English/Bangla output check pass locally; platform packaging is pending. It is not included in the current overlay builds.

@@ -262,6 +262,18 @@ Future<StudioOutput> createCustomPrintSheet({
   rasterDpi: rasterDpi,
 );
 
+Future<StudioOutput> decoratePdf({
+  required List<int> data,
+  required bool pageNumbers,
+  String? watermark,
+  required double watermarkFontPoints,
+}) => RustLib.instance.api.crateApiDecoratePdf(
+  data: data,
+  pageNumbers: pageNumbers,
+  watermark: watermark,
+  watermarkFontPoints: watermarkFontPoints,
+);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
 abstract class OcrTask implements RustOpaqueInterface {}
 
