@@ -2,12 +2,12 @@
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Main 28163d4 includes physical photo sizing, offline Linux OCR and notice provenance. Its independently verified, saved Windows/Linux/Android downloads are described in evidence/development-builds-28163d4.json. Scanner candidate 3276e3c adds sequential preparation, validated bounded previews and Android backup-policy protection; see CHECKPOINT.md for the current integration/build state.
+Main 10d46cc includes sequential scans, bounded canonical previews, physical photo DPI, custom print-sheet layouts and streamed image encoding. Windows, Linux and Android packaging workflows passed. Saved downloads were independently verified; see evidence/development-builds-10d46cc.json. PDF overlays are a separate candidate, not included in these packages.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
 | JPEG/PNG resize, compression and EXIF | Actual dimensions/bytes, orientation1–8 and same-source quality search tested | Native/UI checks pass | Native/interface gates pass | APK builds; device behavior pending |
-| Physical mm/DPI photo size | JPEG JFIF/PNG pHYs, pixel rounding, 16-bit/alpha and independent Pillow checks; real result UI tested | Packaged main 281 | Packaged main 281 | Packaged main 281; device/printer pending |
+| Physical mm/DPI photo size | JPEG JFIF/PNG pHYs, pixel rounding, 16-bit/alpha and independent Pillow checks; real result UI tested | Packaged main 10d | Packaged main 10d | Packaged main 10d; device/printer pending |
 | Fit/fill, rotate, numeric recipe crop/flip | Processing tests; basic controls and recipe editor | Implemented | Built | Built, device pending |
 | Flexible dimensions / direct crop gestures / face suggestions | Remaining | Unavailable | Unavailable | Unavailable |
 | Threshold signature cleanup and PNG backgrounds | Actual transparent pixels plus checkerboard/light/dark preview | Implemented | Built | Built, device pending |
@@ -15,15 +15,16 @@ Main 28163d4 includes physical photo sizing, offline Linux OCR and notice proven
 | Supported PDF merge/select/delete/reorder/rotate | Reopen, page order/rotation, text and PDFium appearance checks | Implemented | Native/interface gates pass | Built, device pending |
 | PDFium preview / page PNG ZIP | Bounded render adapter, real page appearance tests | Bundled | Bundled | Audited ARM64 library staged; device pending |
 | Lossless PDF structure optimization | Preserves text/pixels, never rasterizes, returns original if no reduction | Implemented | Native/interface gates pass | Built, device pending |
-| Watermarks/numbers/forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
+| Visible PDF page numbers / ASCII watermarks | Candidate: five core regression tests and independent saved-PDF parser/render checks pass; UI/platform gates running | Candidate | Candidate | Candidate, device pending |
+| Forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
 | Scan modes, rotation, brightness/contrast and advisory quality checks | Native tests; non-destructive edits/drafts | Implemented | Built | Compiled system-camera/manual import; device pending |
-| Sequential scan PDF and canonical previews | Candidate: bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Candidate build/startup passed | Candidate build/startup passed | Candidate complete packaging workflow passed |
+| Sequential scan PDF and canonical previews | Bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Main build/startup passed | Main build/startup passed | Main complete packaging workflow passed |
 | Manual corners / perspective / deskew / OpenCV | Remaining | Unavailable | Unavailable | Unavailable |
 | Camera capture and URI export | Scoped adapters and channel contracts | Image import; camera unavailable | Image import; camera unavailable | APK compiles; permissions/cancellation/recreation/provider testing pending |
 | Local scan drafts and retention | Save/restore/delete/clear, schema/hash and symlink protections tested | Implemented | Storage tests pass | Built, device pending |
 | English/Bangla/mixed printed OCR | Real engine/typed job cancellation, editable editor and verified UTF-8 export | Requires system Tesseract and pinned local models | Recognition unavailable | Recognition unavailable |
-| Print sheets | Standard/custom paper, physical layout, guides, optional DPI, capacity/aspect and independently reopened PDF tested locally | New candidate; packaging pending | New candidate; packaging pending | New candidate; device pending |
-| Print-sheet actual-size instruction / recovery | Native workflow tests at desktop and 390px/200%; field errors open advanced settings | Tested locally | Packaging pending | Device/printer acceptance pending |
+| Print sheets | Standard/custom paper, physical layout, guides, optional DPI, capacity/aspect and independently reopened PDF tested locally | Main packaging passed | Main packaging passed | Main packaged; device pending |
+| Print-sheet actual-size instruction / recovery | Native workflow tests at desktop and 390px/200%; field errors open advanced settings | Tested locally | Main packaging passed | Device/printer acceptance pending |
 | Application pack | Fixed example photo/signature/certificate ZIP; actual report/manifest/hash validation | Implemented example | Built | Built, device pending |
 | Editable pack slots and managed studio references | Remaining | Unavailable | Unavailable | Unavailable |
 | Recipes/batches/settings | Schema/order/path safety, persistence/import/export, item results/retry, opt-in storage tests | Implemented | Native/interface gates pass | Built, device pending |
@@ -32,7 +33,7 @@ Main 28163d4 includes physical photo sizing, offline Linux OCR and notice proven
 
 ## Current checks and practical limits
 
-Local final integration: 48 Rust tests, 25 selected Flutter tests, clean analysis/formatting. Scanner tests compare actual generated PDF page pixels and save a Bangla-named copy; bundled-font captures are local inspection, not approved golden baselines or user observation. The ten-second discoverability target is unmeasured.
+Local final integration: 57 Rust tests, 27 selected Flutter tests, clean analysis/formatting. Scanner tests compare actual generated PDF page pixels and save a Bangla-named copy; bundled-font captures are local inspection, not approved golden baselines or user observation. The ten-second discoverability target is unmeasured.
 
 Android backup/signing repair 6629bbe passed run 39163380699: compiled backup opt-out, all app-data exclusions, actual release permissions, signatures and ZIP/ELF 16 KiB checks. The optimized release-mode APK uses a disposable development identity. This is not private production signing or an OEM transport test.
 
@@ -42,8 +43,12 @@ Linux runtime/startup evidence is Ubuntu 24.04 x64; Windows is a windows-2022 x6
 
 Major production gates remain: PDF worker isolation, orphan-job cleanup, full license review, broader interoperability/colour management, localization and assistive-technology checks, representative users, clean devices, AppImage and private production signing. See LIMITATIONS.md.
 
-## Saved integration checkpoint 27c8b3d
+## Saved integration checkpoint 10d46cc
 
-All main workflows passed: Linux 39164619821, Windows 39164619702, Android 39164619794 and bridge 39164619682. Sequential scanner preparation, bounded canonical previews, Android local-data backup policy/development signing and portable Windows names are included. The four saved downloads (including the optimized Android development release) independently verify against evidence/development-builds-27c8b3d.json. The new custom print-sheet candidate remains on work/print-layout and is not yet in these packages.
+All main workflows passed: Linux 39167712992, Windows 39167713030 and Android 39167713009. Four saved downloads independently verify against evidence/development-builds-10d46cc.json, including all 471 retained notices, native inventory, OCR/font assets, Windows runtime inventory, Android signatures, compiled privacy settings and 16 KiB alignment. These are build-host/startup checks, not clean-device acceptance.
 
-Custom print-sheet candidate: 52 Rust tests and 27 selected Flutter tests pass, with clean analysis. Independent pypdf/Poppler verification checks actual 120 × 90 mm paper, nine 30 × 20 mm placements, 72 cutting segments, resampled image dimensions and non-overwrite/failure behavior. Actual printer acceptance remains unverified. See ADR-012 and evidence/custom-print-20261018.json.
+Custom print sheets passed independent pypdf/Pillow/Poppler verification (actual paper and placement dimensions, cutting guides, image pixels and non-overwrite behavior). Streamed image encoders passed same-source compression and exact byte-budget tests. See ADR-012/013. Actual printer acceptance remains unverified.
+
+## Current PDF overlay candidate
+
+work/pdf-overlays: all 62 Rust tests pass after workspace recovery; five focused overlay tests cover displayed crop-box footer coordinates, rotations, page units, resource isolation, escaping, final order and version declarations. Independent pypdf/Poppler checks pass for saved synthetic output. All 29 selected Flutter tests and clean analysis pass, including real native UI/save workflows on desktop and narrow/200% text. All three platform packaging workflows remain under verification. Main10d downloads do not yet contain this candidate. See ADR-014 and CHECKPOINT.md.

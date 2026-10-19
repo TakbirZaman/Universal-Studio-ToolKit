@@ -1,6 +1,6 @@
 # ADR 014 — visible page labels and text watermarks
 
-Status: candidate on work/pdf-overlays; restored after a transient workspace reset. All 62 core tests pass after recovery. Independent pypdf/Poppler saved-output verification passes. Interface verification and platform packaging are pending.
+Status: candidate on work/pdf-overlays; restored after a transient workspace reset. All 62 core tests pass after recovery. Independent pypdf/Poppler saved-output verification passes. The desktop light and 390px dark/200% text native workflow/save checks pass. All 29 selected Flutter tests and clean analysis pass after recovery; platform packaging is pending.
 
 Add optional page numbers and an ASCII text watermark to the existing merge/arrange/rotate workflow. Apply marks after page ordering and rotation, before optional lossless optimization, then validate and save through the existing no-clobber export service. Keep actual optimized dimensions/bytes while retaining both overlay and optimization findings.
 

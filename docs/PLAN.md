@@ -11,10 +11,13 @@
 
 Work progresses without phase-by-phase approval. No phase is deemed complete from this plan alone.
 
-Active next slice (2026-10-17): physical photo size with explicit DPI. Backend encoding, regenerated typed bindings, Flutter controls and actual-output verification pass locally on work/photo-density. Run the platform packaging gates before marking distributed builds supported. Next quality slice: bound multipage scan intermediates and avoid retaining every adjusted page in Dart.
+## Current implementation sequence — 2026-10-19
 
-Active 2026-10-18: scanner session streaming and validated display previews pass local native/interface checks. Finish platform packaging and Android compiled backup-resource verification before integration. Next implement manual scan corner/perspective correction with a validated native adapter; full OpenCV platform/license work remains required.
+Physical photo density, sequential scanner preparation/canonical previews, custom print layouts and bounded streamed image encoding are integrated in main10d and packaged for all three targets. Verification and limitations are in STATUS.md and the evidence directory.
 
-2026-10-18 print slice: custom paper/margins/spacing/guides and explicit sampling DPI pass 52 Rust/27 Flutter tests and independent saved PDF inspection locally. Complete platform packaging before integration; keep original-pixel default and actual-size instructions. Next prioritize manual scan perspective correction/native OpenCV integration or editable application-pack slots, while preserving the full requirements checklist.
+1. Finish the PDF page-number/watermark candidate: run actual native/interface/save checks, inspect Windows/Linux/Android workflows, fix failures, integrate verified files, independently verify new packages and preserve notices.
+2. Implement manual scan corner/perspective correction and automatic boundary suggestions through a narrow validated adapter; complete OpenCV platform/license work.
+3. Add editable application-pack slots and managed studio references; complete remaining photo/signature/PDF operations and flexible compression.
+4. Complete platform OCR and validated searchable-PDF geometry, accessibility/localization/user checks, worker isolation/cleanup, complete license obligations and clean-device release gates.
 
-2026-10-18 image resource slice: streamed PNG rows/chunks and early JPEG/PNG byte limits pass 57 Rust/27 Flutter checks locally. Run platform packaging and preserve the independently saved main27 artifacts until newer builds verify. Do not claim process-wide isolation from encoded-byte limits.
+Retain the entire nine-phase scope above. Do not treat a packaged candidate as user/device acceptance or infer process-wide memory isolation from encoded-write limits.

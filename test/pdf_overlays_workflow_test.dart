@@ -65,8 +65,9 @@ void main() {
     );
     documents = [];
     for (final n in [1, 6]) {
-      final image = await File('rust/tests/fixtures/orientation-$n.jpg')
-          .readAsBytes();
+      final image = await File(
+        'rust/tests/fixtures/orientation-$n.jpg',
+      ).readAsBytes();
       documents.add((await core.scanPdf(inputs: [image])).bytes);
     }
     for (final entry in {
@@ -93,10 +94,10 @@ void main() {
     testWidgets('arrange, mark, preview and save actual PDF ${variant.$1}', (
       tester,
     ) async {
-      final destination = await Directory.systemTemp.createTemp(
+      final destination = Directory.systemTemp.createTempSync(
         'studio-overlay-ui-',
       );
-      addTearDown(() => destination.delete(recursive: true));
+      addTearDown(() => destination.deleteSync(recursive: true));
       FileSelectorPlatform.instance = PdfPicker(documents, destination.path);
       tester.view.physicalSize = variant.$2;
       tester.view.devicePixelRatio = 1;
@@ -109,8 +110,9 @@ void main() {
               variant.$1 == 'desktop' ? Brightness.light : Brightness.dark,
             ),
             builder: (context, child) => MediaQuery(
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: TextScaler.linear(variant.$3)),
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(variant.$3)),
               child: child!,
             ),
             home: const Scaffold(body: ToolWorkspace(tool: Tool.merge)),
@@ -148,7 +150,11 @@ void main() {
         find.text('Use 1–80 English letters, numbers or plain symbols.'),
         findsOneWidget,
       );
-      expect(find.byType(PdfPreview), findsNothing);
+      expect(
+        tester.widget<PdfPreview>(find.byType(PdfPreview)).data,
+        orderedEquals(documents.first),
+      );
+      expect(destination.listSync(), isEmpty);
       await tester.ensureVisible(field('Watermark text'));
       await tester.enterText(field('Watermark text'), 'DRAFT (copy)');
       await tester.ensureVisible(field('Watermark text size (points)'));
@@ -156,7 +162,9 @@ void main() {
       await tapText('Prepare preview');
       await waitFor(
         tester,
-        () => find.byType(PdfPreview).evaluate().isNotEmpty,
+        () =>
+            find.byType(PdfPreview).evaluate().isNotEmpty &&
+            tester.widget<PdfPreview>(find.byType(PdfPreview)).pageCount == 2,
       );
       await waitFor(
         tester,
