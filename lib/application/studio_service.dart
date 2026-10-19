@@ -66,7 +66,12 @@ class StudioService {
     String? watermark,
     double watermarkFontPoints = 32,
   }) async {
-    if (optimize && !pageNumbers && watermark == null && inputs.length == 1 && pages == null && rotation == 0) {
+    if (optimize &&
+        !pageNumbers &&
+        watermark == null &&
+        inputs.length == 1 &&
+        pages == null &&
+        rotation == 0) {
       return core.optimizePdf(data: inputs.first);
     }
     var output = await core.combinePdfs(
@@ -75,15 +80,26 @@ class StudioService {
       rotation: rotation,
     );
     if (pageNumbers || watermark != null) {
-      output = await core.decoratePdf(data: output.bytes, pageNumbers: pageNumbers,
-          watermark: watermark, watermarkFontPoints: watermarkFontPoints);
+      output = await core.decoratePdf(
+        data: output.bytes,
+        pageNumbers: pageNumbers,
+        watermark: watermark,
+        watermarkFontPoints: watermarkFontPoints,
+      );
     }
     if (!optimize) return output;
     final optimized = await core.optimizePdf(data: output.bytes);
-    return core.StudioOutput(bytes: optimized.bytes, format: optimized.format,
-        width: optimized.width, height: optimized.height, pages: optimized.pages,
-        quality: optimized.quality, printDensity: optimized.printDensity,
-        validation: '${output.validation}\nLossless optimization of the prepared PDF: ${optimized.validation}');
+    return core.StudioOutput(
+      bytes: optimized.bytes,
+      format: optimized.format,
+      width: optimized.width,
+      height: optimized.height,
+      pages: optimized.pages,
+      quality: optimized.quality,
+      printDensity: optimized.printDensity,
+      validation:
+          '${output.validation}\nLossless optimization of the prepared PDF: ${optimized.validation}',
+    );
   }
 
   Future<core.StudioOutput> scan(List<ScanPage> pages) =>

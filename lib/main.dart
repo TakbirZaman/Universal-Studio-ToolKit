@@ -68,18 +68,15 @@ Future<void> main() async {
           await check.writeAsString('');
           await check.delete();
           storage = portable.path;
-          storageNotice =
-              'Portable mode: settings are saved in studio-data beside the application.';
+          storageNotice = 'Portable mode: settings are saved in studio-data beside the application.';
         } catch (_) {
-          storageNotice =
-              'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
+          storageNotice = 'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
         }
       }
       initialTheme = (await loadPreferences(directory: storage!)).theme;
     } catch (_) {
       storage = null;
-      storageNotice =
-          'Settings could not be saved on this device. Changes apply only to this session.';
+      storageNotice = 'Settings could not be saved on this device. Changes apply only to this session.';
     }
     runApp(
       ProviderScope(
@@ -172,7 +169,7 @@ extension ToolLabel on Tool {
   String get description => switch (this) {
     Tool.photo => 'A smaller file. The exact dimensions you need.',
     Tool.signature => 'Remove a plain background and save a transparent PNG.',
-    Tool.merge => 'Combine files, choose page order, and rotate pages.',
+    Tool.merge => 'Combine, arrange, number, and watermark supported PDFs.',
     Tool.scan => 'Turn imported page images into one organised PDF.',
     Tool.pack => 'Prepare a photo, signature and certificate together.',
     Tool.print => 'Arrange photo copies for actual-size printing.',
@@ -201,10 +198,8 @@ extension ToolLabel on Tool {
         };
   String get synonyms => switch (this) {
     Tool.photo => 'smaller compress image picture passport resize crop',
-    Tool.merge =>
-      'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number',
-    Tool.scan =>
-      'scan certificate pages document camera ocr text recognize printed english bangla',
+    Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number',
+    Tool.scan => 'scan certificate pages document camera ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
     Tool.print => 'print sheet printing copies paper a4 letter dpi',
@@ -395,9 +390,9 @@ class _StudioHomeState extends State<StudioHome> {
                                       const SizedBox(height: 20),
                                       Text(
                                         t.label,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
                                       const SizedBox(height: 8),
                                       Text(t.description),
@@ -742,7 +737,9 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           optimize: optimizePdfStructures,
           pageNumbers: pageNumbers,
           watermark: watermarkEnabled ? watermarkText.text : null,
-          watermarkFontPoints: watermarkEnabled ? double.parse(watermarkFont.text) : 32,
+          watermarkFontPoints: watermarkEnabled
+              ? double.parse(watermarkFont.text)
+              : 32,
         ),
         Tool.scan => await service.scan(
           sources
@@ -846,9 +843,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         children: [
           Text(
             widget.tool.label,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(context).textTheme.headlineLarge
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
@@ -1128,8 +1124,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               onChanged: (_) => changed(),
               decoration: const InputDecoration(
                 labelText: 'Print resolution (DPI)',
-                helperText:
-                    'Dots per inch. Saved dimensions are rounded to whole pixels.',
+                helperText: 'Dots per inch. Saved dimensions are rounded to whole pixels.',
                 helperMaxLines: 3,
               ),
             ),
@@ -1301,8 +1296,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               watermark: watermarkText,
               fontSize: watermarkFont,
               advanced: pdfAdvanced,
-              onPageNumbers: (value) { setState(() => pageNumbers = value); changed(); },
-              onWatermark: (value) { setState(() => watermarkEnabled = value); changed(); },
+              onPageNumbers: (value) {
+                setState(() => pageNumbers = value);
+                changed();
+              },
+              onWatermark: (value) {
+                setState(() => watermarkEnabled = value);
+                changed();
+              },
               onChanged: changed,
             ),
             const Text(
@@ -1681,8 +1682,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     } catch (_) {
       if (mounted) {
         setState(
-          () => draftMessage =
-              'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
+          () => draftMessage = 'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
         );
       }
     } finally {

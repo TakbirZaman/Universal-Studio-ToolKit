@@ -1,0 +1,25 @@
+{
+  "pages": 2,
+  "rotations": [
+    90,
+    270
+  ],
+  "crop_box": [
+    10,
+    20,
+    210,
+    300
+  ],
+  "user_unit": 2,
+  "original_text_and_fonts_preserved": true,
+  "escaped_watermark_text_roundtrips": true,
+  "labels_in_saved_order": true,
+  "source_unchanged": true,
+  "existing_output_preserved": true,
+  "invalid_constraints_saved_nothing": true,
+  "bytes": 2447,
+  "sha256": "4f8713aaafa750971773694dc256ff76c1ae186efdca02fa24cd6fa5ac6a40d3",
+  "independent_parser": "pypdf",
+  "independent_renderer": "Poppler",
+  "universal_pdf_compatibility_claimed": false
+}

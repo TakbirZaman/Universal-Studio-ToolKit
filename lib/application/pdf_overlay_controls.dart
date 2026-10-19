@@ -25,11 +25,13 @@ class PdfOverlayControls extends StatelessWidget {
     maintainState: true,
     tilePadding: EdgeInsets.zero,
     title: const Text('Page numbers & watermark'),
-    subtitle: Text([
-      if (pageNumbers) 'Page numbers on',
-      if (watermarkEnabled) 'Watermark on',
-      if (!pageNumbers && !watermarkEnabled) 'Optional visible marks',
-    ].join(' · ')),
+    subtitle: Text(
+      [
+        if (pageNumbers) 'Page numbers on',
+        if (watermarkEnabled) 'Watermark on',
+        if (!pageNumbers && !watermarkEnabled) 'Optional visible marks',
+      ].join(' · '),
+    ),
     children: [
       CheckboxListTile(
         contentPadding: EdgeInsets.zero,
@@ -53,10 +55,13 @@ class PdfOverlayControls extends StatelessWidget {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: const InputDecoration(
             labelText: 'Watermark text',
-            helperText: 'English letters, numbers and plain symbols in this version.',
+            helperText:
+                'English letters, numbers and plain symbols in this version.',
           ),
           onChanged: (_) => onChanged(),
-          validator: (value) => value == null || value.trim().isEmpty ||
+          validator: (value) =>
+              value == null ||
+                  value.trim().isEmpty ||
                   value.length > 80 ||
                   !value.codeUnits.every((c) => c >= 32 && c <= 126)
               ? 'Use 1–80 English letters, numbers or plain symbols.'
@@ -76,12 +81,15 @@ class PdfOverlayControls extends StatelessWidget {
           validator: (value) {
             final size = double.tryParse(value ?? '');
             return size == null || !size.isFinite || size < 6 || size > 96
-                ? 'Use 6–96 points.' : null;
+                ? 'Use 6–96 points.'
+                : null;
           },
         ),
         const SizedBox(height: 12),
       ],
-      const Text('Visible marks keep the underlying document content. Review the prepared pages before saving a copy.'),
+      const Text(
+        'Visible marks keep the underlying document content. Review the prepared pages before saving a copy.',
+      ),
       const SizedBox(height: 12),
     ],
   );
