@@ -29,3 +29,5 @@ Specific remaining checks: original-file hash unchanged; output hashes match ZIP
 Verified scanner slice 2026-10-18: sequential per-page preparation, cumulative encoded-image/final-PDF byte limits, bounded canonical previews, reordered/adjusted PDF appearance and Bangla-named export. 48 Rust tests and 25 selected Flutter tests passed for that slice; platform/device acceptance is tracked separately. See ADR-011.
 
 Current main10d: custom print layouts and streamed image encoders are packaged on all three targets; 57 Rust/27 selected Flutter tests pass. Current PDF overlay candidate: core and independent saved-output checks pass after recovery; interface/platform verification is pending. This does not complete item10.
+
+Existing PDF text candidate2026-10-19: real text-layer extraction with cumulative character/actual UTF-8 byte limits, editable results and no-clobber Unicode text export pass local core/UI/independent checks. This is plain text, not OCR or searchable PDF; platform packaging remains pending.

@@ -1,0 +1,12 @@
+{
+  "unicode_english_bangla_text_verified": true,
+  "page_order_verified": true,
+  "source_unchanged": true,
+  "no_clobber_verified": true,
+  "ocr_used": false,
+  "bytes": 59,
+  "sha256": "d3a25a57b5be298c07504ae728a3a8f46eb3eb3e7c8c75c860705d1a01b016d2",
+  "independent_parser": "pypdf",
+  "native_engine": "PDFium",
+  "reading_order_guaranteed": false
+}

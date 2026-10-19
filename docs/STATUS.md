@@ -52,3 +52,9 @@ Custom print sheets passed independent pypdf/Pillow/Poppler verification (actual
 ## Current PDF overlay candidate
 
 work/pdf-overlays: all 62 Rust tests pass after workspace recovery; five focused overlay tests cover displayed crop-box footer coordinates, rotations, page units, resource isolation, escaping, final order and version declarations. Independent pypdf/Poppler checks pass for saved synthetic output. All 29 selected Flutter tests and clean analysis pass, including real native UI/save workflows on desktop and narrow/200% text. All three platform packaging workflows remain under verification. Main10d downloads do not yet contain this candidate. See ADR-014 and CHECKPOINT.md.
+
+## Existing PDF text candidate — 2026-10-19
+
+work/pdf-text adds bounded PDFium text-layer extraction, editable UTF-8 output and real shared save flow. Local verification: 66 Rust tests, 32 selected Flutter tests and clean analysis. Independent English/Bangla extraction and actual byte/hash/no-clobber checks pass. The image-only error path is verified. All three platform builds are pending for this candidate; Windows/Linux/Android OCR availability remains unchanged.
+
+The preceding overlay candidate1a657f6 passed Linux39251795389, Windows39251795282 and Android39251795377. Its runtime is ready for main integration, preserving main81d13b9 evidence. Main10d saved downloads remain unchanged until the newer package set is independently verified and saved.

@@ -6,7 +6,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-pub(crate) const MAX_TEXT_BYTES: usize = 4 * 1024 * 1024;
+pub(crate) const MAX_TEXT_BYTES: usize = crate::text::MAX_BYTES;
 const MODELS: [(&str, usize, &str); 3] = [
     (
         "eng.traineddata",

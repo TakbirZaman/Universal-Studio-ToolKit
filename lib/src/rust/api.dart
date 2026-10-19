@@ -274,6 +274,14 @@ Future<StudioOutput> decoratePdf({
   watermarkFontPoints: watermarkFontPoints,
 );
 
+/// Extract an existing PDF text layer, using the bounded native engine queue.
+Future<StudioOutput> extractPdfText({required List<int> data}) =>
+    RustLib.instance.api.crateApiExtractPdfText(data: data);
+
+/// Validate user edits without adding an OCR-specific accuracy disclosure.
+Future<StudioOutput> preparePlainText({required List<int> data}) =>
+    RustLib.instance.api.crateApiPreparePlainText(data: data);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
 abstract class OcrTask implements RustOpaqueInterface {}
 

@@ -16,6 +16,7 @@ import 'application/recipes.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'application/pdf_preview.dart';
+import 'application/pdf_text.dart';
 import 'application/pdf_overlay_controls.dart';
 import 'application/preferences.dart';
 import 'application/export_service.dart';
@@ -202,7 +203,7 @@ extension ToolLabel on Tool {
   String get synonyms => switch (this) {
     Tool.photo => 'smaller compress image picture passport resize crop',
     Tool.merge =>
-      'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number',
+      'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
     Tool.scan =>
       'scan certificate pages document camera ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
@@ -1294,6 +1295,27 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     },
               icon: const Icon(Icons.rotate_right),
               label: Text('Rotate all pages: ${rotation * 90}°'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: busy || sources.isEmpty
+                  ? null
+                  : () {
+                      final data = output?.format == 'pdf'
+                          ? output!.bytes
+                          : sources[previewIndex.clamp(0, sources.length - 1)]
+                                .bytes;
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (_) => PdfTextScreen(source: data),
+                        ),
+                      );
+                    },
+              icon: const Icon(Icons.text_snippet_outlined),
+              label: const Text('Read selectable text'),
+            ),
+            const Text(
+              'Reads the prepared PDF when available; otherwise reads the selected source PDF. Scans may have no selectable text.',
             ),
             const SizedBox(height: 8),
             PdfOverlayControls(

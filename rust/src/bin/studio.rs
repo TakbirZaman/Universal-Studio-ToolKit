@@ -17,6 +17,11 @@ enum Request {
         pages: Option<Vec<u32>>,
         rotation: i32,
     },
+    ExtractPdfText {
+        input: String,
+        directory: String,
+        filename: String,
+    },
     DecoratePdf {
         input: String,
         directory: String,
@@ -124,6 +129,15 @@ fn run() -> Result<OutputInfo> {
                 pages.as_deref(),
                 rotation,
             )?,
+            directory,
+            filename,
+        ),
+        Request::ExtractPdfText {
+            input,
+            directory,
+            filename,
+        } => (
+            studio_core::rendering::selectable_text(&read(&input)?)?,
             directory,
             filename,
         ),
