@@ -99,3 +99,60 @@ pub fn pages_to_zip(data: &[u8], indices: &[u32], max_pixels: u32) -> Result<Pre
     }
     crate::export::pack(items)
 }
+
+/// Read an existing text layer. PDFium's document order can differ from visual
+/// reading order; this does not run OCR or create a searchable PDF.
+pub fn selectable_text(data: &[u8]) -> Result<PreparedOutput> {
+    const MAX_CHARACTERS: usize = 1_000_000;
+    let count = crate::pdf::page_count(data)?;
+    let _guard = PDFIUM_LOCK
+        .lock()
+        .map_err(|_| invalid("The PDF engine needs to restart."))?;
+    let engine = library()?;
+    let doc = engine.load_pdf_from_byte_slice(data, None).map_err(error)?;
+    let mut bytes = crate::buffer::BoundedBuffer::new(crate::text::MAX_BYTES);
+    let mut characters = 0usize;
+    let mut empty_pages = 0;
+    let mut has_text = false;
+    use std::io::Write;
+    for index in 0..count {
+        let page = doc.pages().get(index as i32).map_err(error)?;
+        let text = page.text().map_err(error)?;
+        let length = usize::try_from(text.len())
+            .map_err(|_| invalid("The PDF text layer could not be read."))?;
+        characters = characters
+            .checked_add(length)
+            .ok_or_else(|| invalid("PDF text exceeds the character budget."))?;
+        if characters > MAX_CHARACTERS {
+            return Err(invalid(
+                "PDF text exceeds one million characters. Extract fewer pages first.",
+            ));
+        }
+        let extracted = text.all();
+        if extracted.trim().is_empty() {
+            empty_pages += 1;
+            continue;
+        }
+        if has_text {
+            bytes
+                .write_all(b"\n\n")
+                .map_err(|_| invalid("Extracted text exceeds 4 MiB."))?;
+        }
+        bytes
+            .write_all(extracted.as_bytes())
+            .map_err(|_| invalid("Extracted text exceeds 4 MiB."))?;
+        has_text = true;
+    }
+    if !has_text {
+        return Err(invalid(
+            "No selectable text was found. This may be a scan. Try Scanner Studio's offline text recognition where available.",
+        ));
+    }
+    let mut output = crate::text::output(bytes.into_inner())?;
+    output.info.findings.push(ValidationFinding {
+        advisory: true, passed: true, code: "pdf_text_review".into(),
+        message: format!("Read the existing text layer from {count} pages; {empty_pages} pages had no selectable text. Review reading order, missing characters and layout before use. This is editable plain text; OCR was not run."),
+    });
+    crate::export::verify_output(&output)?;
+    Ok(output)
+}

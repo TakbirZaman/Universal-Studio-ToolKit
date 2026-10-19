@@ -2,7 +2,7 @@
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Main 10d46cc includes sequential scans, bounded canonical previews, physical photo DPI, custom print-sheet layouts and streamed image encoding. Windows, Linux and Android packaging workflows passed. Saved downloads were independently verified; see evidence/development-builds-10d46cc.json. PDF overlays from verified candidate1a657f6 are now integrated; its Linux, Windows and Android packaging workflows passed. All four updated downloads were independently verified and saved; see evidence/development-builds-1a657f6.json.
+Main includes physical photo DPI, sequential scans/canonical previews, custom print layouts, streamed encoding, visible PDF page numbers/watermarks and editable PDF text extraction. Runtime candidate0d7d7a6 passed Windows, Linux and Android packaging. Its package downloads are being verified; the currently saved four builds are runtime1a657f6 with overlays. Historical source/evidence remain in the evidence directory.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
@@ -16,6 +16,7 @@ Main 10d46cc includes sequential scans, bounded canonical previews, physical pho
 | PDFium preview / page PNG ZIP | Bounded render adapter, real page appearance tests | Bundled | Bundled | Audited ARM64 library staged; device pending |
 | Lossless PDF structure optimization | Preserves text/pixels, never rasterizes, returns original if no reduction | Implemented | Native/interface gates pass | Built, device pending |
 | Visible PDF page numbers / ASCII watermarks | Five focused native tests, independent saved-PDF checks, real desktop/narrow UI/save tests; all platform packaging passed | Implemented / startup checked | Built / startup checked | APK built; device pending |
+| Existing PDF text → editable UTF-8 | Actual PDFium extraction, Unicode save, blank-scan recovery and independent English/Bangla output;66 Rust/32 Flutter tests overall | Implemented / built | Native/UI checks and build passed | APK built; device pending |
 | Forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
 | Scan modes, rotation, brightness/contrast and advisory quality checks | Native tests; non-destructive edits/drafts | Implemented | Built | Compiled system-camera/manual import; device pending |
 | Sequential scan PDF and canonical previews | Bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Main build/startup passed | Main build/startup passed | Main complete packaging workflow passed |
@@ -53,4 +54,6 @@ Custom print sheets passed independent pypdf/Pillow/Poppler verification (actual
 
 Runtime source1a657f6 passed Linux39251795389, Windows39251795282 and Android39251795377. All62 Rust and29 selected Flutter tests pass, with clean analysis. Independent pypdf/Poppler output and desktop package checks pass. Page numbers follow the final saved order; visible ASCII watermark labels preserve original text/resources and account for crop/rotation/unit geometry. See ADR-014.
 
-A separate work/pdf-text candidate0d7d7a6 adds editable existing-text extraction. Its66 Rust/32 Flutter tests and independent English/Bangla output check pass locally; platform packaging is pending. It is not included in the current overlay builds.
+## Integrated existing PDF text slice
+
+Runtime candidate0d7d7a6 passed Linux39253689705, Windows39253689586 and Android39253689489. All66 Rust/32 selected Flutter tests and clean analysis pass. Independent pypdf/PDFium verification extracts English/Bangla text in page order and checks actual saved bytes, original preservation and no-clobber behavior. Local visual review and focused recheck verify help/error wrapping at200% text. See ADR-015. Newly built packages remain under independent verification; actual devices/users are outstanding.

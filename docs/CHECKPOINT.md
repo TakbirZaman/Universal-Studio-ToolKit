@@ -8,17 +8,19 @@ Main now integrates PDF page numbers/visible ASCII watermarks from runtime candi
 
 The main runtime also includes physical photo DPI, sequential scans/canonical previews, Android backup/development-signing protection, custom print layouts/guides and streamed PNG/JPEG byte bounds. Saved downloads now correspond to runtime candidate1a657f6 integrated into main04e03a3. Keep evidence/development-builds-10d46cc.json and historical output evidence.
 
-## Active next feature: existing PDF text
+## Existing PDF text integration
 
-work/pdf-text candidate0d7d7a6f79a7b5f626235fc74f86850e17ae9178 is pushed. It branches from overlay1a657f6 and adds bounded PDFium text-layer extraction, a shared plain UTF-8 validator, responsive original-preview/editor, empty-scan recovery and actual Unicode save. All66 Rust/32 selected Flutter tests and independent English/Bangla extraction checks pass locally. Visual inspection led to a shorter title and wrapped help/errors at200% text; the focused UI recheck passes. Platform CI is pending for this candidate. Do not merge before all three workflows pass.
+Main now also integrates runtime candidate0d7d7a6f79a7b5f626235fc74f86850e17ae9178. It adds bounded PDFium text-layer extraction, shared plain UTF-8 validation, responsive original-preview/editor, empty-scan recovery and Unicode save. All66 Rust/32 selected Flutter tests, clean analysis and independent English/Bangla extraction checks pass. Local visual review fixed a truncated help line at200% text; focused UI rechecks pass.
 
-Bridge generator39252445602 passed for backend15600d7. Artifact12187280337 SHA-256 9c8c545ee27d0c6fc3f9c921f23b018d3adece5bcd11fb040d07220bdbfa2836 was CRC/SHA/allowlist checked and all eight generated sources applied without manual editing. Candidate source/ADR/evidence/scripts are on its branch. Preserve this newer main checkpoint and build evidence during integration; copy only intended changes rather than replacing the complete main tree.
+All three candidate workflows passed: Linux39253689705 artifact12187705638 (outer SHA433ccfcf082e6b8ebcc402edf3354b2600bd2a762c5d995dc09b4f71bc7b5a58), Windows39253689586 artifact12186777058 (outer SHAda38f06be6b63ce6130e3335ea0ec7aa4b1e02ce85a2d6ab922168a5fae3a27a), Android39253689489 artifact12187945610 (outer SHA45702153765c80992e55b68cdf8dabc9ed0678a72572b049a353396c29c57cf6). These are runtime0d feature artifacts, not builds from the later integration commit.
+
+Bridge generator39252445602 passed for backend15600d7. Artifact12187280337 SHA-256 9c8c545ee27d0c6fc3f9c921f23b018d3adece5bcd11fb040d07220bdbfa2836 was CRC/SHA/allowlist checked and eight generated sources applied without manual editing. Exact source/ADR/evidence/verification scripts are committed.
 
 ## Exact next actions
 
-1. Overlay package verification and saving are complete. Keep their source label1a657f6 and actual build evidence; source main04e03a3 integrates that runtime. Inspect the next candidate platform runs.
-2. Inspect all three text-candidate platform runs. Fix failures, integrate only after passing, independently verify the new packages and update downloads again as appropriate. New main platform runs are independent checks; do not mislabel feature artifacts as built from a different commit.
-3. Continue manual scan corners/perspective/deskew and OpenCV adapter/license work; editable pack slots/managed studio references; remaining photo/signature/PDF operations and flexible compression; platform OCR/searchable geometry; accessibility/localization/user checks; isolation/cleanup/license and clean-device release gates.
+1. Finish independent text-candidate artifact/package verification: CRC/SHA,471 notices, fonts/native/model/CRT inventories, startup records and all three Android APK structures/alignment/privacy/signatures. Use the same official developer tools already restored. Save four replacements using retained version guards from the last successful save. Do not retry unknown upload outcomes or mislabel source hashes.
+2. Update package evidence and checkpoint after all saves succeed. Main integration triggers its own platform/bridge checks; inspect any failures and confirm generated sources remain identical.
+3. Continue manual scan corners/perspective/deskew and OpenCV adapter/license work; editable pack slots and managed studio references; remaining photo/signature/PDF operations and flexible compression; platform OCR/searchable geometry; accessibility/localization/user checks; isolation/cleanup/license and clean-device release gates.
 
 ## Limitations
 
