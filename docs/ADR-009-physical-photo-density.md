@@ -1,6 +1,6 @@
 # ADR 009 — explicit physical photo size and verified print-density metadata
 
-Status: locally implemented and verified on work/photo-density; platform packaging gates remain pending.
+Status: Integrated in main 28163d4; Windows/Linux/Android packaging passed. Device/printer acceptance remains pending.
 
 Convert requested millimetres and integer DPI (1–2400) into bounded whole-pixel dimensions in Rust. Process a fresh orientation-normalized source, retaining existing fit/crop, transparency consent and byte-limit rules. Report pixel rounding and the physical size computed from the saved pixels and actual density; never promise that printer settings or external application acceptance are guaranteed.
 

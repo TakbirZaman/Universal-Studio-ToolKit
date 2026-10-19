@@ -2,7 +2,7 @@
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Main includes physical photo DPI, sequential scans/canonical previews, custom print layouts, streamed encoding, visible PDF page numbers/watermarks and editable PDF text extraction. Runtime candidate0d7d7a6 passed Windows, Linux and Android packaging. Its package downloads are being verified; the currently saved four builds are runtime1a657f6 with overlays. Historical source/evidence remain in the evidence directory.
+Main includes physical photo DPI, sequential scans/canonical previews, custom print layouts, streamed encoding, visible PDF page numbers/watermarks and editable PDF text extraction. Runtime candidate 0d7d7a6 passed Windows, Linux and Android packaging. All four downloads are independently verified and saved from runtime 0d7d7a6; see evidence/development-builds-0d7d7a6.json. Historical source/evidence remain in the evidence directory.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
@@ -34,7 +34,7 @@ Main includes physical photo DPI, sequential scans/canonical previews, custom pr
 
 ## Current checks and practical limits
 
-Local final integration: 57 Rust tests, 27 selected Flutter tests, clean analysis/formatting. Scanner tests compare actual generated PDF page pixels and save a Bangla-named copy; bundled-font captures are local inspection, not approved golden baselines or user observation. The ten-second discoverability target is unmeasured.
+Local final integration: 66 Rust tests, 32 selected Flutter tests, clean analysis/formatting. Scanner tests compare actual generated PDF page pixels and save a Bangla-named copy; bundled-font captures are local inspection, not approved golden baselines or user observation. The ten-second discoverability target is unmeasured.
 
 Android backup/signing repair 6629bbe passed run 39163380699: compiled backup opt-out, all app-data exclusions, actual release permissions, signatures and ZIP/ELF 16 KiB checks. The optimized release-mode APK uses a disposable development identity. This is not private production signing or an OEM transport test.
 
@@ -44,7 +44,7 @@ Linux runtime/startup evidence is Ubuntu 24.04 x64; Windows is a windows-2022 x6
 
 Major production gates remain: PDF worker isolation, orphan-job cleanup, full license review, broader interoperability/colour management, localization and assistive-technology checks, representative users, clean devices, AppImage and private production signing. See LIMITATIONS.md.
 
-## Saved integration checkpoint 10d46cc
+## Historical integration checkpoint 10d46cc
 
 All main workflows passed: Linux 39167712992, Windows 39167713030 and Android 39167713009. Four saved downloads independently verify against evidence/development-builds-10d46cc.json, including all 471 retained notices, native inventory, OCR/font assets, Windows runtime inventory, Android signatures, compiled privacy settings and 16 KiB alignment. These are build-host/startup checks, not clean-device acceptance.
 
@@ -52,8 +52,8 @@ Custom print sheets passed independent pypdf/Pillow/Poppler verification (actual
 
 ## Integrated PDF overlay slice
 
-Runtime source1a657f6 passed Linux39251795389, Windows39251795282 and Android39251795377. All62 Rust and29 selected Flutter tests pass, with clean analysis. Independent pypdf/Poppler output and desktop package checks pass. Page numbers follow the final saved order; visible ASCII watermark labels preserve original text/resources and account for crop/rotation/unit geometry. See ADR-014.
+Runtime source1a657f6 passed Linux39251795389, Windows39251795282 and Android39251795377. All 62 Rust and 29 selected Flutter tests pass, with clean analysis. Independent pypdf/Poppler output and desktop package checks pass. Page numbers follow the final saved order; visible ASCII watermark labels preserve original text/resources and account for crop/rotation/unit geometry. See ADR-014.
 
 ## Integrated existing PDF text slice
 
-Runtime candidate0d7d7a6 passed Linux39253689705, Windows39253689586 and Android39253689489. All66 Rust/32 selected Flutter tests and clean analysis pass. Independent pypdf/PDFium verification extracts English/Bangla text in page order and checks actual saved bytes, original preservation and no-clobber behavior. Local visual review and focused recheck verify help/error wrapping at200% text. See ADR-015. Newly built packages remain under independent verification; actual devices/users are outstanding.
+Runtime candidate 0d7d7a6 passed Linux39253689705, Windows39253689586 and Android39253689489. All 66 Rust/32 selected Flutter tests and clean analysis pass. Independent pypdf/PDFium verification extracts English/Bangla text in page order and checks actual saved bytes, original preservation and no-clobber behavior. Local visual review and focused recheck verify help/error wrapping at 200% text. See ADR-015. All four saved downloads pass independent CRC/hash,471-notice, font/native/CRT/model inventory checks; Android compiled privacy, signatures and 16 KiB alignment also verify. Actual devices/users remain outstanding.

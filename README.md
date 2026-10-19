@@ -7,6 +7,8 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 - Resize JPEG/PNG images to exact pixels or physical mm/DPI dimensions with fit or crop, EXIF normalization, explicit transparency handling and measured size constraints.
 - Clean a plain signature background and export transparent PNG.
 - Combine, select, reorder and rotate supported PDF pages; render previews and export page PNGs using bundled PDFium.
+- Add visible page numbers in saved order and optional ASCII text watermarks, with actual PDF previews.
+- Read an existing PDF text layer, review/edit it and save a UTF-8 text copy. Reading order can differ; scans without text need separately available OCR.
 - Import scan images, reorder pages, adjust brightness/contrast, rotate, apply grayscale or black-and-white, and produce PDF through bounded sequential page preparation. Quality warnings are advisory.
 - Lay out repeated photos on standard or custom paper with physical dimensions, margins, spacing, optional cutting guides and explicit sampling DPI. Source pixels are retained by default.
 - Prepare the example photo/signature/certificate application ZIP with a validation report and hashed manifest.

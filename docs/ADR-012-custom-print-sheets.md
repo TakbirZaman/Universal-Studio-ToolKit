@@ -1,6 +1,6 @@
 # ADR 012 — validated physical print sheets
 
-Status: core and interface verified locally; platform packaging pending.
+Status: Integrated in maind6c337e; Windows/Linux/Android packaging passed. Actual printer/device acceptance remains pending.
 
 Keep layout dimensions in millimetres and convert to PDF points only at the rendering boundary. A typed PrintSheetSpec validates finite paper/photo/margin/spacing/copy constraints before decoding. Compute capacity and each actual placement independently; reject overflow rather than silently omit copies. Support A4, A5, Letter, 4 × 6 inch and custom paper through the same model.
 

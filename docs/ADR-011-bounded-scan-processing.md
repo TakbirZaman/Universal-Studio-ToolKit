@@ -1,6 +1,6 @@
 # ADR 011 — sequential scan preparation and validated display previews
 
-Status: backend and typed interface verified locally; platform packaging and device checks pending.
+Status: Integrated in main 27c8b3d; Windows/Linux/Android packaging passed. Actual device checks remain pending.
 
 A session previously held all adjusted full-resolution PNGs in Dart before PDF assembly. Small compressed JPEG sources could therefore create large simultaneous PNG intermediates. The existing Rust session helper had a cumulative PNG limit, but the interface bypassed that helper by adjusting each page itself.
 

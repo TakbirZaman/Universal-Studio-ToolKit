@@ -1,6 +1,6 @@
 # ADR 013 — streamed PNG and early encoded-byte limits
 
-Status: 57 core tests and 27 interface tests pass locally; platform packaging pending.
+Status: Integrated in main 10d46cc; Windows/Linux/Android packaging passed. The original slice passed 57 Rust/27 Flutter tests; later integration evidence is in STATUS.md.
 
 The pinned png 0.18.1 Writer::write_image_data implementation constructs a complete compressed Vec before writing IDAT chunks. Adding only a bounded destination would therefore leave that temporary allocation in place. Use the pinned streaming writer instead: 16 KiB IDAT chunks, borrowed 8-bit source bytes and row-at-a-time big-endian conversion for 16-bit samples. This removes the full compressed intermediate and full copied 8-bit input/16-bit endian conversion buffers from this adapter. It does not cap the whole application or every codec allocation.
 

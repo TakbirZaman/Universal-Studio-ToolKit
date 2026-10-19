@@ -1,0 +1,92 @@
+{
+  "source_commit": "0d7d7a6f79a7b5f626235fc74f86850e17ae9178",
+  "integration_commit": "3ecafeffe7132c8114f22faf6459ed23caa21721",
+  "date_utc": "2026-10-19",
+  "rust_tests": 66,
+  "flutter_tests": 32,
+  "analysis_clean": true,
+  "clean_system_verified": false,
+  "android_device_verified": false,
+  "license_obligations_cleared": false,
+  "workflows": {
+    "linux": 39253689705,
+    "windows": 39253689586,
+    "android": 39253689489,
+    "generated_bridge": 39252445602
+  },
+  "artifacts": [
+    {
+      "platform": "linux",
+      "outer_sha256": "433ccfcf082e6b8ebcc402edf3354b2600bd2a762c5d995dc09b4f71bc7b5a58",
+      "filename": "Universal-Studio-Linux-x64.tar.gz",
+      "bytes": 19730400,
+      "sha256": "5f3e33127e2cbf4cc5be7be2140e80c18208689e43c55d373be1e9788a875c67",
+      "notice_files_verified": 471,
+      "font_verified": true,
+      "native_inventory_verified": true,
+      "startup": {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      }
+    },
+    {
+      "platform": "windows",
+      "outer_sha256": "da38f06be6b63ce6130e3335ea0ec7aa4b1e02ce85a2d6ab922168a5fae3a27a",
+      "filename": "Universal-Studio-Windows-x64.zip",
+      "bytes": 20811570,
+      "sha256": "60ea6fa24e492949107adf2f83662095781fd96e3bcf420d8a00f0040aa80d36",
+      "notice_files_verified": 471,
+      "font_verified": true,
+      "native_inventory_verified": true,
+      "startup": {
+        "startup_survived_seconds": 8,
+        "window_created": true,
+        "clean_system_verified": false,
+        "interactive_workflow_verified": false
+      }
+    },
+    {
+      "filename": "Universal-Studio-Android-debug.apk",
+      "bytes": 95729294,
+      "sha256": "a810ca885ffb7af6201e2b629b81f8be893ffb307d25e2351dc7570151678385",
+      "notice_files_verified": 471,
+      "fonts_verified": true,
+      "apk_crc_native_abi_and_16k_alignment": true,
+      "compiled_privacy_verified": true,
+      "zipalign_16k_verified": true,
+      "signature_verified": true
+    },
+    {
+      "filename": "Universal-Studio-Android-unsigned.apk",
+      "bytes": 31632853,
+      "sha256": "f485c97a1e1fdd10f620257a6bd3ad7f03ad16c7c38291295aec3a6502ad532a",
+      "notice_files_verified": 471,
+      "fonts_verified": true,
+      "apk_crc_native_abi_and_16k_alignment": true,
+      "compiled_privacy_verified": true,
+      "zipalign_16k_verified": true,
+      "signature_verified": false
+    },
+    {
+      "filename": "Universal-Studio-Android-development-release.apk",
+      "bytes": 31681720,
+      "sha256": "6939c60d5d6ad4ca5c6aa86fa0aefd944b86ee18cadd86899cd100bc39a298c4",
+      "notice_files_verified": 471,
+      "fonts_verified": true,
+      "apk_crc_native_abi_and_16k_alignment": true,
+      "compiled_privacy_verified": true,
+      "zipalign_16k_verified": true,
+      "signature_verified": true
+    }
+  ],
+  "runtime_source_matches_main": true,
+  "source_vs_integration_differences": "Documentation only; lib/rust/test/platform/scripts/pubspec/locks unchanged",
+  "saved_downloads": [
+    "Universal-Studio-Windows-x64.zip",
+    "Universal-Studio-Linux-x64.tar.gz",
+    "Universal-Studio-Android-debug.apk",
+    "Universal-Studio-Android-development-release.apk"
+  ]
+}
