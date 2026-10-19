@@ -1,0 +1,9 @@
+{
+  "version": "5.0.0",
+  "commit": "40738fb16ceddb5fb3fea747585f7ce6abb0605b",
+  "archive_sha256": "23affb17b8f7a46517a62b5e9fa637a8bc660acb5460bef9f130ee939df01ebb",
+  "archive_bytes": 81622927,
+  "source": "https://github.com/opencv/opencv",
+  "license": "Apache-2.0",
+  "status": "Source verified; minimal core/imgproc build and pixel adapter verification in progress. Not bundled in current downloads."
+}

@@ -1,0 +1,14 @@
+{
+  "abi": 1,
+  "opencv_version": 50000,
+  "identity_exact_pixels": true,
+  "perspective_max_gradient_error": 0.7354542010233587,
+  "source_unchanged": true,
+  "invalid_inputs_leave_output_unchanged": true,
+  "blank_has_no_suggestion": true,
+  "synthetic_quad_suggestion_verified": true,
+  "sample_images_uploaded": false,
+  "library_sha256": "2a0949fc020400463a23ead1da9c51d18d7945526d0e78775068a153e115152a",
+  "windows_android_verified": false,
+  "application_integration_complete": false
+}
