@@ -45,6 +45,7 @@ def build(args):
         '-DBUILD_opencv_apps=OFF', '-DBUILD_opencv_python2=OFF', '-DBUILD_opencv_python3=OFF',
         '-DBUILD_JAVA=OFF', '-DBUILD_opencv_java=OFF', '-DBUILD_opencv_js=OFF', '-DBUILD_PROTOBUF=OFF',
         '-DBUILD_TBB=OFF', '-DBUILD_ITT=OFF', '-DBUILD_IPP_IW=OFF', '-DBUILD_ZLIB=ON',
+        '-DOPENCV_DISABLE_THREAD_SUPPORT=ON',
         '-DOPENCV_ENABLE_NONFREE=OFF', '-DOPENCV_GENERATE_PKGCONFIG=OFF', '-DCPU_DISPATCH='] + [
         '-D' + name + '=OFF' for name in options]
     subprocess.run(configure, check=True)
