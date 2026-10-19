@@ -1,0 +1,65 @@
+/*M///////////////////////////////////////////////////////////////////////////////////////
+//
+//  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
+//
+//  By downloading, copying, installing or using the software you agree to this license.
+//  If you do not agree to this license, do not download, install,
+//  copy or use the software.
+//
+//  INFORMATION REGARDING THE CONTRIBUTION:
+//
+//  Author: Ovidiu Parvu
+//  Affiliation: Brunel University
+//  Created: 11.09.2013
+//  E-mail: <ovidiu.parvu[AT]gmail.com>
+//  Web: http://people.brunel.ac.uk/~cspgoop
+//
+//  These functions were implemented during Ovidiu Parvu's first year as a PhD student at
+//  Brunel University, London, UK. The PhD project is supervised by prof. David Gilbert (principal)
+//  and prof. Nigel Saunders (second).
+//
+//  THE IMPLEMENTATION OF THE MODULES IS BASED ON THE FOLLOWING PAPERS:
+//
+//  [1] V. Klee and M. C. Laskowski, "Finding the smallest triangles containing a given convex
+//  polygon", Journal of Algorithms, vol. 6, no. 3, pp. 359-375, Sep. 1985.
+//  [2] J. O'Rourke, A. Aggarwal, S. Maddila, and M. Baldwin, "An optimal algorithm for finding
+//  minimal enclosing triangles", Journal of Algorithms, vol. 7, no. 2, pp. 258-269, Jun. 1986.
+//
+//  The overall complexity of the algorithm is theta(n) where "n" represents the number
+//  of vertices in the convex polygon.
+//
+//
+//
+//                           License Agreement
+//                For Open Source Computer Vision Library
+//
+// Copyright (C) 2000, Intel Corporation, all rights reserved.
+// Copyright (C) 2013, OpenCV Foundation, all rights reserved.
+// Copyright (C) 2013, Ovidiu Parvu, all rights reserved.
+// Third party copyrights are property of their respective owners.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted provided that the following conditions are met:
+//
+//   * Redistribution's of source code must retain the above copyright notice,
+//     this list of conditions and the following disclaimer.
+//
+//   * Redistribution's in binary form must reproduce the above copyright notice,
+//     this list of conditions and the following disclaimer in the documentation
+//     and/or other materials provided with the distribution.
+//
+//   * The name of the copyright holders may not be used to endorse or promote products
+//     derived from this software without specific prior written permission.
+//
+// This software is provided by the copyright holders and contributors "as is" and
+// any express or implied warranties, including, but not limited to, the implied
+// warranties of merchantability and fitness for a particular purpose are disclaimed.
+// In no event shall the Intel Corporation or contributors be liable for any direct,
+// indirect, incidental, special, exemplary, or consequential damages
+// (including, but not limited to, procurement of substitute goods or services;
+// loss of use, data, or profits; or business interruption) however caused
+// and on any theory of liability, whether in contract, strict liability,
+// or tort (including negligence or otherwise) arising in any way out of
+// the use of this software, even if advised of the possibility of such damage.
+//
+//M*/

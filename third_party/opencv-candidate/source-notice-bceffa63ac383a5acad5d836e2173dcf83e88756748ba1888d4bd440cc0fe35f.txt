@@ -1,0 +1,14 @@
+// This file is part of OpenCV project.
+// It is subject to the license terms in the LICENSE file found in the top-level directory
+// of this distribution and at http://opencv.org/license.html.
+
+// This is refactored (and split into 2 files) version of stb_truetype.h
+// from https://github.com/nothings/stb.
+// Support for variable fonts has been added and
+// a few other modifications & optimizations have been done.
+
+//////////////// Below is the original copyright information /////////////////
+///////// (btw, OpenCV chooses the option A (MIT) for the license) ///////////
+
+// Authored from 2009-2020 by Sean Barrett / RAD Game Tools.
+// See stb_truetype.cpp for the details

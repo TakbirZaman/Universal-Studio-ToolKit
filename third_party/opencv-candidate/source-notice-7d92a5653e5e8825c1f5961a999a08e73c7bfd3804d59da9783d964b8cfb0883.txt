@@ -1,0 +1,16 @@
+/*
+ * This file includes the code, contributed by Simon Perreault
+ * (the function icvMedianBlur_8u_O1)
+ *
+ * Constant-time median filtering -- http://nomis80.org/ctmf.html
+ * Copyright (C) 2006 Simon Perreault
+ *
+ * Contact:
+ *  Laboratoire de vision et systemes numeriques
+ *  Pavillon Adrien-Pouliot
+ *  Universite Laval
+ *  Sainte-Foy, Quebec, Canada
+ *  G1K 7P4
+ *
+ *  perreaul@gel.ulaval.ca
+ */
