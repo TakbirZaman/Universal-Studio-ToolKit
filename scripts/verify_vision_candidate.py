@@ -26,7 +26,7 @@ def run(platform, work):
         raise ValueError('Install pinned CMake3.28.4 and Ninja1.13.2 developer tools.')
     if subprocess.check_output([cmake, '--version'], text=True).splitlines()[0] != 'cmake version 3.28.4':
         raise ValueError('Unexpected CMake version.')
-    if subprocess.check_output([ninja, '--version'], text=True).strip() != '1.13.2':
+    if subprocess.check_output([ninja, '--version'], text=True).strip() != '1.13.2.git.kitware.jobserver-pipe-1':
         raise ValueError('Unexpected Ninja version.')
     subprocess.run([sys.executable, str(root / 'scripts/build_vision_adapter.py'), '--source', str(source),
                     '--work', str(work / 'build'), '--install', str(work / 'sdk'), '--cmake', cmake,
