@@ -1317,6 +1317,7 @@ dependencies = [
  "flutter_rust_bridge",
  "image",
  "libc",
+ "libloading",
  "lopdf",
  "pdfium-render",
  "png",

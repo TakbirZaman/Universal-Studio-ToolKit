@@ -42,7 +42,8 @@ class _SafeImagePreviewState extends State<SafeImagePreview> {
       a?.rotateQuarters == b?.rotateQuarters &&
       a?.brightness == b?.brightness &&
       a?.contrast == b?.contrast &&
-      a?.threshold == b?.threshold;
+      a?.threshold == b?.threshold &&
+      a?.corners == b?.corners;
   @override
   void didUpdateWidget(covariant SafeImagePreview oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -87,7 +88,8 @@ class _SafeImagePreviewState extends State<SafeImagePreview> {
       } catch (_) {
         if (mounted && token == revision) {
           setState(
-            () => failure = 'Could not preview this image. Choose a supported JPEG or PNG within the processing limits.',
+            () => failure =
+                'Could not preview this image. Choose a supported JPEG or PNG within the processing limits.',
           );
         }
       }

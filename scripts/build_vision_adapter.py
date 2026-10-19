@@ -44,8 +44,10 @@ def build(args):
         '-DBUILD_TESTS=OFF', '-DBUILD_PERF_TESTS=OFF', '-DBUILD_EXAMPLES=OFF', '-DBUILD_DOCS=OFF',
         '-DBUILD_opencv_apps=OFF', '-DBUILD_opencv_python2=OFF', '-DBUILD_opencv_python3=OFF',
         '-DBUILD_JAVA=OFF', '-DBUILD_opencv_java=OFF', '-DBUILD_opencv_js=OFF', '-DBUILD_PROTOBUF=OFF',
+        '-DBUILD_ANDROID_PROJECTS=OFF', '-DBUILD_ANDROID_EXAMPLES=OFF', '-DBUILD_ANDROID_SERVICE=OFF',
+        '-DINSTALL_ANDROID_EXAMPLES=OFF',
         '-DBUILD_TBB=OFF', '-DBUILD_ITT=OFF', '-DBUILD_IPP_IW=OFF', '-DBUILD_ZLIB=ON',
-        '-DOPENCV_DISABLE_THREAD_SUPPORT=ON',
+        '-DOPENCV_DISABLE_THREAD_SUPPORT=ON', '-DHAVE_PTHREAD=OFF',
         '-DOPENCV_ENABLE_NONFREE=OFF', '-DOPENCV_GENERATE_PKGCONFIG=OFF', '-DCPU_DISPATCH='] + [
         '-D' + name + '=OFF' for name in options]
     subprocess.run(configure, check=True)

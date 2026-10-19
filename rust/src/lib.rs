@@ -25,3 +25,4 @@ pub mod printing;
 pub mod decorations;
 
 pub mod text;
+pub mod vision;

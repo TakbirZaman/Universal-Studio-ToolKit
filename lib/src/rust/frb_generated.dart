@@ -14,6 +14,7 @@ import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'scanner.dart';
+import 'vision.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -68,7 +69,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1492910408;
+  int get rustContentHash => 336014981;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -234,7 +235,11 @@ abstract class RustLibApi extends BaseApi {
     required String recipeJson,
   });
 
+  Future<bool> crateApiScanGeometryAvailable();
+
   Future<StudioOutput> crateApiScanPdf({required List<Uint8List> inputs});
+
+  Future<PageCorners?> crateApiSuggestScanEdges({required List<int> data});
 
   Future<void> crateApiValidatePreparedOutput({
     required StudioOutput output,
@@ -1358,6 +1363,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
+  Future<bool> crateApiScanGeometryAvailable() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 31,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_bool,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiScanGeometryAvailableConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiScanGeometryAvailableConstMeta =>
+      const TaskConstMeta(debugName: "scan_geometry_available", argNames: []);
+
+  @override
   Future<StudioOutput> crateApiScanPdf({required List<Uint8List> inputs}) {
     return handler.executeNormal(
       NormalTask(
@@ -1367,7 +1399,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 32,
             port: port_,
           );
         },
@@ -1386,6 +1418,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "scan_pdf", argNames: ["inputs"]);
 
   @override
+  Future<PageCorners?> crateApiSuggestScanEdges({required List<int> data}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_list_prim_u_8_loose(data, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 33,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_page_corners,
+          decodeErrorData: sse_decode_String,
+        ),
+        constMeta: kCrateApiSuggestScanEdgesConstMeta,
+        argValues: [data],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiSuggestScanEdgesConstMeta =>
+      const TaskConstMeta(debugName: "suggest_scan_edges", argNames: ["data"]);
+
+  @override
   Future<void> crateApiValidatePreparedOutput({
     required StudioOutput output,
     required String filename,
@@ -1399,7 +1459,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 34,
             port: port_,
           );
         },
@@ -1465,6 +1525,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
+  }
+
+  @protected
+  PageCorners dco_decode_box_autoadd_page_corners(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_page_corners(raw);
   }
 
   @protected
@@ -1588,6 +1654,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PageCorners? dco_decode_opt_box_autoadd_page_corners(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_page_corners(raw);
+  }
+
+  @protected
   PrintDensity? dco_decode_opt_box_autoadd_print_density(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_print_density(raw);
@@ -1618,6 +1690,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PageCorners dco_decode_page_corners(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return PageCorners(
+      topLeft: dco_decode_page_point(arr[0]),
+      topRight: dco_decode_page_point(arr[1]),
+      bottomRight: dco_decode_page_point(arr[2]),
+      bottomLeft: dco_decode_page_point(arr[3]),
+    );
+  }
+
+  @protected
+  PagePoint dco_decode_page_point(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return PagePoint(x: dco_decode_f_64(arr[0]), y: dco_decode_f_64(arr[1]));
+  }
+
+  @protected
   PrintDensity dco_decode_print_density(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1639,14 +1734,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ScanOptions dco_decode_scan_options(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return ScanOptions(
       mode: dco_decode_scan_mode(arr[0]),
       rotateQuarters: dco_decode_u_8(arr[1]),
       brightness: dco_decode_i_32(arr[2]),
       contrast: dco_decode_f_32(arr[3]),
       threshold: dco_decode_u_8(arr[4]),
+      corners: dco_decode_opt_box_autoadd_page_corners(arr[5]),
     );
   }
 
@@ -1770,6 +1866,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  PageCorners sse_decode_box_autoadd_page_corners(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_page_corners(deserializer));
   }
 
   @protected
@@ -1932,6 +2036,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PageCorners? sse_decode_opt_box_autoadd_page_corners(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_page_corners(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   PrintDensity? sse_decode_opt_box_autoadd_print_density(
     SseDeserializer deserializer,
   ) {
@@ -1991,6 +2108,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PageCorners sse_decode_page_corners(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_topLeft = sse_decode_page_point(deserializer);
+    var var_topRight = sse_decode_page_point(deserializer);
+    var var_bottomRight = sse_decode_page_point(deserializer);
+    var var_bottomLeft = sse_decode_page_point(deserializer);
+    return PageCorners(
+      topLeft: var_topLeft,
+      topRight: var_topRight,
+      bottomRight: var_bottomRight,
+      bottomLeft: var_bottomLeft,
+    );
+  }
+
+  @protected
+  PagePoint sse_decode_page_point(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_x = sse_decode_f_64(deserializer);
+    var var_y = sse_decode_f_64(deserializer);
+    return PagePoint(x: var_x, y: var_y);
+  }
+
+  @protected
   PrintDensity sse_decode_print_density(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_xDpi = sse_decode_f_64(deserializer);
@@ -2013,12 +2153,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_brightness = sse_decode_i_32(deserializer);
     var var_contrast = sse_decode_f_32(deserializer);
     var var_threshold = sse_decode_u_8(deserializer);
+    var var_corners = sse_decode_opt_box_autoadd_page_corners(deserializer);
     return ScanOptions(
       mode: var_mode,
       rotateQuarters: var_rotateQuarters,
       brightness: var_brightness,
       contrast: var_contrast,
       threshold: var_threshold,
+      corners: var_corners,
     );
   }
 
@@ -2148,6 +2290,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_page_corners(
+    PageCorners self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_page_corners(self, serializer);
   }
 
   @protected
@@ -2322,6 +2473,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_page_corners(
+    PageCorners? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_page_corners(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_print_density(
     PrintDensity? self,
     SseSerializer serializer,
@@ -2378,6 +2542,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_page_corners(PageCorners self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_page_point(self.topLeft, serializer);
+    sse_encode_page_point(self.topRight, serializer);
+    sse_encode_page_point(self.bottomRight, serializer);
+    sse_encode_page_point(self.bottomLeft, serializer);
+  }
+
+  @protected
+  void sse_encode_page_point(PagePoint self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.x, serializer);
+    sse_encode_f_64(self.y, serializer);
+  }
+
+  @protected
   void sse_encode_print_density(PrintDensity self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_f_64(self.xDpi, serializer);
@@ -2398,6 +2578,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_i_32(self.brightness, serializer);
     sse_encode_f_32(self.contrast, serializer);
     sse_encode_u_8(self.threshold, serializer);
+    sse_encode_opt_box_autoadd_page_corners(self.corners, serializer);
   }
 
   @protected

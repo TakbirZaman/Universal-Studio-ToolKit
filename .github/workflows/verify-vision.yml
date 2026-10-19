@@ -33,3 +33,23 @@ jobs:
           path: vision-verification/pixel-verification.json
           retention-days: 3
           if-no-files-found: error
+  android-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned development tools and Android NDK
+        run: |
+          python -m pip install cmake==3.28.4 ninja==1.13.2
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;28.2.13676358'
+      - name: Cross-compile and inspect ARM64 symbols, dependencies and16KiB alignment
+        run: python scripts/verify_vision_candidate.py --platform android-arm64 --work vision-verification --toolchain "$ANDROID_HOME/ndk/28.2.13676358/build/cmake/android.toolchain.cmake"
+      - name: Retain text-only Android build evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: vision-verification-android-arm64-build-only
+          path: vision-verification/pixel-verification.json
+          retention-days: 3
+          if-no-files-found: error

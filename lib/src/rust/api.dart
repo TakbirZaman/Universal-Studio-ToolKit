@@ -9,6 +9,7 @@ import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'scanner.dart';
+import 'vision.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`, `from`
 
@@ -237,6 +238,14 @@ Future<StudioOutput> previewScanPage({
   options: options,
   maxPixels: maxPixels,
 );
+
+/// Capability check loads only the explicitly provisioned local adapter.
+Future<bool> scanGeometryAvailable() =>
+    RustLib.instance.api.crateApiScanGeometryAvailable();
+
+/// Advisory coordinates on the EXIF-oriented original. Never applies a suggestion.
+Future<PageCorners?> suggestScanEdges({required List<int> data}) =>
+    RustLib.instance.api.crateApiSuggestScanEdges(data: data);
 
 Future<StudioOutput> createCustomPrintSheet({
   required List<int> data,

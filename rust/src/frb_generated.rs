@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1492910408;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 336014981;
 
 // Section: executor
 
@@ -1194,6 +1194,38 @@ fn wire__crate__api__save_recipe_impl(
         },
     )
 }
+fn wire__crate__api__scan_geometry_available_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "scan_geometry_available",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Ok::<_, ()>(crate::api::scan_geometry_available())?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__api__scan_pdf_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1221,6 +1253,39 @@ fn wire__crate__api__scan_pdf_impl(
             move |context| {
                 transform_result_sse::<_, String>((move || {
                     let output_ok = crate::api::scan_pdf(api_inputs)?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__suggest_scan_edges_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "suggest_scan_edges",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::suggest_scan_edges(api_data)?;
                     std::result::Result::Ok(output_ok)
                 })())
             }
@@ -1425,6 +1490,17 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<crate::vision::PageCorners> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::vision::PageCorners>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::model::PrintDensity> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1480,6 +1556,31 @@ impl SseDecode for Option<Vec<u32>> {
     }
 }
 
+impl SseDecode for crate::vision::PageCorners {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_topLeft = <crate::vision::PagePoint>::sse_decode(deserializer);
+        let mut var_topRight = <crate::vision::PagePoint>::sse_decode(deserializer);
+        let mut var_bottomRight = <crate::vision::PagePoint>::sse_decode(deserializer);
+        let mut var_bottomLeft = <crate::vision::PagePoint>::sse_decode(deserializer);
+        return crate::vision::PageCorners {
+            top_left: var_topLeft,
+            top_right: var_topRight,
+            bottom_right: var_bottomRight,
+            bottom_left: var_bottomLeft,
+        };
+    }
+}
+
+impl SseDecode for crate::vision::PagePoint {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_x = <f64>::sse_decode(deserializer);
+        let mut var_y = <f64>::sse_decode(deserializer);
+        return crate::vision::PagePoint { x: var_x, y: var_y };
+    }
+}
+
 impl SseDecode for crate::model::PrintDensity {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1514,12 +1615,14 @@ impl SseDecode for crate::scanner::ScanOptions {
         let mut var_brightness = <i32>::sse_decode(deserializer);
         let mut var_contrast = <f32>::sse_decode(deserializer);
         let mut var_threshold = <u8>::sse_decode(deserializer);
+        let mut var_corners = <Option<crate::vision::PageCorners>>::sse_decode(deserializer);
         return crate::scanner::ScanOptions {
             mode: var_mode,
             rotate_quarters: var_rotateQuarters,
             brightness: var_brightness,
             contrast: var_contrast,
             threshold: var_threshold,
+            corners: var_corners,
         };
     }
 }
@@ -1643,8 +1746,10 @@ fn pde_ffi_dispatcher_primary_impl(
         28 => wire__crate__api__save_output_impl(port, ptr, rust_vec_len, data_len),
         29 => wire__crate__api__save_preferences_impl(port, ptr, rust_vec_len, data_len),
         30 => wire__crate__api__save_recipe_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__scan_geometry_available_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__scan_pdf_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__suggest_scan_edges_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__validate_prepared_output_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1720,6 +1825,40 @@ impl flutter_rust_bridge::IntoIntoDart<crate::ocr::Language> for crate::ocr::Lan
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::vision::PageCorners {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.top_left.into_into_dart().into_dart(),
+            self.top_right.into_into_dart().into_dart(),
+            self.bottom_right.into_into_dart().into_dart(),
+            self.bottom_left.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::vision::PageCorners {}
+impl flutter_rust_bridge::IntoIntoDart<crate::vision::PageCorners> for crate::vision::PageCorners {
+    fn into_into_dart(self) -> crate::vision::PageCorners {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::vision::PagePoint {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.x.into_into_dart().into_dart(),
+            self.y.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::vision::PagePoint {}
+impl flutter_rust_bridge::IntoIntoDart<crate::vision::PagePoint> for crate::vision::PagePoint {
+    fn into_into_dart(self) -> crate::vision::PagePoint {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::model::PrintDensity {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1762,6 +1901,7 @@ impl flutter_rust_bridge::IntoDart for crate::scanner::ScanOptions {
             self.brightness.into_into_dart().into_dart(),
             self.contrast.into_into_dart().into_dart(),
             self.threshold.into_into_dart().into_dart(),
+            self.corners.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1981,6 +2121,16 @@ impl SseEncode for Option<String> {
     }
 }
 
+impl SseEncode for Option<crate::vision::PageCorners> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::vision::PageCorners>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::model::PrintDensity> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2031,6 +2181,24 @@ impl SseEncode for Option<Vec<u32>> {
     }
 }
 
+impl SseEncode for crate::vision::PageCorners {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::vision::PagePoint>::sse_encode(self.top_left, serializer);
+        <crate::vision::PagePoint>::sse_encode(self.top_right, serializer);
+        <crate::vision::PagePoint>::sse_encode(self.bottom_right, serializer);
+        <crate::vision::PagePoint>::sse_encode(self.bottom_left, serializer);
+    }
+}
+
+impl SseEncode for crate::vision::PagePoint {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.x, serializer);
+        <f64>::sse_encode(self.y, serializer);
+    }
+}
+
 impl SseEncode for crate::model::PrintDensity {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2065,6 +2233,7 @@ impl SseEncode for crate::scanner::ScanOptions {
         <i32>::sse_encode(self.brightness, serializer);
         <f32>::sse_encode(self.contrast, serializer);
         <u8>::sse_encode(self.threshold, serializer);
+        <Option<crate::vision::PageCorners>>::sse_encode(self.corners, serializer);
     }
 }
 

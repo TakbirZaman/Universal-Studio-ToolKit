@@ -13,6 +13,7 @@ import 'model.dart';
 import 'ocr.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'scanner.dart';
+import 'vision.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustLibApiImplPlatform({
@@ -49,6 +50,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  PageCorners dco_decode_box_autoadd_page_corners(dynamic raw);
 
   @protected
   PrintDensity dco_decode_box_autoadd_print_density(dynamic raw);
@@ -111,6 +115,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  PageCorners? dco_decode_opt_box_autoadd_page_corners(dynamic raw);
+
+  @protected
   PrintDensity? dco_decode_opt_box_autoadd_print_density(dynamic raw);
 
   @protected
@@ -124,6 +131,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint32List? dco_decode_opt_list_prim_u_32_strict(dynamic raw);
+
+  @protected
+  PageCorners dco_decode_page_corners(dynamic raw);
+
+  @protected
+  PagePoint dco_decode_page_point(dynamic raw);
 
   @protected
   PrintDensity dco_decode_print_density(dynamic raw);
@@ -181,6 +194,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  PageCorners sse_decode_box_autoadd_page_corners(SseDeserializer deserializer);
 
   @protected
   PrintDensity sse_decode_box_autoadd_print_density(
@@ -251,6 +267,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  PageCorners? sse_decode_opt_box_autoadd_page_corners(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   PrintDensity? sse_decode_opt_box_autoadd_print_density(
     SseDeserializer deserializer,
   );
@@ -268,6 +289,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint32List? sse_decode_opt_list_prim_u_32_strict(
     SseDeserializer deserializer,
   );
+
+  @protected
+  PageCorners sse_decode_page_corners(SseDeserializer deserializer);
+
+  @protected
+  PagePoint sse_decode_page_point(SseDeserializer deserializer);
 
   @protected
   PrintDensity sse_decode_print_density(SseDeserializer deserializer);
@@ -328,6 +355,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_page_corners(
+    PageCorners self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_print_density(
@@ -414,6 +447,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_page_corners(
+    PageCorners? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_print_density(
     PrintDensity? self,
     SseSerializer serializer,
@@ -433,6 +472,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     Uint32List? self,
     SseSerializer serializer,
   );
+
+  @protected
+  void sse_encode_page_corners(PageCorners self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_page_point(PagePoint self, SseSerializer serializer);
 
   @protected
   void sse_encode_print_density(PrintDensity self, SseSerializer serializer);

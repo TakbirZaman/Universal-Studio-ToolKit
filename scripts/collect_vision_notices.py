@@ -26,6 +26,15 @@ def collect(source: Path, output: Path):
         (output / name).write_bytes(data)
         entries.append({'source': relative, 'notice': name,
                         'sha256': hashlib.sha256(data).hexdigest()})
+    boost = root / 'third_party/opencv-candidate/Boost-1.0.txt'
+    boost_data = boost.read_bytes()
+    boost_sha = 'c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566'
+    if hashlib.sha256(boost_data).hexdigest() != boost_sha:
+        raise ValueError('The separately retained Boost1.0 license does not match its verified copy.')
+    (output / 'Boost-1.0.txt').write_bytes(boost_data)
+    entries.append({'upstream_url': 'https://www.boost.org/LICENSE_1_0.txt',
+                    'source_reference': 'modules/flann/include/opencv2/flann/any.h',
+                    'notice': 'Boost-1.0.txt', 'sha256': boost_sha})
     # Keep entire copyright/license comment blocks, not only SPDX identifiers.
     # Includes tests/unused paths conservatively; exact linked-object applicability
     # remains a separate per-platform review.

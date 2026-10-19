@@ -43,6 +43,12 @@
       "sha256": "521fa3f83e0b1a4dc0163fff2d31445c6d38c103e47a19abc8f49b4f7b1818e4"
     },
     {
+      "upstream_url": "https://www.boost.org/LICENSE_1_0.txt",
+      "source_reference": "modules/flann/include/opencv2/flann/any.h",
+      "notice": "Boost-1.0.txt",
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
       "sources": [
         "3rdparty/zlib/deflate.c",
         "3rdparty/zlib/inftrees.c"

@@ -15,8 +15,8 @@ Work progresses without phase-by-phase approval. No phase is deemed complete fro
 
 Physical photo density, sequential scanner preparation/canonical previews, custom print layouts and bounded streamed image encoding are integrated in main10d and packaged for all three targets. Verification and limitations are in STATUS.md and the evidence directory.
 
-1. PDF page numbers/watermarks are integrated from all-platform-tested candidate1a657f6. Finish independent package checks and save the updated downloads. Existing PDF text candidate0d7d7a6 has also passed all three platforms and is integrated. Finish its independent package checks and update downloads.
-2. Implement manual scan corner/perspective correction and automatic boundary suggestions through a narrow validated adapter; complete OpenCV platform/license work.
+1. PDF page numbers/watermarks and existing PDF text are integrated, independently verified and delivered from runtime0d7d7a6; preserve their evidence and current downloads.
+2. Scanner geometry core/editor/drafts now pass local actual-output and responsive tests. Finish final native-policy regression, Android adapter build, per-platform license/link applicability, library staging and all app packaging before updating downloads. Continue deskew separately.
 3. Add editable application-pack slots and managed studio references; complete remaining photo/signature/PDF operations and flexible compression.
 4. Complete platform OCR and validated searchable-PDF geometry, accessibility/localization/user checks, worker isolation/cleanup, complete license obligations and clean-device release gates.
 
