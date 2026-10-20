@@ -20,6 +20,9 @@ void main() {
     await tester.enterText(find.byType(TextField), 'straighten');
     await tester.pump();
     expect(find.text('Get started'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'flexible');
+    await tester.pump();
+    expect(find.text('Get started'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'OCR');
     await tester.pump();
     expect(find.text('Get started'), findsOneWidget);

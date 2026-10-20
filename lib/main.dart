@@ -203,7 +203,8 @@ extension ToolLabel on Tool {
           _ => StudioTokens.darkPhoto,
         };
   String get synonyms => switch (this) {
-    Tool.photo => 'smaller compress image picture passport resize crop',
+    Tool.photo =>
+      'smaller compress image picture passport resize crop flexible dimensions recipe batch',
     Tool.merge =>
       'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
     Tool.scan =>
@@ -890,7 +891,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                       ),
                     ),
               icon: const Icon(Icons.playlist_add_check),
-              label: const Text('Saved photo recipes'),
+              label: const Text('Photo recipes'),
             ),
           const SizedBox(height: 24),
           LayoutBuilder(

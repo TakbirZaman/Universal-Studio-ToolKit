@@ -1,0 +1,12 @@
+# ADR 020: Explicit flexible image dimensions in recipes
+
+Date:2026-10-20.
+Status: core and desktop/narrow actual-output checks pass locally; candidate platform builds pending.
+
+Fixed dimensions remain the default. Version3 photo recipes can explicitly select flexible_resize with maximum and minimum pixel dimensions. This step occupies the resize position, requires a compression step/file-size limit, and cannot be combined with another resize step. Old version1/2 recipes retain their behavior; version3 supports existing crop steps. Unknown versions, fields and step orders remain rejected.
+
+The engine samples at most nine descending sizes on a common scale within the approved rectangle, including both permitted scale endpoints and omitting duplicate rounded sizes. Fit/cover preserves subject aspect rather than stretching it. It returns the largest valid sampled dimensions and the best valid quality found at those dimensions. It does not promise a globally largest dimension because unsampled sizes may fit. Every attempt starts from the unchanged source; JPEG quality candidates share that trial's prepared pixels. No prior JPEG candidate is recompressed, and PNG uses its separate lossless encoder. Bytes, format and dimensions are reopened and checked. Impossible combinations produce no output.
+
+The photo recipe screen exposes explicit permission to shrink, mandatory byte limits, minimum/maximum fields and inline conflicting-minimum errors. Existing KB/KiB, strict/inclusive limit and minimum-quality controls remain in effect. Import/export/persistence and batch processing use the same declarative schema; no executable code, external resources or shell commands are accepted. Batch cancellation still waits for the current photo; no instantaneous cancellation is claimed. The core checks a cancellation callback between sizes/encoding attempts.
+
+Verification covers noisy JPEG/transparent PNG, invalid bounds, absent limits, impossible limits, version/order rejection, roundtrip and pre-cancellation. Successful JPEG bytes match direct fixed-size encoding from the original at the selected dimensions, detecting candidate-recompression drift. Desktop and narrow-dark200% UI journeys recover from conflicting minima, export a version3 recipe and save actual JPEG output. Independent Pillow checks verify136×102 JPEGs at8029 bytes under the strict8192-byte limit, with no personal EXIF/ICC metadata. These are local checks, not platform/device release acceptance or a new colour-management guarantee.

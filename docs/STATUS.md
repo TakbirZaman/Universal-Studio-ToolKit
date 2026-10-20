@@ -80,3 +80,7 @@ The corner editor offers a collapsed manual straightening adjustment (±10°), c
 ### Pack/signature first-use recovery candidate — 2026-10-20
 
 The fixed example pack now supports replacing a selected document without clearing the others, cancellation recovery, role labels and actual original-source previews. Native errors name the affected slot, results list verified archived filenames/measurements, and save errors appear beside Save. Four focused actual export workflows pass at desktop/narrow dark200%, including Unicode/no-clobber ZIP save and transparent PNG; independent ZIP/Pillow/pypdf checks pass. A narrow signature-background dropdown overflow was fixed. This does not implement custom/optional slot definitions or managed sources. See ADR019 and the explicitly heuristic FIRST-USE-REVIEW-20261020.
+
+### Approved flexible compression candidate —2026-10-20
+
+Version3 photo recipes support explicit flexible minimum/maximum dimensions with required limits. Core JPEG/PNG/quality/bounds/cancellation/recipe checks pass; actual desktop and narrow-dark200% recipe/export workflows produce independently verified136×102 JPEGs at8029 bytes below8KiB. Fixed dimensions remain default; unsampled larger sizes may also fit. Full local checks pass76 Rust/43 Flutter tests and clean analysis. This is a candidate, separate from integrated main7750582 packages (73 Rust/41 Flutter). No extra API dependency, asset or generated binding change is introduced. Platform packaging remains pending; direct crop/face assistance and remaining scope are unchanged.

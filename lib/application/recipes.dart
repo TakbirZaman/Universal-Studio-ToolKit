@@ -25,6 +25,8 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       'name': 'Application photo',
       'width': '300',
       'height': '300',
+      'minimumWidth': '150',
+      'minimumHeight': '150',
       'limit': '100',
       'filename': 'photo.jpg',
       'x': '0',
@@ -37,6 +39,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   bool busy = false,
       crop = false,
       original = false,
+      flexible = false,
       cover = false,
       strict = true;
   int quality = 60;
@@ -96,7 +99,11 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   }
 
   String document() => jsonEncode({
-    'schema_version': crop ? 2 : 1,
+    'schema_version': flexible && !original
+        ? 3
+        : crop
+        ? 2
+        : 1,
     'name': value('name'),
     'revision_date': DateTime.now().toUtc().toIso8601String().split('T').first,
     'steps': [
@@ -110,10 +117,12 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         },
       if (!original)
         {
-          'type': 'resize',
+          'type': flexible ? 'flexible_resize' : 'resize',
           'width': number('width'),
           'height': number('height'),
           'fit': cover ? 'cover' : 'contain',
+          if (flexible) 'minimum_width': number('minimumWidth'),
+          if (flexible) 'minimum_height': number('minimumHeight'),
         },
       if (value('limit').isNotEmpty)
         {
@@ -141,6 +150,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       fields['name']!.text = r['name'];
       crop = false;
       original = true;
+      flexible = false;
       fields['limit']!.clear();
       quality = 60;
       cover = false;
@@ -157,6 +167,14 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
             original = false;
             fields['width']!.text = '${step['width']}';
             fields['height']!.text = '${step['height']}';
+            cover = step['fit'] == 'cover';
+          case 'flexible_resize':
+            original = false;
+            flexible = true;
+            fields['width']!.text = '${step['width']}';
+            fields['height']!.text = '${step['height']}';
+            fields['minimumWidth']!.text = '${step['minimum_width']}';
+            fields['minimumHeight']!.text = '${step['minimum_height']}';
             cover = step['fit'] == 'cover';
           case 'compress':
             fields['limit']!.text = '${step['limit']['value']}';
@@ -320,6 +338,14 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         if (optional && (s ?? '').isEmpty) return null;
         if (numeric) {
           final n = int.tryParse(s ?? '');
+          if (n != null && (key == 'minimumWidth' || key == 'minimumHeight')) {
+            final maximum = int.tryParse(
+              value(key == 'minimumWidth' ? 'width' : 'height'),
+            );
+            if (maximum != null && n > maximum) {
+              return 'Must not exceed the maximum dimension.';
+            }
+          }
           return n != null && n >= (zero ? 0 : 1)
               ? null
               : 'Enter a valid whole number.';
@@ -456,8 +482,36 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                   (v) => original = v,
                 ),
                 if (!original) ...[
-                  field('width', 'Width (pixels)', numeric: true),
-                  field('height', 'Height (pixels)', numeric: true),
+                  toggle(
+                    'Allow smaller dimensions to meet the file-size limit',
+                    flexible,
+                    (v) => flexible = v,
+                  ),
+                  field(
+                    'width',
+                    flexible ? 'Maximum width (pixels)' : 'Width (pixels)',
+                    numeric: true,
+                  ),
+                  field(
+                    'height',
+                    flexible ? 'Maximum height (pixels)' : 'Height (pixels)',
+                    numeric: true,
+                  ),
+                  if (flexible) ...[
+                    const Text(
+                      'Only sizes inside your approved range are tried. Up to nine sizes are sampled; review the actual output dimensions. A maximum file size is required.',
+                    ),
+                    field(
+                      'minimumWidth',
+                      'Minimum width (pixels)',
+                      numeric: true,
+                    ),
+                    field(
+                      'minimumHeight',
+                      'Minimum height (pixels)',
+                      numeric: true,
+                    ),
+                  ],
                   toggle(
                     'Fill and crop edges instead of fitting with padding',
                     cover,
@@ -466,9 +520,11 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                 ],
                 field(
                   'limit',
-                  'Maximum file size (optional)',
+                  flexible && !original
+                      ? 'Maximum file size'
+                      : 'Maximum file size (optional)',
                   numeric: true,
-                  optional: true,
+                  optional: !flexible || original,
                 ),
                 choice('Size unit', unit, {
                   'kb': 'KB — 1,000 bytes',
@@ -502,7 +558,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                             },
                     ),
                     const Text(
-                      'Metadata is removed. PNG stays lossless. Transparent input is never silently flattened to JPEG. Rotation and edits from other tools are not inherited.',
+                      'Metadata is removed. PNG encoding is lossless; resizing changes pixels. Transparent input is never silently flattened to JPEG. Rotation and edits from other tools are not inherited.',
                     ),
                   ],
                 ),
