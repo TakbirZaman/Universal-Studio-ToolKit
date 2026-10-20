@@ -345,7 +345,13 @@ pub(crate) fn display_preview(img: &DynamicImage, max_pixels: u32) -> Result<Pre
     if !(128..=1600).contains(&max_pixels) {
         return Err(invalid("Image preview size must be 128–1600 pixels."));
     }
-    let img = img.thumbnail(max_pixels, max_pixels).to_rgba8();
+    // Thumbnail generation must not invent source resolution. In particular,
+    // corner geometry uses pixel centres, so keep small sources at native size.
+    let img = if img.width() > max_pixels || img.height() > max_pixels {
+        img.thumbnail(max_pixels, max_pixels).to_rgba8()
+    } else {
+        img.to_rgba8()
+    };
     let data = crate::density::encode_png_limited(
         &DynamicImage::ImageRgba8(img.clone()),
         None,

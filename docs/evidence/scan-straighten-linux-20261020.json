@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-20",
+  "scope": "Local Linux implementation checks; not full release, clean-system, Android-device or real-user acceptance",
+  "rust_tests_passed": 71,
+  "flutter_tests_passed": 37,
+  "flutter_analysis": "No issues found",
+  "native_source_commit": "40738fb16ceddb5fb3fea747585f7ce6abb0605b",
+  "native_source_sha256": "23affb17b8f7a46517a62b5e9fa637a8bc660acb5460bef9f130ee939df01ebb",
+  "native_build_library_sha256": "f17f5d90795812498a7df04db4591e0b55e53e0f5bd04c662c77c7e3c8311822",
+  "manual_straightening": {
+    "angle_bounds_degrees": [
+      -10,
+      10
+    ],
+    "actual_tilted_pixel_inputs_degrees": [
+      -7,
+      7
+    ],
+    "horizontal_line_start_maximum_error_native_pixels": 1,
+    "source_bytes_unchanged": true,
+    "portrait_landscape_square_geometry": true,
+    "cropping_warning_before_apply": true,
+    "desktop_light_and_narrow_dark_200_percent_slider_undo_pdf_save": true,
+    "small_previews_preserve_dimensions_and_exact_pixels": true,
+    "automatic_angle_detection": false
+  },
+  "packaging_regression": {
+    "actual_copied_engine_pixels": true,
+    "tampered_report_rejected": true,
+    "tampered_notices_rejected": true,
+    "symlink_output_rejected_on_linux": true,
+    "private_paths_omitted": true
+  },
+  "new_feature_platform_packages_verified": false,
+  "representative_user_validation": false,
+  "android_device_validation": false
+}

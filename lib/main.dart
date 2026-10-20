@@ -207,7 +207,7 @@ extension ToolLabel on Tool {
     Tool.merge =>
       'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
     Tool.scan =>
-      'scan certificate pages document camera ocr text recognize printed english bangla',
+      'scan certificate pages document camera corners perspective straighten tilted deskew ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
     Tool.print => 'print sheet printing copies paper a4 letter dpi',

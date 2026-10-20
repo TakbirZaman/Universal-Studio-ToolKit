@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import '../src/rust/vision.dart';
 
 List<PagePoint> cornerPoints(PageCorners c) => [
@@ -61,4 +63,58 @@ PageCorners? decodeCorners(Object? value) {
     throw const FormatException('Invalid page corners.');
   }
   return c;
+}
+
+/// Rotate the selected source outline in physical pixel coordinates. The native
+/// perspective operation then maps this tilted outline to a straight rectangle.
+/// Shrink uniformly about its centre when needed; never clip individual points.
+PageCorners straightenOutline(
+  PageCorners base,
+  double degrees,
+  int width,
+  int height,
+) {
+  if (!degrees.isFinite ||
+      degrees.abs() > 10 ||
+      width < 2 ||
+      height < 2 ||
+      cornerError(base) != null) {
+    throw const FormatException(
+      'Use a valid outline and an angle from -10 to 10 degrees.',
+    );
+  }
+  if (degrees == 0) return base;
+  final points = cornerPoints(base);
+  final w = (width - 1).toDouble(), h = (height - 1).toDouble();
+  final cx = points.fold(0.0, (sum, p) => sum + p.x * w) / 4;
+  final cy = points.fold(0.0, (sum, p) => sum + p.y * h) / 4;
+  final angle = degrees * math.pi / 180;
+  final cosine = math.cos(angle), sine = math.sin(angle);
+  final rotated = points.map((p) {
+    final dx = p.x * w - cx, dy = p.y * h - cy;
+    return (x: dx * cosine - dy * sine, y: dx * sine + dy * cosine);
+  }).toList();
+  var scale = 1.0;
+  for (final p in rotated) {
+    if (p.x < 0) scale = math.min(scale, cx / -p.x);
+    if (p.x > 0) scale = math.min(scale, (w - cx) / p.x);
+    if (p.y < 0) scale = math.min(scale, cy / -p.y);
+    if (p.y > 0) scale = math.min(scale, (h - cy) / p.y);
+  }
+  final result = cornersFromPoints(
+    rotated
+        .map(
+          (p) => PagePoint(
+            x: ((cx + p.x * scale) / w).clamp(0, 1).toDouble(),
+            y: ((cy + p.y * scale) / h).clamp(0, 1).toDouble(),
+          ),
+        )
+        .toList(),
+  );
+  if (cornerError(result) != null) {
+    throw const FormatException(
+      'This outline becomes too small. Use a larger page selection.',
+    );
+  }
+  return result;
 }

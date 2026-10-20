@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 bundle="$(pwd)/build/linux/x64/release/bundle"
 mkdir -p dist
 # Verify the packaged release libraries, not the debug libraries from test env.
-unset UST_CORE_LIBRARY UST_PDFIUM_LIBRARY UST_OCR_TESSDATA
+unset UST_CORE_LIBRARY UST_PDFIUM_LIBRARY UST_OCR_TESSDATA UST_VISION_LIBRARY
 export GDK_BACKEND=x11
 "$bundle/universal_studio_toolkit" > /tmp/ust-linux-startup.log 2>&1 &
 app_pid=$!

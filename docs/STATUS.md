@@ -21,7 +21,7 @@ Main includes physical photo DPI, sequential scans/canonical previews, custom pr
 | Scan modes, rotation, brightness/contrast and advisory quality checks | Native tests; non-destructive edits/drafts | Implemented | Built | Compiled system-camera/manual import; device pending |
 | Sequential scan PDF and canonical previews | Bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Main build/startup passed | Main build/startup passed | Main complete packaging workflow passed |
 | Page corners / perspective / edge suggestions | Development candidate: typed Rust adapter, non-destructive editor/drafts, actual outputs; not packaged | Native/UI verified locally | Adapter pixel checks pass; app integration pending | Unavailable pending native build/integration |
-| Deskew / face assistance | Remaining | Unavailable | Unavailable | Unavailable |
+| Manual straightening / face assistance | Manual straightening passes local actual-output and responsive checks; automatic angle detection and face assistance remain | Manual candidate tested | New candidate build pending | New candidate/device pending |
 | Camera capture and URI export | Scoped adapters and channel contracts | Image import; camera unavailable | Image import; camera unavailable | APK compiles; permissions/cancellation/recreation/provider testing pending |
 | Local scan drafts and retention | Save/restore/delete/clear, schema/hash and symlink protections tested | Implemented | Storage tests pass | Built, device pending |
 | English/Bangla/mixed printed OCR | Real engine/typed job cancellation, editable editor and verified UTF-8 export | Requires system Tesseract and pinned local models | Recognition unavailable | Recognition unavailable |
@@ -72,3 +72,7 @@ Candidate959f220: all three native-build jobs pass run39313941003. Android is AR
 The scanner correction/editor integration is committed on work/scan-perspective. Prior local verification:70 Rust tests and35 Flutter tests with actual engines. Application CI at d828067 succeeds on Linux/Windows/Android, but these packages omit the native scanner library and must not be described as geometry-enabled. Native audit39314977313 passes separately on all three build hosts, with Android compile/ELF checks only.
 
 The next candidate adds explicit library/report/hash/architecture/notice validation and staging to all three package scripts. Source provisioning is development-only. Native tests now skip explicitly by default and application CI provisions the engine and includes them. Fresh candidate tests/build results must be recorded before delivery. Full scope and device/user/license release gates remain incomplete.
+
+### Manual straightening candidate — 2026-10-20
+
+The corner editor offers a collapsed manual straightening adjustment (±10°), cropping explanation, preview and undo. Portrait/landscape/square aspect checks and actual tilted-line Flutter→Rust→OpenCV→PNG verification pass; desktop/narrow-dark200% workflows exercise adjustment and undo with actual PDF save. Small native previews no longer enlarge the source. See ADR018. No automatic angle detection or Android device claim is made. This feature is not in the older saved downloads.

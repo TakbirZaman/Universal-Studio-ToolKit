@@ -1,7 +1,7 @@
 name: Verify and build Linux
 on:
   push:
-    branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective]
+    branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective, work/scan-straighten]
     paths: ['rust/**', 'lib/**', 'test/**', 'pubspec*', 'third_party/**', 'linux/**', 'native/opencv/**', 'scripts/*vision*', 'scripts/build_linux.sh', 'scripts/smoke_linux.sh', '.github/workflows/verify-linux.yml']
   workflow_dispatch:
 permissions:

@@ -25,3 +25,5 @@
 - Custom print-sheet controls are implemented/tested on work/print-layout, with source pixels preserved by default and optional explicit resampling. They are not in the saved main27c8b3d builds until the candidate is packaged and integrated. Printer output remains unverified.
 
 - Streaming image encoding on work/image-encoding-limits removes full PNG compressed/pixel-copy intermediates and enforces encoded byte budgets while writing. Core and interface checks pass locally; platform packaging is pending. This is not a hard application-wide memory limit or hostile-parser sandbox.
+
+Manual straightening candidate: limited to±10° relative outline adjustment. Keeping the rotated outline inside the image can crop page edges; review before saving. It does not automatically detect text angle, dewarp curved pages or remove glare/shadows. Large-source angle adjustment follows bounded preview geometry; inspect fine text and edges in the corrected output. Older saved downloads do not contain this candidate.

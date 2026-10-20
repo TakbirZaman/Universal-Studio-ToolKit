@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../src/rust/api.dart' as core;
 import '../src/rust/vision.dart';
 import 'scan_corners.dart';
@@ -19,6 +20,8 @@ class ScanCornerEditor extends StatefulWidget {
 
 class _ScanCornerEditorState extends State<ScanCornerEditor> {
   late PageCorners corners;
+  PageCorners? straightenBase;
+  double straightenAngle = 0;
   final history = <PageCorners>[];
   final cornerFocus = List.generate(4, (_) => FocusNode());
   core.StudioOutput? image;
@@ -71,6 +74,8 @@ class _ScanCornerEditorState extends State<ScanCornerEditor> {
 
   void move(int i, double x, double y, {bool record = true}) {
     if (record) remember();
+    straightenBase = null;
+    straightenAngle = 0;
     final p = cornerPoints(corners);
     p[i] = PagePoint(x: x.clamp(0, 1).toDouble(), y: y.clamp(0, 1).toDouble());
     setState(() {
@@ -95,6 +100,8 @@ class _ScanCornerEditorState extends State<ScanCornerEditor> {
           } else {
             remember();
             corners = proposed;
+            straightenBase = null;
+            straightenAngle = 0;
             message =
                 'Suggested corners only. Check every edge before applying.';
           }
@@ -339,8 +346,11 @@ class _ScanCornerEditorState extends State<ScanCornerEditor> {
                     OutlinedButton.icon(
                       onPressed: blocked || history.isEmpty
                           ? null
-                          : () =>
-                                setState(() => corners = history.removeLast()),
+                          : () => setState(() {
+                              corners = history.removeLast();
+                              straightenBase = null;
+                              straightenAngle = 0;
+                            }),
                       icon: const Icon(Icons.undo),
                       label: const Text('Undo'),
                     ),
@@ -349,7 +359,11 @@ class _ScanCornerEditorState extends State<ScanCornerEditor> {
                           ? null
                           : () {
                               remember();
-                              setState(() => corners = fullPageCorners());
+                              setState(() {
+                                corners = fullPageCorners();
+                                straightenBase = null;
+                                straightenAngle = 0;
+                              });
                             },
                       child: const Text('Use full image'),
                     ),
@@ -357,6 +371,57 @@ class _ScanCornerEditorState extends State<ScanCornerEditor> {
                 ),
                 if (message != null)
                   Semantics(liveRegion: true, child: Text(message!)),
+                if (image != null)
+                  ExpansionTile(
+                    title: const Text('Straighten tilted text'),
+                    subtitle: const Text(
+                      'Manual adjustment; may crop page edges',
+                    ),
+                    children: [
+                      const Text(
+                        'Turn the outline until its top edge follows a line of text. The selection shrinks when needed to stay inside your image. Check all edges and review the corrected page after applying.',
+                      ),
+                      Text(
+                        'Outline angle: ${straightenAngle.toStringAsFixed(1)}°',
+                      ),
+                      Slider(
+                        key: const ValueKey('straighten-angle'),
+                        value: straightenAngle,
+                        min: -10,
+                        max: 10,
+                        divisions: 200,
+                        label: '${straightenAngle.toStringAsFixed(1)}°',
+                        semanticFormatterCallback: (v) =>
+                            'Outline angle ${v.toStringAsFixed(1)} degrees',
+                        onChangeStart: blocked || invalid != null
+                            ? null
+                            : (_) => remember(),
+                        onChanged: blocked || invalid != null
+                            ? null
+                            : (value) {
+                                straightenBase ??= corners;
+                                try {
+                                  final adjusted = straightenOutline(
+                                    straightenBase!,
+                                    value,
+                                    image!.width!,
+                                    image!.height!,
+                                  );
+                                  setState(() {
+                                    corners = adjusted;
+                                    straightenAngle = value;
+                                    message =
+                                        'Manual straightening selected. Check cropped edges before applying.';
+                                  });
+                                } on FormatException catch (failure) {
+                                  setState(
+                                    () => message = failure.message.toString(),
+                                  );
+                                }
+                              },
+                      ),
+                    ],
+                  ),
                 if (image != null)
                   ExpansionTile(
                     title: const Text('Precise corner adjustment'),

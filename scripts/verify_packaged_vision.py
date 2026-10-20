@@ -8,6 +8,8 @@ import hashlib
 import json
 from pathlib import Path
 import struct
+import subprocess
+import sys
 import zipfile
 
 from stage_vision_adapter import ROOT, verify_header
@@ -53,7 +55,9 @@ def elf_exports(data):
     return found
 
 
-def verify(platform, package):
+def verify(platform, package, execute_host=False):
+    if execute_host and platform == 'android-arm64':
+        raise ValueError('Foreign Android code cannot be executed on the build host.')
     policy = json.loads((ROOT / 'native/opencv/NOTICE-POLICY.json').read_text())
     archive = None
     if platform == 'android-arm64':
@@ -117,12 +121,20 @@ def verify(platform, package):
         actual = sha(binary)
         if platform != 'android-arm64' and actual != provenance.get('sha256_before_packager_strip'):
             raise ValueError('Desktop library changed after verified staging.')
+        if execute_host:
+            tested = json.loads(subprocess.check_output([
+                sys.executable, str(ROOT / 'scripts/verify_vision_adapter.py'),
+                '--library', str((package / library_path).resolve()),
+            ], text=True))
+            if tested['library_sha256'] != actual:
+                raise ValueError('Executed package library differs from inspected bytes.')
         return {'schema_version': 1, 'platform': platform, 'library': library_path,
                 'packaged_library_bytes': len(binary), 'packaged_library_sha256': actual,
                 'build_input_sha256': provenance['sha256_before_packager_strip'],
                 'packager_changed_binary': actual != provenance['sha256_before_packager_strip'],
                 'retained_notice_records': count, 'notice_content_verified': True,
                 'required_elf_exports_verified': platform != 'windows-x64',
+                'packaged_pixels_verified_on_build_host': execute_host,
                 'device_processing_verified': False}
     finally:
         if archive is not None:
@@ -133,5 +145,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--platform', choices=['linux-x64', 'windows-x64', 'android-arm64'], required=True)
     parser.add_argument('--package', type=Path, required=True)
+    parser.add_argument('--execute-host', action='store_true', help='Run independent pixel checks in a child process on desktop only')
     args = parser.parse_args()
-    print(json.dumps(verify(args.platform, args.package), indent=2))
+    print(json.dumps(verify(args.platform, args.package, args.execute_host), indent=2))

@@ -21,3 +21,5 @@ Physical photo density, sequential scanner preparation/canonical previews, custo
 4. Complete platform OCR and validated searchable-PDF geometry, accessibility/localization/user checks, worker isolation/cleanup, complete license obligations and clean-device release gates.
 
 Retain the entire nine-phase scope above. Do not treat a packaged candidate as user/device acceptance or infer process-wide memory isolation from encoded-write limits.
+
+Manual deskew continuation2026-10-20: the corner/perspective flow now includes locally tested manual straightening with actual-output verification and crop warnings. Automatic angle detection remains optional future work; face assistance, platform packaging/device acceptance and the full other phases above remain outstanding.

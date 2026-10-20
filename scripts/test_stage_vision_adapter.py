@@ -44,7 +44,7 @@ class NativeStagingTests(unittest.TestCase):
             else:
                 bundle = root / 'lib'
                 (root / 'notices').rename(bundle / 'third_party')
-            inspection = verify_package(self.platform, bundle)
+            inspection = verify_package(self.platform, bundle, execute_host=True)
             self.assertEqual(inspection['packaged_library_sha256'], self.report['library_sha256'])
             self.assertEqual(inspection['retained_notice_records'], 155)
             retained = bundle / 'third_party/opencv-candidate/Boost-1.0.txt'

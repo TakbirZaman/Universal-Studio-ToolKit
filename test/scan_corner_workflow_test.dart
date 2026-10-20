@@ -141,6 +141,22 @@ void main() {
         await tester.tap(handle);
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pump();
+        await tester.ensureVisible(find.text('Straighten tilted text'));
+        await tester.tap(find.text('Straighten tilted text'));
+        await tester.pumpAndSettle();
+        final angleSlider = find.byKey(const ValueKey('straighten-angle'));
+        await tester.ensureVisible(angleSlider);
+        await tester.drag(angleSlider, const Offset(30, 0));
+        await tester.pump();
+        expect(
+          find.text(
+            'Manual straightening selected. Check cropped edges before applying.',
+          ),
+          findsOneWidget,
+        );
+        await tester.ensureVisible(find.text('Undo'));
+        await tester.tap(find.text('Undo'));
+        await tester.pump();
         await tester.ensureVisible(find.text('Precise corner adjustment'));
         await tester.tap(find.text('Precise corner adjustment'));
         await tester.pumpAndSettle();
