@@ -1,17 +1,13 @@
 # Universal Studio Toolkit — active development
 
-Updated 2026-10-16. Working development builds exist for Windows x64, Linux x64 and Android ARM64. The full requested product is not launch-complete.
+Updated2026-10-20. Working development builds exist for Windows x64, Linux x64 and Android ARM64. The full requested product is not launch-complete.
 
-- Windows: release portable ZIP built, native bridge tests passed, required MSVC release CRT bundled; packaged app created a window and survived the eight-second CI startup check.
-- Linux: 27 Rust tests, Flutter behavioral/native tests, analysis, release build and dependency resolution passed on Ubuntu 24.04 x64.
-- Android: debug-signed installable APK and unsigned release APK built. ARM64-only contents, APK signatures, ZIP/ELF 16 KiB alignment and required native libraries checked. Device behavior is unverified.
-- Recovered scan drafts, recipe/batch controls and transparency previews passed hosted verification. Draft cleanup and Android manual capture compiled and passed their hosted checks; device camera acceptance remains open.
-- No clean-device compatibility, representative usability, complete license clearance or production-readiness claim.
+- Scanner geometry and manual straightening sourceffc4753 passes all three platform builds: Linux39401787599, Windows39401787571 and Android39401787595. The source has71 Rust/37 Flutter checks; actual platform packages still require per-artifact delivery inspection. Android device behavior remains unverified.
+- Subsequent pack/signature recovery changes pass73 Rust and41 Flutter tests locally with clean analysis. They add individual slot replacement/cancel recovery, real source previews, measured ZIP-entry feedback, document-specific errors, inline save recovery and a narrow200% preview fix. Integration platform builds must pass before these are called packaged.
+- Independently inspected scanner-enabled baseline6d7d6f9 passes all three package workflows, archive/checksum/notice/native checks, desktop startup and Android signatures/privacy/alignment. Session downloads are available. Updating saved copies was blocked before transfer by file-service authorization; prior saved versions remain unchanged.
+- Linux English/Bangla/mixed OCR works with separately verified local models and system Tesseract. Windows/Android recognition and searchable PDFs remain unavailable.
+- No clean-device compatibility, representative-user usability, screen-reader acceptance, complete license clearance or production-readiness claim.
 
-See docs/STATUS.md, docs/CHECKPOINT.md, docs/REQUIREMENTS.md and docs/LIMITATIONS.md. Exact build identifiers and download hashes are in docs/evidence/development-builds-98dbeac.json.
+The full checklist, platform matrix, phase plan, known limitations and precise next action are in docs/REQUIREMENTS.md, STATUS.md, PLAN.md, LIMITATIONS.md and CHECKPOINT.md. The first-use review is heuristic and explicitly leaves real-user validation outstanding.
 
-Automatic approval review held some synthetic binary outputs and golden images from upload because their opaque contents could not be verified. Visual capture is not baseline regression testing; no completion claim depends on those held assets.
-
-Latest app checkpoint 98dbeac passed Linux run 38943392106, Windows run 38943392637 and Android run 38943392331. Experimental OCR work is isolated on work/offline-ocr; it is not in these GUI downloads. See docs/CHECKPOINT.md for the exact next action and remaining scope.
-
-Experimental OCR commit e467093 passed its hosted Linux/Windows boundary checks (run 38948658931) and 32 local Rust tests. Real English/Bangla/mixed CLI checks passed. This does not establish Flutter OCR or Windows/Android recognition support.
+Remaining major scope: custom pack slots/managed studio sources; flexible compression/direct crop/face assistance/manual signature masks/storage/PDF placement; PDF forms/searchable export/image and raster compression; platform-complete OCR; isolation/cleanup; localization/accessibility/users/clean devices/printers; AppImage and private production signing. Deferred redaction/encryption/certificate signing/Word/cloud/payment capabilities stay outside functional controls.

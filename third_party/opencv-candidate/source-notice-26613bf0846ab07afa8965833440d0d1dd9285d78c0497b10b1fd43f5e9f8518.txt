@@ -1,0 +1,12 @@
+/* Solve the nearest orthogonal approximation problem
+ * i.e., given e, find R minimizing ||R-e||_F
+ *
+ * The computation borrows from Markley's FOAM algorithm
+ * "Attitude Determination Using Vector Observations: A Fast Optimal Matrix Algorithm", J. Astronaut. Sci. 1993.
+ *
+ * See also M. Lourakis: "An Efficient Solution to Absolute Orientation", ICPR 2016
+ *
+ *  Copyright (C) 2019 Manolis Lourakis (lourakis **at** ics forth gr)
+ *  Institute of Computer Science, Foundation for Research & Technology - Hellas
+ *  Heraklion, Crete, Greece.
+ */

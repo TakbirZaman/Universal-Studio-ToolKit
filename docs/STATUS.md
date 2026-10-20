@@ -1,8 +1,8 @@
-# Feature / platform status — 2026-10-19
+# Feature / platform status — 2026-10-20
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Main includes physical photo DPI, sequential scans/canonical previews, custom print layouts, streamed encoding, visible PDF page numbers/watermarks and editable PDF text extraction. Runtime candidate 0d7d7a6 passed Windows, Linux and Android packaging. All four downloads are independently verified and saved from runtime 0d7d7a6; see evidence/development-builds-0d7d7a6.json. Historical source/evidence remain in the evidence directory.
+Current integration includes scanner geometry/manual straightening and pack/signature first-use recovery in addition to the earlier physical photo, sequential scan, print, PDF overlay and text workflows. Local73 Rust/41 Flutter checks pass with clean analysis. Latest complete platform packaging sourceffc4753 passes Linux39401787599, Windows39401787571 and Android39401787595; subsequent pack/signature integration packaging remains pending. Scanner-enabled baseline6d7d6f9 packages are independently inspected and linked in the current session. The saved-copy update was blocked by authorization before transfer; earlier saved downloads remain unchanged. Historical evidence remains in the evidence directory.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
@@ -20,7 +20,8 @@ Main includes physical photo DPI, sequential scans/canonical previews, custom pr
 | Forms/signature/searchable PDF and image/raster compression modes | Remaining; unsupported structures rejected | Unavailable | Unavailable | Unavailable |
 | Scan modes, rotation, brightness/contrast and advisory quality checks | Native tests; non-destructive edits/drafts | Implemented | Built | Compiled system-camera/manual import; device pending |
 | Sequential scan PDF and canonical previews | Bounded encoded intermediates, real three-page UI/PDF/save checks at desktop and narrow/200% text | Main build/startup passed | Main build/startup passed | Main complete packaging workflow passed |
-| Manual corners / perspective / deskew / OpenCV | Remaining | Unavailable | Unavailable | Unavailable |
+| Page corners / perspective / edge suggestions | Typed Rust adapter/editor/drafts and actual outputs; sourceffc4753 platform packages pass | Native/UI/package/startup checks | Native/UI/package/startup checks | ARM64 package passes; actual device pending |
+| Manual straightening / face assistance | Manual straightening actual-output/responsive checks and sourceffc4753 builds pass; automatic angle detection/face assistance remain | Manual correction built | Manual correction built | Manual correction built; device pending |
 | Camera capture and URI export | Scoped adapters and channel contracts | Image import; camera unavailable | Image import; camera unavailable | APK compiles; permissions/cancellation/recreation/provider testing pending |
 | Local scan drafts and retention | Save/restore/delete/clear, schema/hash and symlink protections tested | Implemented | Storage tests pass | Built, device pending |
 | English/Bangla/mixed printed OCR | Real engine/typed job cancellation, editable editor and verified UTF-8 export | Requires system Tesseract and pinned local models | Recognition unavailable | Recognition unavailable |
@@ -57,3 +58,25 @@ Runtime source1a657f6 passed Linux39251795389, Windows39251795282 and Android392
 ## Integrated existing PDF text slice
 
 Runtime candidate 0d7d7a6 passed Linux39253689705, Windows39253689586 and Android39253689489. All 66 Rust/32 selected Flutter tests and clean analysis pass. Independent pypdf/PDFium verification extracts English/Bangla text in page order and checks actual saved bytes, original preservation and no-clobber behavior. Local visual review and focused recheck verify help/error wrapping at 200% text. See ADR-015. All four saved downloads pass independent CRC/hash,471-notice, font/native/CRT/model inventory checks; Android compiled privacy, signatures and 16 KiB alignment also verify. Actual devices/users remain outstanding.
+
+## Scanner geometry development candidate
+
+work/scan-perspective adds normalized validated corners, a lazy serialized OpenCV adapter, shared corrected preview/image/PDF processing, schema2 drafts with schema1 recovery, a responsive numbered corner editor, manual/keyboard/slider edits, undo/reset and advisory edge suggestions requiring application. All70 Rust and35 selected Flutter tests pass locally, including actual Unicode save/no-clobber and desktop/narrow-dark200% workflows. A no-op contrast quantization defect found by exact-pixel tests is fixed. Image decoding readiness, full48px boundary hit areas, selected-number contrast and a reachable primary action were visually reviewed and corrected. This is heuristic/widget evidence, not observed-user or screen-reader acceptance.
+
+Native Linux/Windows source build and independent pixel verification pass in run39312606313 at1f7d49e. Windows build-host evidence is not clean-system or packaged-app acceptance. Internal OpenCV threading is explicitly disabled; Rust serializes every adapter call. Reconfiguring an older SDK cache additionally requires HAVE_PTHREAD=OFF. The Linux final rebuild and native/regression evidence are tracked separately in CHECKPOINT.md. Android native geometry, app-library staging, complete native license applicability review and updated downloads remain outstanding.153 conservative candidate notice texts, including the separately fetched/hashed Boost1.0 license referenced by FLANN, are retained. Integrity/provenance does not establish complete license clearance.
+
+Candidate959f220: all three native-build jobs pass run39313941003. Android is ARM64/API24+, exported symbols and16KiB ELF alignment checked, system dependencies only; no Android pixel execution/device claim. Bridge39313941095 artifact12216318217 SHA8331fa99e207538a390e14d6ba44271e9e7e71e7159ea26f3f3f9c9d25180788 passes CRC/fixed-nine-file allowlist and matches every committed generated file. App packaging/staging remains separate. A full upstream source file is retained in addition to153 notice/license files.
+
+### Native scanner packaging candidate — 2026-10-20
+
+The scanner correction/editor integration is committed on work/scan-perspective. Prior local verification:70 Rust tests and35 Flutter tests with actual engines. Application CI at d828067 succeeds on Linux/Windows/Android, but these packages omit the native scanner library and must not be described as geometry-enabled. Native audit39314977313 passes separately on all three build hosts, with Android compile/ELF checks only.
+
+The next candidate adds explicit library/report/hash/architecture/notice validation and staging to all three package scripts. Source provisioning is development-only. Native tests now skip explicitly by default and application CI provisions the engine and includes them. Fresh candidate tests/build results must be recorded before delivery. Full scope and device/user/license release gates remain incomplete.
+
+### Manual straightening candidate — 2026-10-20
+
+The corner editor offers a collapsed manual straightening adjustment (±10°), cropping explanation, preview and undo. Portrait/landscape/square aspect checks and actual tilted-line Flutter→Rust→OpenCV→PNG verification pass; desktop/narrow-dark200% workflows exercise adjustment and undo with actual PDF save. Small native previews no longer enlarge the source. See ADR018. No automatic angle detection or Android device claim is made. This feature is not in the older saved downloads.
+
+### Pack/signature first-use recovery candidate — 2026-10-20
+
+The fixed example pack now supports replacing a selected document without clearing the others, cancellation recovery, role labels and actual original-source previews. Native errors name the affected slot, results list verified archived filenames/measurements, and save errors appear beside Save. Four focused actual export workflows pass at desktop/narrow dark200%, including Unicode/no-clobber ZIP save and transparent PNG; independent ZIP/Pillow/pypdf checks pass. A narrow signature-background dropdown overflow was fixed. This does not implement custom/optional slot definitions or managed sources. See ADR019 and the explicitly heuristic FIRST-USE-REVIEW-20261020.

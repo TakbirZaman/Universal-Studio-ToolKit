@@ -16,6 +16,8 @@ pub struct ScanOptions {
     pub brightness: i32,
     pub contrast: f32,
     pub threshold: u8,
+    #[serde(default)]
+    pub corners: Option<crate::vision::PageCorners>,
 }
 impl Default for ScanOptions {
     fn default() -> Self {
@@ -25,6 +27,7 @@ impl Default for ScanOptions {
             brightness: 0,
             contrast: 0.,
             threshold: 128,
+            corners: None,
         }
     }
 }
@@ -34,6 +37,13 @@ pub struct ScanAdvisory {
     pub message: String,
 }
 fn prepare(data: &[u8], options: &ScanOptions) -> Result<(image::DynamicImage, Vec<ScanAdvisory>)> {
+    prepare_with_corners(data, options, options.corners)
+}
+fn prepare_with_corners(
+    data: &[u8],
+    options: &ScanOptions,
+    corners: Option<crate::vision::PageCorners>,
+) -> Result<(image::DynamicImage, Vec<ScanAdvisory>)> {
     if !(-100..=100).contains(&options.brightness)
         || !options.contrast.is_finite()
         || !(-100.0..=100.0).contains(&options.contrast)
@@ -42,11 +52,28 @@ fn prepare(data: &[u8], options: &ScanOptions) -> Result<(image::DynamicImage, V
             "Brightness and contrast must be between -100 and 100.",
         ));
     }
+    if let Some(corners) = corners {
+        corners.validate()?;
+    }
     let mut img = crate::photo::decode(data)?;
     if crate::photo::has_transparency(&img) {
         return Err(invalid(
             "Scan pages need an opaque background. Add a background in Photo Studio first.",
         ));
+    }
+    let reduced_depth = corners.is_some()
+        && matches!(
+            img.color(),
+            image::ColorType::L16
+                | image::ColorType::La16
+                | image::ColorType::Rgb16
+                | image::ColorType::Rgba16
+                | image::ColorType::Rgb32F
+                | image::ColorType::Rgba32F
+        );
+    if let Some(corners) = corners {
+        img =
+            image::DynamicImage::ImageRgba8(crate::vision::perspective(img.into_rgba8(), corners)?);
     }
     img = match options.rotate_quarters % 4 {
         1 => img.rotate90(),
@@ -54,10 +81,27 @@ fn prepare(data: &[u8], options: &ScanOptions) -> Result<(image::DynamicImage, V
         3 => img.rotate270(),
         _ => img,
     };
-    let advisories = quality_advisories(&img);
-    img = img
-        .brighten(options.brightness)
-        .adjust_contrast(options.contrast);
+    let mut advisories = quality_advisories(&img);
+    if corners.is_some() {
+        advisories.push(ScanAdvisory {
+            code: "perspective_resampling".into(),
+            message: "Page corners were corrected using interpolated pixels before rotation. Check fine text at full size. The original is unchanged.".into(),
+        });
+    }
+    if reduced_depth {
+        advisories.push(ScanAdvisory {
+            code: "perspective_eight_bit".into(),
+            message: "Perspective correction converted this page to 8-bit colour channels.".into(),
+        });
+    }
+    if options.brightness != 0 {
+        img = img.brighten(options.brightness);
+    }
+    // image's floating-point contrast conversion can quantize even at zero.
+    // An unchanged appearance must keep the prepared pixel values exactly.
+    if options.contrast != 0. {
+        img = img.adjust_contrast(options.contrast);
+    }
     img = match options.mode {
         ScanMode::Original => img,
         ScanMode::Colour => img.adjust_contrast(10.),
@@ -73,7 +117,11 @@ fn prepare(data: &[u8], options: &ScanOptions) -> Result<(image::DynamicImage, V
     Ok((img, advisories))
 }
 pub fn process(data: &[u8], options: &ScanOptions) -> Result<PreparedOutput> {
-    let (img, advisories) = prepare(data, options)?;
+    encode_prepared(prepare(data, options)?)
+}
+fn encode_prepared(
+    (img, advisories): (image::DynamicImage, Vec<ScanAdvisory>),
+) -> Result<PreparedOutput> {
     let bytes = crate::density::encode_png_limited(&img, None, MAX_INPUT_BYTES)?;
     let mut findings=vec![ValidationFinding{advisory:false,code:"scan_adjusted".into(),message:"Page adjustments encoded to PNG and reopened. Original pixels are retained separately by the session.".into(),passed:true}];
     for a in advisories {
@@ -193,7 +241,12 @@ fn session_from_refs(pages: &[(&[u8], &ScanOptions)]) -> Result<PreparedOutput> 
     if total > MAX_INPUT_BYTES {
         return Err(invalid("Scan source images exceed 64 MiB."));
     }
-    for (_, edit) in pages {
+    for (index, (_, edit)) in pages.iter().enumerate() {
+        if let Some(corners) = edit.corners {
+            corners
+                .validate()
+                .map_err(|error| invalid(&format!("Page {}: {}", index + 1, error)))?;
+        }
         if !(-100..=100).contains(&edit.brightness)
             || !edit.contrast.is_finite()
             || !(-100.0..=100.0).contains(&edit.contrast)

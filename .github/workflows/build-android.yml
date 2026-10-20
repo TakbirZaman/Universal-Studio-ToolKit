@@ -1,8 +1,8 @@
 name: Build Android development APK
 on:
   push:
-    branches: [main, work/android-privacy, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text]
-    paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'third_party/**', 'scripts/*android*', '.github/workflows/build-android.yml']
+    branches: [main, work/android-privacy, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective, work/scan-straighten]
+    paths: ['android/**', 'lib/**', 'rust/**', 'pubspec*', 'third_party/**', 'native/opencv/**', 'scripts/*vision*', 'scripts/*android*', '.github/workflows/build-android.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,6 +34,12 @@ jobs:
         run: |
           curl --fail --location --retry 2 https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/8076/pdfium-android-arm64.tgz -o "$RUNNER_TEMP/pdfium-android.tgz"
           echo "UST_PDFIUM_ANDROID_ARCHIVE=$RUNNER_TEMP/pdfium-android.tgz" >> "$GITHUB_ENV"
+      - name: Build and inspect pinned ARM64 scanner engine (development provisioning)
+        run: |
+          python3 -m pip install cmake==3.28.4 ninja==1.13.2
+          python3 scripts/verify_vision_candidate.py --platform android-arm64 --work "$RUNNER_TEMP/ust-vision" --toolchain "$ANDROID_HOME/ndk/28.2.13676358/build/cmake/android.toolchain.cmake"
+          echo "UST_VISION_LIBRARY=$RUNNER_TEMP/ust-vision/build/adapter/libust_cv.so" >> "$GITHUB_ENV"
+          echo "UST_VISION_BUILD_REPORT=$RUNNER_TEMP/ust-vision/pixel-verification.json" >> "$GITHUB_ENV"
       - name: Build unsigned release and installable debug APK
         run: bash scripts/build_android.sh
       - name: Verify native APK contents

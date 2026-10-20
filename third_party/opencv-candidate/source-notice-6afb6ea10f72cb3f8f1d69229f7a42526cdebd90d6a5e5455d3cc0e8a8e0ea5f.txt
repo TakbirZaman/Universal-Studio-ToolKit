@@ -1,0 +1,8 @@
+/*
+StackBlur - a fast almost Gaussian Blur
+Theory: http://underdestruction.com/2004/02/25/stackblur-2004
+The code has been borrowed from (https://github.com/flozz/StackBlur)
+and adapted for OpenCV by Zihao Mu.
+
+Below is the original copyright
+*/

@@ -1,0 +1,4 @@
+//
+//  Part of the file is an extract from the cl_ext.h file from AMD APP SDK package.
+//  Below is the original copyright.
+//

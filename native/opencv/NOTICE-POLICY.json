@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "opencv_source_commit": "40738fb16ceddb5fb3fea747585f7ce6abb0605b",
+  "abi": 1,
+  "opencv_engine_version": 50000,
+  "notice_manifest_sha256": "7cd042f54c2da1ad70eb760ba8fbc6ed49683165cbf3f49debe9a3ca21fcd1ad",
+  "android_runtime_manifest_sha256": "f4c55976da553b5d84ea85718e9f52a8c752bf09ec0aa7c291c4fed5c929b2ef",
+  "identified_notice_conditions_reviewed": true,
+  "review_scope": "Pinned minimal adapter: root Apache2, inherited BSD/custom notice grants, complete geometry source retention, BSD SoftFloat, zlib, Boost1.0, conservatively retained Rubik OFL/stb MIT and Android LLVM/runtime aggregate notices. Linux system C/C++ libraries are not bundled. Windows unmodified CRT redistribution is separately recorded in third_party/MICROSOFT-RUNTIME.md. This is not blanket application/transitive legal clearance or device acceptance.",
+  "review_date": "2026-10-20"
+}

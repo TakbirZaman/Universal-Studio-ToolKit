@@ -1,3 +1,4 @@
+import '../src/rust/vision.dart';
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -143,11 +144,13 @@ class StudioService {
 }
 
 ScanOptions scanSettings({
+  PageCorners? corners,
   required String mode,
   required int rotation,
   required int brightness,
   required double contrast,
 }) => ScanOptions(
+  corners: corners,
   mode: switch (mode) {
     'original' => ScanMode.original,
     'colour' => ScanMode.colour,

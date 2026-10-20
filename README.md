@@ -5,18 +5,18 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 ## Implemented workflows
 
 - Resize JPEG/PNG images to exact pixels or physical mm/DPI dimensions with fit or crop, EXIF normalization, explicit transparency handling and measured size constraints.
-- Clean a plain signature background and export transparent PNG.
+- Clean a plain signature background and export transparent PNG, with light/dark/checkerboard previews.
 - Combine, select, reorder and rotate supported PDF pages; render previews and export page PNGs using bundled PDFium.
 - Add visible page numbers in saved order and optional ASCII text watermarks, with actual PDF previews.
 - Read an existing PDF text layer, review/edit it and save a UTF-8 text copy. Reading order can differ; scans without text need separately available OCR.
-- Import scan images, reorder pages, adjust brightness/contrast, rotate, apply grayscale or black-and-white, and produce PDF through bounded sequential page preparation. Quality warnings are advisory.
+- Import scan images, review boundary suggestions, set page corners, manually straighten tilted text, adjust appearance and reorder pages before PDF export. Geometry uses the explicitly bundled OpenCV adapter; original bytes are retained. Cropping and quality warnings are advisory.
 - Lay out repeated photos on standard or custom paper with physical dimensions, margins, spacing, optional cutting guides and explicit sampling DPI. Source pixels are retained by default.
-- Prepare the example photo/signature/certificate application ZIP with a validation report and hashed manifest.
+- Prepare the example photo/signature/certificate application ZIP with a validation report and hashed manifest. Replace individual selections, inspect actual saved-file measurements and recover from filename collisions beside Save.
 - Save copies without overwriting existing files. SQLite stores theme/settings; history is disabled by default.
 
 No account, service endpoint, telemetry or document upload is implemented. Processing uses the native Rust engine through typed asynchronous Flutter bindings. Original inputs are not modified.
 
-Android delegated camera capture is compiled but still needs device validation. Perspective correction, platform-complete OCR, advanced PDF tools and editable pack presets remain unfinished. Saved photo recipes, batch retry and scan draft recovery are implemented. Existing forms, annotations, signatures and other unsupported PDF structures are rejected rather than silently discarded. ICC-profiled images are rejected pending validated colour management.
+Android delegated camera capture is compiled but still needs device validation. Platform-complete OCR, face assistance, advanced PDF tools and editable pack presets remain unfinished. Scanner geometry is available only when its verified native engine is bundled; baseline builds without it hide those controls. Saved photo recipes, batch retry and scan draft recovery are implemented. Existing forms, annotations, signatures and other unsupported PDF structures are rejected rather than silently discarded. ICC-profiled images are rejected pending validated colour management.
 
 ## Linux development bundle
 
@@ -79,3 +79,9 @@ The Android workflow produces an installable debug-signed ARM64 APK, an unsigned
 The Linux OCR integration adds typed English/Bangla/mixed recognition, truthful job states/cancellation and an editable plain-text result screen in Scanner Studio. Its entry is available only with verified local models and `/usr/bin/tesseract`. Current Windows/Android OCR capability is false. This does not produce searchable PDFs.
 
 Explicitly provision model files and their Apache-2.0 license as described in `docs/OCR-ASSETS.md`. `UST_OCR_MODEL_SOURCE=/absolute/local/models bash scripts/build_linux.sh` verifies and stages them beside the executable. Normal application processing never downloads anything. The system Tesseract engine remains a runtime prerequisite; it is not bundled. Recognition is approximate: review the result before saving a UTF-8 `.txt` copy. See `docs/CHECKPOINT.md` for the latest test/build evidence and remaining platform work.
+
+## Native scanner development provisioning
+
+The three platform CI workflows explicitly build and verify the pinned narrow OpenCV adapter and stage it with complete retained notices. Normal application use never downloads an engine, model or source archive. Desktop packages run independent pixel checks on build hosts; Android receives structural/symbol/alignment checks and still requires device testing.
+
+For a Linux development build, install CMake3.28.4/Ninja1.13.2/NumPy2.3.5/Pillow12.3.0, then run `python3 scripts/verify_vision_candidate.py --platform linux-x64 --work /your/development/work`. Set `UST_VISION_LIBRARY` to its `build/adapter/libust_cv.so` and `UST_VISION_BUILD_REPORT` to its `pixel-verification.json` before `bash scripts/build_linux.sh`. Both paths must refer to the same verified build. Native Rust tests require this explicit library and `cargo test --locked --manifest-path rust/Cargo.toml -- --include-ignored`; otherwise they report themselves as ignored. See ADR017–019 and docs/CHECKPOINT.md for precise source/build evidence.

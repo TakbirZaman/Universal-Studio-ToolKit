@@ -5,6 +5,7 @@
 
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'vision.dart';
 
 enum ScanMode { original, colour, grayscale, blackWhite }
 
@@ -14,6 +15,7 @@ class ScanOptions {
   final int brightness;
   final double contrast;
   final int threshold;
+  final PageCorners? corners;
 
   const ScanOptions({
     required this.mode,
@@ -21,6 +23,7 @@ class ScanOptions {
     required this.brightness,
     required this.contrast,
     required this.threshold,
+    this.corners,
   });
 
   @override
@@ -29,7 +32,8 @@ class ScanOptions {
       rotateQuarters.hashCode ^
       brightness.hashCode ^
       contrast.hashCode ^
-      threshold.hashCode;
+      threshold.hashCode ^
+      corners.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -40,7 +44,8 @@ class ScanOptions {
           rotateQuarters == other.rotateQuarters &&
           brightness == other.brightness &&
           contrast == other.contrast &&
-          threshold == other.threshold;
+          threshold == other.threshold &&
+          corners == other.corners;
 }
 
 class ScanPage {

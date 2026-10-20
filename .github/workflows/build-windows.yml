@@ -1,8 +1,8 @@
 name: Verify and build Windows
 on:
   push:
-    branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text]
-    paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'third_party/**', 'scripts/*windows*', '.github/workflows/build-windows.yml']
+    branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective, work/scan-straighten]
+    paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'third_party/**', 'native/opencv/**', 'scripts/*vision*', 'scripts/*windows*', '.github/workflows/build-windows.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -35,11 +35,24 @@ jobs:
           Invoke-WebRequest https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/8076/pdfium-win-x64.tgz -OutFile "$env:RUNNER_TEMP/pdfium-windows.tgz"
           python scripts/stage_windows_pdfium.py "$env:RUNNER_TEMP/pdfium-windows.tgz"
           if ($LASTEXITCODE -ne 0) { throw 'PDFium verification failed' }
+      - name: Build and verify pinned scanner engine (development provisioning)
+        shell: pwsh
+        run: |
+          python -m pip install cmake==3.28.4 ninja==1.13.2 numpy==2.3.5 Pillow==12.3.0
+          if ($LASTEXITCODE -ne 0) { throw 'Native build tools install failed' }
+          python scripts/verify_vision_candidate.py --platform windows-x64 --work "$env:RUNNER_TEMP/ust-vision"
+          if ($LASTEXITCODE -ne 0) { throw 'Native scanner verification failed' }
+          $libraries = @(Get-ChildItem "$env:RUNNER_TEMP/ust-vision/build/adapter" -Filter ust_cv.dll -Recurse)
+          if ($libraries.Count -ne 1) { throw 'Expected one verified scanner DLL' }
+          "UST_VISION_LIBRARY=$($libraries[0].FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "UST_VISION_BUILD_REPORT=$env:RUNNER_TEMP/ust-vision/pixel-verification.json" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Verify Rust and Flutter native bridge
         shell: pwsh
         run: |
-          cargo test --locked --manifest-path rust/Cargo.toml
+          cargo test --locked --manifest-path rust/Cargo.toml -- --include-ignored
           if ($LASTEXITCODE -ne 0) { throw 'Rust tests failed' }
+          python -W error::ResourceWarning scripts/test_stage_vision_adapter.py
+          if ($LASTEXITCODE -ne 0) { throw 'Scanner staging tests failed' }
           cargo build --locked --manifest-path rust/Cargo.toml
           if ($LASTEXITCODE -ne 0) { throw 'Rust library build failed' }
           flutter pub get --enforce-lockfile

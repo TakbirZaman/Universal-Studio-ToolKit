@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-20",
+  "scope": "Local first-use engineering checks; OS dialogs substituted, processing/validation/exports actual",
+  "rust_tests_passed": 73,
+  "flutter_tests_passed": 41,
+  "analysis": "No issues found",
+  "layouts": [
+    {
+      "size": [
+        1440,
+        1600
+      ],
+      "theme": "light",
+      "text_scale": 1
+    },
+    {
+      "size": [
+        390,
+        1100
+      ],
+      "theme": "dark",
+      "text_scale": 2
+    }
+  ],
+  "pack": {
+    "individual_slot_replacement": true,
+    "picker_cancel_preserves_other_slots": true,
+    "existing_file_unchanged": true,
+    "unicode_zip_save": true,
+    "slot_specific_errors": true,
+    "inline_save_recovery": true,
+    "actual_source_previews": true,
+    "actual_archived_measurements": true,
+    "independent_zip_pillow_pypdf_verification": true,
+    "manifest_hashes_and_bytes_verified": true,
+    "photo_pixels": [
+      300,
+      300
+    ],
+    "signature_pixels": [
+      300,
+      100
+    ],
+    "certificate_pages": 1,
+    "photo_and_signature_strict_limit_bytes": 102400,
+    "private_source_paths_in_reports": false,
+    "custom_optional_slots_implemented": false
+  },
+  "signature": {
+    "actual_transparent_png_saved": true,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "narrow_200_percent_overflow_fixed": true
+  },
+  "real_user_tests": false,
+  "screen_reader_sessions": false,
+  "android_device_sessions": false,
+  "new_source_platform_packages_verified": false
+}

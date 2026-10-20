@@ -150,7 +150,8 @@ pub fn create_application_pack(
                 max_bytes: Some(limit),
                 ..Default::default()
             },
-        )?;
+        )
+        .map_err(|error| invalid(&format!("Photo: {error}")))?;
         let s = crate::photo::process(
             &signature,
             &PhotoOptions {
@@ -161,8 +162,10 @@ pub fn create_application_pack(
                 max_bytes: Some(limit),
                 ..Default::default()
             },
-        )?;
-        let c = pdf::arrange(&[certificate], None, 0)?;
+        )
+        .map_err(|error| invalid(&format!("Signature: {error}")))?;
+        let c = pdf::arrange(&[certificate], None, 0)
+            .map_err(|error| invalid(&format!("Certificate: {error}")))?;
         let slots = vec![
             crate::packs::PackSlot {
                 label: "Photo".into(),
@@ -313,6 +316,7 @@ pub fn adjust_scan_page(
                 brightness,
                 contrast,
                 threshold,
+                corners: None,
             },
         )
     })
@@ -510,6 +514,27 @@ pub fn preview_scan_page(
     jobs::serial(|| crate::scanner::preview(&data, &options, max_pixels))
         .map(Into::into)
         .map_err(|error| error.to_string())
+}
+
+/// Capability check loads only the explicitly provisioned local adapter.
+pub fn scan_geometry_available() -> bool {
+    crate::vision::available()
+}
+
+/// Advisory coordinates on the EXIF-oriented original. Never applies a suggestion.
+pub fn suggest_scan_edges(
+    data: Vec<u8>,
+) -> std::result::Result<Option<crate::vision::PageCorners>, String> {
+    jobs::serial(|| {
+        let image = crate::photo::decode(&data)?;
+        if crate::photo::has_transparency(&image) {
+            return Err(invalid(
+                "Page edge suggestions need an opaque image. Add a background first.",
+            ));
+        }
+        crate::vision::suggest(&image.into_rgba8())
+    })
+    .map_err(|error| error.to_string())
 }
 
 pub fn create_custom_print_sheet(

@@ -8,6 +8,7 @@ class TransparencyPreview extends StatefulWidget {
   @override
   State<TransparencyPreview> createState() => _TransparencyPreviewState();
 }
+
 class _TransparencyPreviewState extends State<TransparencyPreview> {
   String background = 'checkerboard';
   @override
@@ -16,9 +17,18 @@ class _TransparencyPreviewState extends State<TransparencyPreview> {
     children: [
       DropdownButtonFormField<String>(
         initialValue: background,
+        isExpanded: true,
+        itemHeight: null,
         decoration: const InputDecoration(labelText: 'Preview background'),
         items: const [
-          DropdownMenuItem(value: 'checkerboard', child: Text('Checkerboard')),
+          DropdownMenuItem(
+            value: 'checkerboard',
+            child: Text(
+              'Checkerboard',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           DropdownMenuItem(value: 'light', child: Text('Light')),
           DropdownMenuItem(value: 'dark', child: Text('Dark')),
         ],
@@ -29,25 +39,38 @@ class _TransparencyPreviewState extends State<TransparencyPreview> {
         borderRadius: BorderRadius.circular(12),
         child: CustomPaint(
           painter: _Background(background),
-          child: SizedBox(height: 360, width: double.infinity,
-            child: Image.memory(widget.bytes, fit: BoxFit.contain,
+          child: SizedBox(
+            height: 360,
+            width: double.infinity,
+            child: Image.memory(
+              widget.bytes,
+              fit: BoxFit.contain,
               semanticLabel: 'Prepared image with transparency',
-              errorBuilder: (_, _, _) => const Center(child: Text('Image preview unavailable.')),
+              errorBuilder: (_, _, _) =>
+                  const Center(child: Text('Image preview unavailable.')),
             ),
           ),
         ),
       ),
-      const Text('Preview background only. Transparent pixels stay transparent in the saved PNG.'),
+      const Text(
+        'Preview background only. Transparent pixels stay transparent in the saved PNG.',
+      ),
     ],
   );
 }
+
 class _Background extends CustomPainter {
   final String mode;
   _Background(this.mode);
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawRect(Offset.zero & size, Paint()..color = mode == 'dark' ? const Color(0xff202127) : Colors.white);
-    if (mode != 'checkerboard') { return; }
+    canvas.drawRect(
+      Offset.zero & size,
+      Paint()..color = mode == 'dark' ? const Color(0xff202127) : Colors.white,
+    );
+    if (mode != 'checkerboard') {
+      return;
+    }
     final paint = Paint()..color = const Color(0xffd6d6dc);
     for (var row = 0; row * 20 < size.height; row++) {
       for (var col = 0; col * 20 < size.width; col++) {
@@ -57,6 +80,7 @@ class _Background extends CustomPainter {
       }
     }
   }
+
   @override
   bool shouldRepaint(_Background oldDelegate) => oldDelegate.mode != mode;
 }

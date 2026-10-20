@@ -111,3 +111,21 @@ fn nearly_opaque_sixteen_bit_pages_require_an_explicit_background() {
             .contains("explicit background")
     );
 }
+
+#[test]
+fn small_canonical_previews_preserve_native_dimensions_and_pixels() {
+    let image = image::RgbaImage::from_fn(31, 21, |x, y| image::Rgba([x as u8, y as u8, 90, 255]));
+    let mut bytes = std::io::Cursor::new(Vec::new());
+    image::DynamicImage::ImageRgba8(image.clone())
+        .write_to(&mut bytes, image::ImageFormat::Png)
+        .unwrap();
+    let preview = studio_core::photo::source_preview(bytes.get_ref(), 1600).unwrap();
+    assert_eq!(
+        (preview.info.width, preview.info.height),
+        (Some(31), Some(21))
+    );
+    assert_eq!(
+        image::load_from_memory(&preview.data).unwrap().to_rgba8(),
+        image
+    );
+}

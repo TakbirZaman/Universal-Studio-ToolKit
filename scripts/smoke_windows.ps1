@@ -1,4 +1,8 @@
 $ErrorActionPreference = 'Stop'
+# Probe the packaged libraries, never developer test overrides.
+foreach ($name in @('UST_CORE_LIBRARY','UST_PDFIUM_LIBRARY','UST_OCR_TESSDATA','UST_VISION_LIBRARY')) {
+    Remove-Item "Env:$name" -ErrorAction SilentlyContinue
+}
 $bundle = (Resolve-Path 'build/windows/x64/runner/Release').Path
 $process = Start-Process (Join-Path $bundle 'universal_studio_toolkit.exe') -WorkingDirectory $bundle -PassThru
 try {

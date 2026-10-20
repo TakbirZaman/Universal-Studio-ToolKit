@@ -256,5 +256,50 @@ pub fn pack(items: Vec<(String, PreparedOutput)>) -> Result<PreparedOutput> {
             return Err(invalid("ZIP output verification failed."));
         }
     }
-    Ok(PreparedOutput{info:OutputInfo{format:"zip".into(),bytes:bytes.len()as u64,width:None,height:None,pages:None,quality:None,print_density:None,findings:vec![ValidationFinding{advisory:false,code:"archive_verified".into(),passed:true,message:"Every archived document was reopened and its hash verified against the manifest.".into()}]},data:bytes})
+    let mut findings = vec![ValidationFinding {
+        advisory: false,
+        code: "archive_verified".into(),
+        passed: true,
+        message: "Every archived document was reopened and its hash verified against the manifest."
+            .into(),
+    }];
+    for entry in &manifest.entries {
+        let dimensions = entry
+            .info
+            .width
+            .zip(entry.info.height)
+            .map(|(w, h)| format!("; {w} × {h} pixels"))
+            .unwrap_or_default();
+        let pages = entry
+            .info
+            .pages
+            .map(|n| format!("; {n} pages"))
+            .unwrap_or_default();
+        findings.push(ValidationFinding {
+            advisory: false,
+            code: "archive_entry_verified".into(),
+            passed: true,
+            message: format!(
+                "{}: {} bytes; {}{}{}.\n",
+                entry.filename,
+                entry.info.bytes,
+                entry.info.format.to_uppercase(),
+                dimensions,
+                pages
+            ),
+        });
+    }
+    Ok(PreparedOutput {
+        info: OutputInfo {
+            format: "zip".into(),
+            bytes: bytes.len() as u64,
+            width: None,
+            height: None,
+            pages: None,
+            quality: None,
+            print_density: None,
+            findings,
+        },
+        data: bytes,
+    })
 }

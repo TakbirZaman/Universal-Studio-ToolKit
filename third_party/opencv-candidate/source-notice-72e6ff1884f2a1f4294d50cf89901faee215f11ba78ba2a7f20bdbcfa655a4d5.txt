@@ -1,0 +1,7 @@
+
+// correctMatches function is Copyright (C) 2009, Jostein Austvik Jacobsen.
+// triangulatePoints function is derived from reconstructPointsFor3View, originally by Valery Mosyagin.
+
+// HZ, R. Hartley and A. Zisserman, Multiple View Geometry in Computer Vision, Cambridge Univ. Press, 2003.
+
+// This method is the same as reconstructPointsFor3View, with only a few numbers adjusted for two-view geometry

@@ -1,0 +1,1361 @@
+{
+  "schema_version": 1,
+  "opencv_version": "5.0.0",
+  "opencv_source_commit": "40738fb16ceddb5fb3fea747585f7ce6abb0605b",
+  "archive_sha256": "23affb17b8f7a46517a62b5e9fa637a8bc660acb5460bef9f130ee939df01ebb",
+  "scope": "Conservative candidate source notice retention; includes unused source notices.",
+  "application_staging_complete": false,
+  "complete_license_clearance": false,
+  "entries": [
+    {
+      "source": "LICENSE",
+      "notice": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "source": "doc/LICENSE_CHANGE_NOTICE.txt",
+      "notice": "doc__LICENSE_CHANGE_NOTICE.txt",
+      "sha256": "b2255f81ae7162e36550daefe432c72a8506cfc1b954897dbc553ed5160ad4b8"
+    },
+    {
+      "source": "doc/LICENSE_BSD.txt",
+      "notice": "doc__LICENSE_BSD.txt",
+      "sha256": "a5a7cf90fe5ac9763baad852cf69cf9d9b89bff934a679fdc5c8fcecaeba9a25"
+    },
+    {
+      "source": "modules/core/3rdparty/SoftFloat/COPYING.txt",
+      "notice": "modules__core__3rdparty__SoftFloat__COPYING.txt",
+      "sha256": "0c5b08365136da52639d777f1ebfc03988b0169d80655c90c59f1b3fa3e526a2"
+    },
+    {
+      "source": "3rdparty/dlpack/LICENSE",
+      "notice": "3rdparty__dlpack__LICENSE",
+      "sha256": "3e8f6bc39276a586d60c8c5aaece2ff989262181cf2b3d2a128db58f97a9300c"
+    },
+    {
+      "source": "3rdparty/zlib/LICENSE",
+      "notice": "3rdparty__zlib__LICENSE",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+    },
+    {
+      "source": "modules/imgproc/fonts/Rubik_OFL.txt",
+      "notice": "modules__imgproc__fonts__Rubik_OFL.txt",
+      "sha256": "521fa3f83e0b1a4dc0163fff2d31445c6d38c103e47a19abc8f49b4f7b1818e4"
+    },
+    {
+      "source": "modules/geometry/src/geometry.cpp",
+      "kind": "complete_unmodified_source_retention",
+      "notice": "upstream-geometry.cpp.txt",
+      "sha256": "a659e962e7bb5693ac13070118ccaeb71817e95bb3b5be1c391ab2c2fde3d30b"
+    },
+    {
+      "upstream_url": "https://www.boost.org/LICENSE_1_0.txt",
+      "source_reference": "modules/flann/include/opencv2/flann/any.h",
+      "notice": "Boost-1.0.txt",
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/deflate.c",
+        "3rdparty/zlib/inftrees.c"
+      ],
+      "notice": "source-notice-002e549943b07d55675abec71c9c9cc4a361274e6e8f81fd33ecaa9c19065005.txt",
+      "sha256": "002e549943b07d55675abec71c9c9cc4a361274e6e8f81fd33ecaa9c19065005"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_svm_hsa_extension.hpp"
+      ],
+      "notice": "source-notice-0086e13a493cec63b91d3e70264ead223ad30f9c47ac25af3bdb6c73c633617f.txt",
+      "sha256": "0086e13a493cec63b91d3e70264ead223ad30f9c47ac25af3bdb6c73c633617f"
+    },
+    {
+      "sources": [
+        "modules/imgproc/perf/opencl/perf_accumulate.cpp",
+        "modules/imgproc/test/ocl/test_accumulate.cpp",
+        "modules/imgproc/test/ocl/test_blend.cpp"
+      ],
+      "notice": "source-notice-0113797f86d107a5e11cc80ff26190a3b7178c22c7ffb444f1a0799c12860a95.txt",
+      "sha256": "0113797f86d107a5e11cc80ff26190a3b7178c22c7ffb444f1a0799c12860a95"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/inftrees.c"
+      ],
+      "notice": "source-notice-027b08ee3af3ae0ac39c824e31543d832160ed52ff988f963e1d88b8452e6a97.txt",
+      "sha256": "027b08ee3af3ae0ac39c824e31543d832160ed52ff988f963e1d88b8452e6a97"
+    },
+    {
+      "sources": [
+        "modules/core/src/glob.cpp"
+      ],
+      "notice": "source-notice-031d0f5e8e14b94604a57cd809ecec7d02a15cde3df26b2a1b5b4fd4fdbf31dc.txt",
+      "sha256": "031d0f5e8e14b94604a57cd809ecec7d02a15cde3df26b2a1b5b4fd4fdbf31dc"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/neon_utils.hpp"
+      ],
+      "notice": "source-notice-0461fa65a9a134e890d8fe3dc32efecb0491593872f5e8870394b9769e03de8d.txt",
+      "sha256": "0461fa65a9a134e890d8fe3dc32efecb0491593872f5e8870394b9769e03de8d"
+    },
+    {
+      "sources": [
+        "modules/core/src/arithm.cpp",
+        "modules/core/src/mathfuncs.cpp",
+        "modules/core/src/matmul.dispatch.cpp",
+        "modules/core/src/matmul.simd.hpp"
+      ],
+      "notice": "source-notice-070775ebf869dc5f935667132cb692b4501517210af44e6247df354cfbbd3afe.txt",
+      "sha256": "070775ebf869dc5f935667132cb692b4501517210af44e6247df354cfbbd3afe"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/quaternion.hpp",
+        "modules/core/include/opencv2/core/quaternion.inl.hpp"
+      ],
+      "notice": "source-notice-086e4e1743d1a4acb935f34bf1c280fe2e7501c19f6f3725f0e2f141b7400ddc.txt",
+      "sha256": "086e4e1743d1a4acb935f34bf1c280fe2e7501c19f6f3725f0e2f141b7400ddc"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/fundam.cpp"
+      ],
+      "notice": "source-notice-09b343d2b185b9ab0fa4c579ca9798c90e83c5abbd3384bb8eafab385b8d687d.txt",
+      "sha256": "09b343d2b185b9ab0fa4c579ca9798c90e83c5abbd3384bb8eafab385b8d687d"
+    },
+    {
+      "sources": [
+        "modules/geometry/test/test_fitellipse.cpp",
+        "modules/geometry/test/test_fitellipse_ams.cpp",
+        "modules/geometry/test/test_fitellipse_direct.cpp"
+      ],
+      "notice": "source-notice-0d45d7a033a34d5f84880a10c4a8ee8896d99d5ae7a59008b44327275af66a7b.txt",
+      "sha256": "0d45d7a033a34d5f84880a10c4a8ee8896d99d5ae7a59008b44327275af66a7b"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/stb_truetype.cpp",
+        "modules/imgproc/src/stb_truetype.hpp"
+      ],
+      "notice": "source-notice-10ed5a55912965c9846c947486fc42a537c6e7f92dbabd68bf26963da320e46d.txt",
+      "sha256": "10ed5a55912965c9846c947486fc42a537c6e7f92dbabd68bf26963da320e46d"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/ocl/test_match_template.cpp",
+        "modules/imgproc/test/ocl/test_medianfilter.cpp"
+      ],
+      "notice": "source-notice-1383866c8aa035c3e23a85e5b5129aff12965311067bf3146f48f975a8bb5e4f.txt",
+      "sha256": "1383866c8aa035c3e23a85e5b5129aff12965311067bf3146f48f975a8bb5e4f"
+    },
+    {
+      "sources": [
+        "modules/core/src/transpose.simd.hpp"
+      ],
+      "notice": "source-notice-1512402f9c77c8428c44fb6e32834d04c20c3056268b334690f828dd00aaaf1e.txt",
+      "sha256": "1512402f9c77c8428c44fb6e32834d04c20c3056268b334690f828dd00aaaf1e"
+    },
+    {
+      "sources": [
+        "modules/core/src/softfloat.cpp"
+      ],
+      "notice": "source-notice-15e78071c8347a689c48ec92bbdd5eba7bd8dc74f86ee3e7ad31d34b24fefe83.txt",
+      "sha256": "15e78071c8347a689c48ec92bbdd5eba7bd8dc74f86ee3e7ad31d34b24fefe83"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/triangulate.cpp"
+      ],
+      "notice": "source-notice-19505dcd9f06376c108f210e1ff709aa5b9206f0e76da08f604e9e510bdc00d5.txt",
+      "sha256": "19505dcd9f06376c108f210e1ff709aa5b9206f0e76da08f604e9e510bdc00d5"
+    },
+    {
+      "sources": [
+        "modules/core/test/ocl/test_gemm.cpp"
+      ],
+      "notice": "source-notice-1e6d823542162ac1d7f30f6c0bfcf4c6b080cda3627c6689f4f3228f946c0d48.txt",
+      "sha256": "1e6d823542162ac1d7f30f6c0bfcf4c6b080cda3627c6689f4f3228f946c0d48"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/p3p.cpp"
+      ],
+      "notice": "source-notice-1ff9d4a2aaae33977871fac5430264147221950c84b93316c11b0307b47d2eb0.txt",
+      "sha256": "1ff9d4a2aaae33977871fac5430264147221950c84b93316c11b0307b47d2eb0"
+    },
+    {
+      "sources": [
+        "modules/core/src/mathfuncs.cpp"
+      ],
+      "notice": "source-notice-1ff9f65ad8f1471d09aaad8507e373b82334577d5483d36617b4556b5efff685.txt",
+      "sha256": "1ff9f65ad8f1471d09aaad8507e373b82334577d5483d36617b4556b5efff685"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/hal/intrin_math.hpp"
+      ],
+      "notice": "source-notice-2160640bc8fcb577546b3e3e97d8529b4f47a2c08e2a7a30146ca9c49e15bac7.txt",
+      "sha256": "2160640bc8fcb577546b3e3e97d8529b4f47a2c08e2a7a30146ca9c49e15bac7"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/sqpnp.cpp"
+      ],
+      "notice": "source-notice-26613bf0846ab07afa8965833440d0d1dd9285d78c0497b10b1fd43f5e9f8518.txt",
+      "sha256": "26613bf0846ab07afa8965833440d0d1dd9285d78c0497b10b1fd43f5e9f8518"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/ocl/test_imgproc.cpp",
+        "modules/imgproc/test/ocl/test_warp.cpp"
+      ],
+      "notice": "source-notice-26e7d3bff5a77bbfb0cac06da2a825d55bbabdbf001fd3b79446ec42e17e5b3f.txt",
+      "sha256": "26e7d3bff5a77bbfb0cac06da2a825d55bbabdbf001fd3b79446ec42e17e5b3f"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/connectedcomponents.cpp"
+      ],
+      "notice": "source-notice-28b7dba623cd7566d9beb81d04711291646413a3ce433dcc8101a787b2a8d660.txt",
+      "sha256": "28b7dba623cd7566d9beb81d04711291646413a3ce433dcc8101a787b2a8d660"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/gzclose.c"
+      ],
+      "notice": "source-notice-295cc4471eecfa68fdc048ce0109883dc260ec833716f5991f6f5d3bb71b65c6.txt",
+      "sha256": "295cc4471eecfa68fdc048ce0109883dc260ec833716f5991f6f5d3bb71b65c6"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/fixedpoint.inl.hpp"
+      ],
+      "notice": "source-notice-2a628e3f49ef1bbad64eaa86be65185e83fd1c0ff856ab572ef90e8cc04dfa93.txt",
+      "sha256": "2a628e3f49ef1bbad64eaa86be65185e83fd1c0ff856ab572ef90e8cc04dfa93"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/intersection.cpp",
+        "modules/geometry/test/test_intersection.cpp"
+      ],
+      "notice": "source-notice-2b551c4878b4d445d6aa814a4eabcfdb767811a1eedca5ca5bdf58dd7ddf3813.txt",
+      "sha256": "2b551c4878b4d445d6aa814a4eabcfdb767811a1eedca5ca5bdf58dd7ddf3813"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/inflate.c"
+      ],
+      "notice": "source-notice-2c72642d0c18194533555bfd88b1fb7bd8242f87dec1307f16dab32b9bdcd263.txt",
+      "sha256": "2c72642d0c18194533555bfd88b1fb7bd8242f87dec1307f16dab32b9bdcd263"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_svm_hsa_extension.hpp"
+      ],
+      "notice": "source-notice-2caea97b643c8c834e03e5c97a4038cf95e75f69ab9c4c0ad21f726d9ee919a8.txt",
+      "sha256": "2caea97b643c8c834e03e5c97a4038cf95e75f69ab9c4c0ad21f726d9ee919a8"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/opencl/ocl_defs.hpp",
+        "modules/core/perf/opencl/perf_matop.cpp",
+        "modules/core/test/ocl/test_matrix_expr.cpp",
+        "modules/imgproc/perf/opencl/perf_3vs4.cpp"
+      ],
+      "notice": "source-notice-2d0f08c87855896d9a7ecd859240429707079238e9a6313f39f3e65341c4d03d.txt",
+      "sha256": "2d0f08c87855896d9a7ecd859240429707079238e9a6313f39f3e65341c4d03d"
+    },
+    {
+      "sources": [
+        "modules/geometry/test/test_affine3.cpp"
+      ],
+      "notice": "source-notice-2f32ed0767d2d04c6b72517b060da3f5a9530b95becc8e8fb9c15c519b321e08.txt",
+      "sha256": "2f32ed0767d2d04c6b72517b060da3f5a9530b95becc8e8fb9c15c519b321e08"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/softfloat.hpp"
+      ],
+      "notice": "source-notice-3026f9914555c962f92a011733325792cccfdc92f4684d0d2e3bc193083e8645.txt",
+      "sha256": "3026f9914555c962f92a011733325792cccfdc92f4684d0d2e3bc193083e8645"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/inflate.h"
+      ],
+      "notice": "source-notice-30db5ebc2c6db6e4fb1aec7f0840ae0d10654636434211270b512a1eaf7b63f1.txt",
+      "sha256": "30db5ebc2c6db6e4fb1aec7f0840ae0d10654636434211270b512a1eaf7b63f1"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/demosaicing.cpp"
+      ],
+      "notice": "source-notice-3145f7455bf0c08e520bf478df397245c2826d2c5a5da6e8fac5ab09127eade1.txt",
+      "sha256": "3145f7455bf0c08e520bf478df397245c2826d2c5a5da6e8fac5ab09127eade1"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/median_blur.dispatch.cpp"
+      ],
+      "notice": "source-notice-3383537593b13692a3a6cb8fe83c951ffbd4d079c70a77337ce7378fb0f945a6.txt",
+      "sha256": "3383537593b13692a3a6cb8fe83c951ffbd4d079c70a77337ce7378fb0f945a6"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/test_houghcircles.cpp",
+        "modules/imgproc/test/test_houghlines.cpp"
+      ],
+      "notice": "source-notice-340625ef2ac6725232bdb41519b8ae53ee43e03eadc0a5f8de181c46c4e05333.txt",
+      "sha256": "340625ef2ac6725232bdb41519b8ae53ee43e03eadc0a5f8de181c46c4e05333"
+    },
+    {
+      "sources": [
+        "modules/core/perf/opencl/perf_channels.cpp",
+        "modules/core/perf/opencl/perf_dxt.cpp",
+        "modules/core/perf/opencl/perf_gemm.cpp",
+        "modules/imgproc/perf/opencl/perf_blend.cpp",
+        "modules/imgproc/perf/opencl/perf_color.cpp",
+        "modules/imgproc/perf/opencl/perf_filters.cpp",
+        "modules/imgproc/perf/opencl/perf_imgproc.cpp",
+        "modules/imgproc/perf/opencl/perf_imgwarp.cpp",
+        "modules/imgproc/perf/opencl/perf_pyramid.cpp"
+      ],
+      "notice": "source-notice-374088b0aa4ea8d796c641fbc717c926e6d89371866d265badf3735191370862.txt",
+      "sha256": "374088b0aa4ea8d796c641fbc717c926e6d89371866d265badf3735191370862"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/demosaicing.cpp"
+      ],
+      "notice": "source-notice-399b32f751ee542ce46b2d74285701b72343ee100b69fbf0124a409f97de5422.txt",
+      "sha256": "399b32f751ee542ce46b2d74285701b72343ee100b69fbf0124a409f97de5422"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/ocl.hpp",
+        "modules/core/include/opencv2/core/ocl_genbase.hpp",
+        "modules/core/include/opencv2/core/optim.hpp",
+        "modules/core/src/conjugate_gradient.cpp",
+        "modules/core/src/downhill_simplex.cpp",
+        "modules/core/src/lpsolver.cpp",
+        "modules/core/src/ocl.cpp",
+        "modules/core/test/test_conjugate_gradient.cpp",
+        "modules/core/test/test_downhill_simplex.cpp",
+        "modules/core/test/test_hal_core.cpp",
+        "modules/core/test/test_lpsolver.cpp",
+        "modules/core/test/test_umat.cpp"
+      ],
+      "notice": "source-notice-3c5303f83f1c6c98e4183aeadc11f4d767311fe057638ea8c9b7feb119183a34.txt",
+      "sha256": "3c5303f83f1c6c98e4183aeadc11f4d767311fe057638ea8c9b7feb119183a34"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/uncompr.c"
+      ],
+      "notice": "source-notice-3efd0b1bb3ced1d82efd5ada3bfbe3c2272a97bb98b57497a6c340b5f1e62437.txt",
+      "sha256": "3efd0b1bb3ced1d82efd5ada3bfbe3c2272a97bb98b57497a6c340b5f1e62437"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/gabor.cpp"
+      ],
+      "notice": "source-notice-3f3151b184a4d6960bcf39def9100ebb67232f1cde73c59d9cf8099d8beef3c9.txt",
+      "sha256": "3f3151b184a4d6960bcf39def9100ebb67232f1cde73c59d9cf8099d8beef3c9"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/deflate.c"
+      ],
+      "notice": "source-notice-3f7c442ed58401a55fa810e52d0c17f8d492e5edbf0d17faa5313d69874ecd48.txt",
+      "sha256": "3f7c442ed58401a55fa810e52d0c17f8d492e5edbf0d17faa5313d69874ecd48"
+    },
+    {
+      "sources": [
+        "modules/geometry/test/test_homography_decomp.cpp"
+      ],
+      "notice": "source-notice-429d941b18f14400334dfb2d46f9bd62691331d626c386ba01d83e3c605444c2.txt",
+      "sha256": "429d941b18f14400334dfb2d46f9bd62691331d626c386ba01d83e3c605444c2"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/lsd.cpp"
+      ],
+      "notice": "source-notice-4484fa9701f735ecd050e4569e084718cb20635865a22b9f1e456498bfd2f6bd.txt",
+      "sha256": "4484fa9701f735ecd050e4569e084718cb20635865a22b9f1e456498bfd2f6bd"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/smooth.simd.hpp"
+      ],
+      "notice": "source-notice-44f99e28ce37227c0abd2795a3f532751f164394d14d2b13cbfa3e425a81a5a7.txt",
+      "sha256": "44f99e28ce37227c0abd2795a3f532751f164394d14d2b13cbfa3e425a81a5a7"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_clblas.hpp",
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_clfft.hpp",
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_core.hpp",
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_core_wrappers.hpp",
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_gl.hpp",
+        "modules/core/include/opencv2/core/opencl/runtime/opencl_gl_wrappers.hpp",
+        "modules/core/perf/opencl/perf_arithm.cpp",
+        "modules/core/src/opencl/runtime/opencl_clblas.cpp",
+        "modules/core/src/opencl/runtime/opencl_clfft.cpp",
+        "modules/core/src/opencl/runtime/opencl_core.cpp",
+        "modules/core/src/opencl/runtime/runtime_common.hpp",
+        "modules/core/test/ocl/test_arithm.cpp"
+      ],
+      "notice": "source-notice-4559d0179f42d482d13567cf7c3de210e1b268a2298426d2e4185648e1a1bacf.txt",
+      "sha256": "4559d0179f42d482d13567cf7c3de210e1b268a2298426d2e4185648e1a1bacf"
+    },
+    {
+      "sources": [
+        "modules/imgproc/include/opencv2/imgproc/imgproc.hpp"
+      ],
+      "notice": "source-notice-47004e712fd7e9bf40f926d2872496867e2192ed482f54e5cc1e3cf4c97792ad.txt",
+      "sha256": "47004e712fd7e9bf40f926d2872496867e2192ed482f54e5cc1e3cf4c97792ad"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core.hpp"
+      ],
+      "notice": "source-notice-47b4a813e84343e5588961ddd60657466f485054f27ca65e5c648fb238d253cd.txt",
+      "sha256": "47b4a813e84343e5588961ddd60657466f485054f27ca65e5c648fb238d253cd"
+    },
+    {
+      "sources": [
+        "modules/core/src/copy.cpp"
+      ],
+      "notice": "source-notice-4ab81e158999f8673d12e147279564184caee1532834b16602c648031904457d.txt",
+      "sha256": "4ab81e158999f8673d12e147279564184caee1532834b16602c648031904457d"
+    },
+    {
+      "sources": [
+        "modules/imgproc/perf/opencl/perf_moments.cpp"
+      ],
+      "notice": "source-notice-4b589ae46f1e69295fd7705b13c500bef53d86691a4e15bf04a26d36f9afb7a2.txt",
+      "sha256": "4b589ae46f1e69295fd7705b13c500bef53d86691a4e15bf04a26d36f9afb7a2"
+    },
+    {
+      "sources": [
+        "3rdparty/dlpack/include/dlpack/dlpack.h"
+      ],
+      "notice": "source-notice-4b98e0b2fdf0c792d3f2f0934e734dc3ac9aa111ef920f4cf934c2390189ea4f.txt",
+      "sha256": "4b98e0b2fdf0c792d3f2f0934e734dc3ac9aa111ef920f4cf934c2390189ea4f"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/hal/intrin_math.hpp"
+      ],
+      "notice": "source-notice-510a341f669fbf53c0f13760178cb6739041bdf5d2c2e36f06f03555403c199d.txt",
+      "sha256": "510a341f669fbf53c0f13760178cb6739041bdf5d2c2e36f06f03555403c199d"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/hal/intrin_rvv071.hpp"
+      ],
+      "notice": "source-notice-554ee2de73f4251362645a7b6d7e4064d507dda37c0d376d175c3de7b5711ceb.txt",
+      "sha256": "554ee2de73f4251362645a7b6d7e4064d507dda37c0d376d175c3de7b5711ceb"
+    },
+    {
+      "sources": [
+        "modules/flann/include/opencv2/flann/allocator.h",
+        "modules/flann/include/opencv2/flann/autotuned_index.h",
+        "modules/flann/include/opencv2/flann/composite_index.h",
+        "modules/flann/include/opencv2/flann/dist.h",
+        "modules/flann/include/opencv2/flann/dynamic_bitset.h",
+        "modules/flann/include/opencv2/flann/flann_base.hpp",
+        "modules/flann/include/opencv2/flann/general.h",
+        "modules/flann/include/opencv2/flann/ground_truth.h",
+        "modules/flann/include/opencv2/flann/heap.h",
+        "modules/flann/include/opencv2/flann/index_testing.h",
+        "modules/flann/include/opencv2/flann/kdtree_index.h",
+        "modules/flann/include/opencv2/flann/kdtree_single_index.h",
+        "modules/flann/include/opencv2/flann/kmeans_index.h",
+        "modules/flann/include/opencv2/flann/linear_index.h",
+        "modules/flann/include/opencv2/flann/logger.h",
+        "modules/flann/include/opencv2/flann/lsh_index.h",
+        "modules/flann/include/opencv2/flann/lsh_table.h",
+        "modules/flann/include/opencv2/flann/matrix.h",
+        "modules/flann/include/opencv2/flann/nn_index.h",
+        "modules/flann/include/opencv2/flann/object_factory.h",
+        "modules/flann/include/opencv2/flann/random.h",
+        "modules/flann/include/opencv2/flann/result_set.h",
+        "modules/flann/include/opencv2/flann/simplex_downhill.h",
+        "modules/flann/include/opencv2/flann/timer.h"
+      ],
+      "notice": "source-notice-58b5eb9304254acdf4783317b300675f8b47f8f72ea9c8003716b70dd84aad36.txt",
+      "sha256": "58b5eb9304254acdf4783317b300675f8b47f8f72ea9c8003716b70dd84aad36"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/bufferpool.hpp",
+        "modules/core/perf/opencl/perf_bufferpool.cpp",
+        "modules/core/perf/opencl/perf_usage_flags.cpp",
+        "modules/core/src/bufferpool.impl.hpp"
+      ],
+      "notice": "source-notice-58d484ff5b1b8853b23354e42784538d425634b137219f628d0df8886ec15f11.txt",
+      "sha256": "58d484ff5b1b8853b23354e42784538d425634b137219f628d0df8886ec15f11"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/ptcloud/normal_estimation.cpp",
+        "modules/geometry/src/ptcloud/region_growing_3d.cpp",
+        "modules/geometry/src/ptcloud/region_growing_3d.hpp",
+        "modules/geometry/test/test_normal_estimation.cpp"
+      ],
+      "notice": "source-notice-5a26667deae626bd95a8162eda020c71e6ca963b640ac75c1a09adc11843f0c2.txt",
+      "sha256": "5a26667deae626bd95a8162eda020c71e6ca963b640ac75c1a09adc11843f0c2"
+    },
+    {
+      "sources": [
+        "modules/flann/include/opencv2/flann/all_indices.h",
+        "modules/flann/include/opencv2/flann/sampling.h",
+        "modules/flann/src/flann.cpp"
+      ],
+      "notice": "source-notice-5ce15e4b778fa97bb37e4ab5e7f45ef25ecf69ea2b8d4f71432c1f5c91f5da92.txt",
+      "sha256": "5ce15e4b778fa97bb37e4ab5e7f45ef25ecf69ea2b8d4f71432c1f5c91f5da92"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/min_enclosing_triangle.cpp"
+      ],
+      "notice": "source-notice-5e79c362bebdb57463510c3c9c3d5f4d18ae1240d2c195a986e4d3c70c3dc6de.txt",
+      "sha256": "5e79c362bebdb57463510c3c9c3d5f4d18ae1240d2c195a986e4d3c70c3dc6de"
+    },
+    {
+      "sources": [
+        "modules/core/test/test_ptr.cpp"
+      ],
+      "notice": "source-notice-61bc2030abbdd1a5994b013d2f29ef34e4b520383ea16d7a70a73c05aa3fdf03.txt",
+      "sha256": "61bc2030abbdd1a5994b013d2f29ef34e4b520383ea16d7a70a73c05aa3fdf03"
+    },
+    {
+      "sources": [
+        "modules/core/test/ocl/test_channels.cpp",
+        "modules/core/test/ocl/test_matrix_operation.cpp"
+      ],
+      "notice": "source-notice-62e5b63ac633712ce9392d7d155205ba6b834c75d7bd2ee0b77bf11b678415d8.txt",
+      "sha256": "62e5b63ac633712ce9392d7d155205ba6b834c75d7bd2ee0b77bf11b678415d8"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/hough.cpp"
+      ],
+      "notice": "source-notice-6389bd376f24f39e4928e3d99ef20c6771399974e64f0ab734f12e92ca44dcc4.txt",
+      "sha256": "6389bd376f24f39e4928e3d99ef20c6771399974e64f0ab734f12e92ca44dcc4"
+    },
+    {
+      "sources": [
+        "modules/core/src/lda.cpp",
+        "modules/imgproc/src/colormap.cpp"
+      ],
+      "notice": "source-notice-64536ad6e9e56d584d64a5a226caefb6277df558b74ae2a99bdb0e3362724bf6.txt",
+      "sha256": "64536ad6e9e56d584d64a5a226caefb6277df558b74ae2a99bdb0e3362724bf6"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/homography_decomp.cpp"
+      ],
+      "notice": "source-notice-6467fe1bcea3199962c4c36687d6aff118acae3aa845812796406a028bf7b3c1.txt",
+      "sha256": "6467fe1bcea3199962c4c36687d6aff118acae3aa845812796406a028bf7b3c1"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/dualquaternion.hpp",
+        "modules/core/include/opencv2/core/dualquaternion.inl.hpp"
+      ],
+      "notice": "source-notice-64a26a663b7157083fcbc0af4c45b91dc13820e10804adad2c0334fbf413e72b.txt",
+      "sha256": "64a26a663b7157083fcbc0af4c45b91dc13820e10804adad2c0334fbf413e72b"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/zutil.h"
+      ],
+      "notice": "source-notice-64d60e57ee44e3b47555f285c8e225deea65431ff89137537b0a2ecb4765a808.txt",
+      "sha256": "64d60e57ee44e3b47555f285c8e225deea65431ff89137537b0a2ecb4765a808"
+    },
+    {
+      "sources": [
+        "modules/flann/include/opencv2/flann/config.h",
+        "modules/flann/include/opencv2/flann/defines.h",
+        "modules/flann/include/opencv2/flann/params.h"
+      ],
+      "notice": "source-notice-660fce53c2d3ed6b17a67b608e5836f537e6e55fc307f269642851bbec696cac.txt",
+      "sha256": "660fce53c2d3ed6b17a67b608e5836f537e6e55fc307f269642851bbec696cac"
+    },
+    {
+      "sources": [
+        "modules/core/src/norm.simd.hpp"
+      ],
+      "notice": "source-notice-6640d2fc2a7d4323358ce05aa9ad4cb9596a930ddf90c1c6d3791a3e251787e6.txt",
+      "sha256": "6640d2fc2a7d4323358ce05aa9ad4cb9596a930ddf90c1c6d3791a3e251787e6"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/sqpnp.cpp",
+        "modules/geometry/src/sqpnp.hpp"
+      ],
+      "notice": "source-notice-67ddcecb0f7e700d2678068a198828c1679458755246e79242689914d940ed87.txt",
+      "sha256": "67ddcecb0f7e700d2678068a198828c1679458755246e79242689914d940ed87"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/base.hpp",
+        "modules/core/include/opencv2/core/saturate.hpp"
+      ],
+      "notice": "source-notice-685d7eb50154128f5f67e8d0360059fe2ac29f1865f341ef6eb752c259c80a30.txt",
+      "sha256": "685d7eb50154128f5f67e8d0360059fe2ac29f1865f341ef6eb752c259c80a30"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/test_stackblur.cpp"
+      ],
+      "notice": "source-notice-6871629b73a420e938ba995c3269c67e7a3f1209f3714cb819a6418265bead16.txt",
+      "sha256": "6871629b73a420e938ba995c3269c67e7a3f1209f3714cb819a6418265bead16"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/stackblur.cpp"
+      ],
+      "notice": "source-notice-6afb6ea10f72cb3f8f1d69229f7a42526cdebd90d6a5e5455d3cc0e8a8e0ea5f.txt",
+      "sha256": "6afb6ea10f72cb3f8f1d69229f7a42526cdebd90d6a5e5455d3cc0e8a8e0ea5f"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/compress.c"
+      ],
+      "notice": "source-notice-6d57828e1d7b525f8f8128696a70f40341a39aff2dcaad306469a5f2c90a0bd8.txt",
+      "sha256": "6d57828e1d7b525f8f8128696a70f40341a39aff2dcaad306469a5f2c90a0bd8"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/inftrees.h"
+      ],
+      "notice": "source-notice-6d8a4c7b2dbcb2258f1f044a86214d5e70f080b09966250da394e1ccee8c2a3c.txt",
+      "sha256": "6d8a4c7b2dbcb2258f1f044a86214d5e70f080b09966250da394e1ccee8c2a3c"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/cuda/simd_functions.hpp"
+      ],
+      "notice": "source-notice-70252c77bd06495f23b3d615b5613126d193ae1d90890dc755c64ede9a4a4f26.txt",
+      "sha256": "70252c77bd06495f23b3d615b5613126d193ae1d90890dc755c64ede9a4a4f26"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/triangulate.cpp"
+      ],
+      "notice": "source-notice-72e6ff1884f2a1f4294d50cf89901faee215f11ba78ba2a7f20bdbcfa655a4d5.txt",
+      "sha256": "72e6ff1884f2a1f4294d50cf89901faee215f11ba78ba2a7f20bdbcfa655a4d5"
+    },
+    {
+      "sources": [
+        "modules/core/src/softfloat.cpp"
+      ],
+      "notice": "source-notice-74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5.txt",
+      "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+    },
+    {
+      "sources": [
+        "modules/core/src/umatrix.cpp"
+      ],
+      "notice": "source-notice-749f5b179d464043b169cbf4dd6dc7076bcf9246080cc685cfda3bbcd301f6d6.txt",
+      "sha256": "749f5b179d464043b169cbf4dd6dc7076bcf9246080cc685cfda3bbcd301f6d6"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/solvepnp.cpp"
+      ],
+      "notice": "source-notice-776c256724e1d1ca11465ca0fe39d1d699092444f08f36173fe0cac9260e42ed.txt",
+      "sha256": "776c256724e1d1ca11465ca0fe39d1d699092444f08f36173fe0cac9260e42ed"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/usac/dls_solver.cpp"
+      ],
+      "notice": "source-notice-7c39377e1cc79b272ac91c0db43078c3c8b2b5f09036fe6a9e5ffec67e2187e8.txt",
+      "sha256": "7c39377e1cc79b272ac91c0db43078c3c8b2b5f09036fe6a9e5ffec67e2187e8"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/median_blur.simd.hpp"
+      ],
+      "notice": "source-notice-7d92a5653e5e8825c1f5961a999a08e73c7bfd3804d59da9783d964b8cfb0883.txt",
+      "sha256": "7d92a5653e5e8825c1f5961a999a08e73c7bfd3804d59da9783d964b8cfb0883"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/infback.c"
+      ],
+      "notice": "source-notice-7eb5c67d34695c99f676d6c03da0959d200b5c708ab3f269b8c00e7d442363c9.txt",
+      "sha256": "7eb5c67d34695c99f676d6c03da0959d200b5c708ab3f269b8c00e7d442363c9"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/gzguts.h"
+      ],
+      "notice": "source-notice-7ee41422d601d477c5d9ce97569eb7fdc53c259f6666af468320a14afba4c678.txt",
+      "sha256": "7ee41422d601d477c5d9ce97569eb7fdc53c259f6666af468320a14afba4c678"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/gzwrite.c"
+      ],
+      "notice": "source-notice-83ce1994e7b5e089c56aa358a400f7c275111869ffed02b205d1c93d20ba5f33.txt",
+      "sha256": "83ce1994e7b5e089c56aa358a400f7c275111869ffed02b205d1c93d20ba5f33"
+    },
+    {
+      "sources": [
+        "modules/flann/include/opencv2/flann/any.h"
+      ],
+      "notice": "source-notice-8731b921f6278586c6659c1ad3af2a4aa62230ddff6c166479fb7f8214d07278.txt",
+      "sha256": "8731b921f6278586c6659c1ad3af2a4aa62230ddff6c166479fb7f8214d07278"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/deflate.h"
+      ],
+      "notice": "source-notice-8804293c4762cfe5da239e8d789438ef2e2474a29ee61c5d8a5887f7b0457991.txt",
+      "sha256": "8804293c4762cfe5da239e8d789438ef2e2474a29ee61c5d8a5887f7b0457991"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/rho.cpp",
+        "modules/geometry/src/rho.h"
+      ],
+      "notice": "source-notice-8e78237532e7b45131b517781116ed86394326e209258b061683c17536a78841.txt",
+      "sha256": "8e78237532e7b45131b517781116ed86394326e209258b061683c17536a78841"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/cuda/block.hpp",
+        "modules/core/include/opencv2/core/cuda/border_interpolate.hpp",
+        "modules/core/include/opencv2/core/cuda/color.hpp",
+        "modules/core/include/opencv2/core/cuda/common.hpp",
+        "modules/core/include/opencv2/core/cuda/datamov_utils.hpp",
+        "modules/core/include/opencv2/core/cuda/detail/color_detail.hpp",
+        "modules/core/include/opencv2/core/cuda/detail/reduce.hpp",
+        "modules/core/include/opencv2/core/cuda/detail/reduce_key_val.hpp",
+        "modules/core/include/opencv2/core/cuda/detail/transform_detail.hpp",
+        "modules/core/include/opencv2/core/cuda/detail/type_traits_detail.hpp",
+        "modules/core/include/opencv2/core/cuda/detail/vec_distance_detail.hpp",
+        "modules/core/include/opencv2/core/cuda/dynamic_smem.hpp",
+        "modules/core/include/opencv2/core/cuda/emulation.hpp",
+        "modules/core/include/opencv2/core/cuda/filters.hpp",
+        "modules/core/include/opencv2/core/cuda/funcattrib.hpp",
+        "modules/core/include/opencv2/core/cuda/functional.hpp",
+        "modules/core/include/opencv2/core/cuda/limits.hpp",
+        "modules/core/include/opencv2/core/cuda/reduce.hpp",
+        "modules/core/include/opencv2/core/cuda/saturate_cast.hpp",
+        "modules/core/include/opencv2/core/cuda/scan.hpp",
+        "modules/core/include/opencv2/core/cuda/simd_functions.hpp",
+        "modules/core/include/opencv2/core/cuda/transform.hpp",
+        "modules/core/include/opencv2/core/cuda/type_traits.hpp",
+        "modules/core/include/opencv2/core/cuda/utility.hpp",
+        "modules/core/include/opencv2/core/cuda/vec_distance.hpp",
+        "modules/core/include/opencv2/core/cuda/vec_math.hpp",
+        "modules/core/include/opencv2/core/cuda/vec_traits.hpp",
+        "modules/core/include/opencv2/core/cuda/warp.hpp",
+        "modules/core/include/opencv2/core/cuda/warp_reduce.hpp",
+        "modules/core/include/opencv2/core/cuda/warp_shuffle.hpp",
+        "modules/core/include/opencv2/core/cuda_stream_accessor.hpp",
+        "modules/core/include/opencv2/core/cuda_types.hpp",
+        "modules/core/include/opencv2/core/opengl.hpp",
+        "modules/core/perf/cuda/perf_gpumat.cpp",
+        "modules/core/src/alloc.cpp",
+        "modules/core/src/cuda_info.cpp",
+        "modules/core/src/cuda_stream.cpp",
+        "modules/core/src/gl_core_3_1.cpp",
+        "modules/core/src/gl_core_3_1.hpp",
+        "modules/core/src/lapack.cpp",
+        "modules/core/src/opengl.cpp",
+        "modules/core/src/precomp.hpp",
+        "modules/core/src/rand.cpp",
+        "modules/core/src/tables.cpp",
+        "modules/core/test/test_countnonzero.cpp",
+        "modules/core/test/test_eigen.cpp",
+        "modules/core/test/test_hasnonzero.cpp",
+        "modules/core/test/test_operations.cpp",
+        "modules/imgproc/include/opencv2/imgproc.hpp",
+        "modules/imgproc/src/distortion_model.hpp",
+        "modules/imgproc/src/filter.dispatch.cpp",
+        "modules/imgproc/src/filter.hpp",
+        "modules/imgproc/src/filter.simd.hpp",
+        "modules/imgproc/src/morph.dispatch.cpp",
+        "modules/imgproc/src/morph.simd.hpp",
+        "modules/imgproc/src/spatialgradient.cpp",
+        "modules/imgproc/src/thresh.cpp",
+        "modules/imgproc/src/undistort.dispatch.cpp",
+        "modules/imgproc/src/undistort.simd.hpp",
+        "modules/imgproc/test/test_bilateral_filter.cpp",
+        "modules/imgproc/test/test_connectedcomponents.cpp",
+        "modules/imgproc/test/test_grabcut.cpp",
+        "modules/imgproc/test/test_imgproc_umat.cpp",
+        "modules/imgproc/test/test_pc.cpp",
+        "modules/imgproc/test/test_watershed.cpp",
+        "modules/geometry/src/calibration_base.cpp",
+        "modules/geometry/src/distortion_model.hpp",
+        "modules/geometry/src/pinhole.cpp",
+        "modules/geometry/test/test_affine3d_estimator.cpp",
+        "modules/geometry/test/test_compose_rt.cpp",
+        "modules/geometry/test/test_decompose_projection.cpp",
+        "modules/geometry/test/test_solvepnp_ransac.cpp",
+        "modules/geometry/test/test_undistort.cpp",
+        "modules/flann/include/opencv2/flann/miniflann.hpp",
+        "modules/flann/include/opencv2/flann.hpp"
+      ],
+      "notice": "source-notice-8ec5b877b2b9f28937fe69a1c79d593c7f4bd3fcca014d502f4a5b84724b148a.txt",
+      "sha256": "8ec5b877b2b9f28937fe69a1c79d593c7f4bd3fcca014d502f4a5b84724b148a"
+    },
+    {
+      "sources": [
+        "modules/core/src/intel_gpu_gemm.inl.hpp"
+      ],
+      "notice": "source-notice-904e75d1fad0851be4bc02b5fab54dbe6acf35a33417db7d02ca6676775ea0e2.txt",
+      "sha256": "904e75d1fad0851be4bc02b5fab54dbe6acf35a33417db7d02ca6676775ea0e2"
+    },
+    {
+      "sources": [
+        "modules/geometry/include/opencv2/geometry/segment.hpp",
+        "modules/geometry/src/ptcloud/ptcloud_utils.cpp",
+        "modules/geometry/src/ptcloud/ptcloud_utils.hpp",
+        "modules/geometry/src/ptcloud/ptcloud_wrapper.hpp",
+        "modules/geometry/src/ptcloud/sac_segmentation.cpp",
+        "modules/geometry/src/ptcloud/sac_segmentation.hpp"
+      ],
+      "notice": "source-notice-90aae454486bb827970c80268ab7a1bd8c5b4ca468593f1ca79b5d34d967fe40.txt",
+      "sha256": "90aae454486bb827970c80268ab7a1bd8c5b4ca468593f1ca79b5d34d967fe40"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/directx.hpp",
+        "modules/core/src/directx.cpp",
+        "modules/core/src/directx.inc.hpp"
+      ],
+      "notice": "source-notice-97b80ade837ccfc0446553af0bd71388c7a7b62c53962d8c1f876bced29b5907.txt",
+      "sha256": "97b80ade837ccfc0446553af0bd71388c7a7b62c53962d8c1f876bced29b5907"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/histogram.cpp"
+      ],
+      "notice": "source-notice-981f2ce85cce8f2035b78d0cc0f429e68bd6c9d351808e3af62927da3ec23a20.txt",
+      "sha256": "981f2ce85cce8f2035b78d0cc0f429e68bd6c9d351808e3af62927da3ec23a20"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/affine.hpp",
+        "modules/core/include/opencv2/core/core.hpp",
+        "modules/core/include/opencv2/core/cuda.hpp",
+        "modules/core/include/opencv2/core/cuda.inl.hpp",
+        "modules/core/include/opencv2/core/cvstd.hpp",
+        "modules/core/include/opencv2/core/cvstd.inl.hpp",
+        "modules/core/include/opencv2/core/eigen.hpp",
+        "modules/core/include/opencv2/core/mat.hpp",
+        "modules/core/include/opencv2/core/matx.hpp",
+        "modules/core/include/opencv2/core/persistence.hpp",
+        "modules/core/include/opencv2/core/private.cuda.hpp",
+        "modules/core/include/opencv2/core/private.hpp",
+        "modules/core/include/opencv2/core/traits.hpp",
+        "modules/core/include/opencv2/core/types.hpp",
+        "modules/core/src/cuda_gpu_mat.cpp",
+        "modules/core/src/cuda_host_mem.cpp",
+        "modules/core/src/out.cpp",
+        "modules/core/src/pca.cpp",
+        "modules/core/src/stl.cpp",
+        "modules/core/src/types.cpp",
+        "modules/geometry/src/ptsetreg.cpp",
+        "modules/flann/include/opencv2/flann/flann.hpp"
+      ],
+      "notice": "source-notice-983ed7aadc7cb3acfe9bd607884c2bc2801762645b3ec4b6f9c7a16ef584effc.txt",
+      "sha256": "983ed7aadc7cb3acfe9bd607884c2bc2801762645b3ec4b6f9c7a16ef584effc"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/ocl/test_boxfilter.cpp",
+        "modules/imgproc/test/ocl/test_filter2d.cpp",
+        "modules/imgproc/test/ocl/test_sepfilter2d.cpp"
+      ],
+      "notice": "source-notice-9b0fe062e8882a157e6398ef94e5e221ee598420881cb54ceef1c7a03aba8a9e.txt",
+      "sha256": "9b0fe062e8882a157e6398ef94e5e221ee598420881cb54ceef1c7a03aba8a9e"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/hal/intrin_rvv_scalable.hpp"
+      ],
+      "notice": "source-notice-9b1d37ca9ee44f7e614962ab0331b6e903c3db9e25fe7b116b289cb413c08256.txt",
+      "sha256": "9b1d37ca9ee44f7e614962ab0331b6e903c3db9e25fe7b116b289cb413c08256"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/color_lab.cpp"
+      ],
+      "notice": "source-notice-9c89624bd418112531c27d80b47ecf8824929bdeafdb16a49dab7de90f9fe8e5.txt",
+      "sha256": "9c89624bd418112531c27d80b47ecf8824929bdeafdb16a49dab7de90f9fe8e5"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/ippe.cpp",
+        "modules/geometry/src/ippe.hpp"
+      ],
+      "notice": "source-notice-9cd21c1145c94fa16d971b0e84f2acf6c791e521fdc34f62794414c4b66b2a80.txt",
+      "sha256": "9cd21c1145c94fa16d971b0e84f2acf6c791e521fdc34f62794414c4b66b2a80"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/bilateral_filter.dispatch.cpp",
+        "modules/imgproc/src/bilateral_filter.simd.hpp",
+        "modules/imgproc/src/box_filter.dispatch.cpp",
+        "modules/imgproc/src/box_filter.simd.hpp",
+        "modules/imgproc/src/median_blur.simd.hpp"
+      ],
+      "notice": "source-notice-9d1b8645d30976bb3225a855ba4b2c84a86ac5aa5c31240ba34337ce5f7ea0e3.txt",
+      "sha256": "9d1b8645d30976bb3225a855ba4b2c84a86ac5aa5c31240ba34337ce5f7ea0e3"
+    },
+    {
+      "sources": [
+        "modules/core/test/ocl/test_dft.cpp",
+        "modules/imgproc/test/ocl/test_canny.cpp",
+        "modules/imgproc/test/ocl/test_color.cpp"
+      ],
+      "notice": "source-notice-9eccf24c69c3b22c23953484ca5b547524cac3488a18f8c5571ef747e5159d68.txt",
+      "sha256": "9eccf24c69c3b22c23953484ca5b547524cac3488a18f8c5571ef747e5159d68"
+    },
+    {
+      "sources": [
+        "modules/flann/include/opencv2/flann/saving.h"
+      ],
+      "notice": "source-notice-a2eaaf2b3a130686ef922127793d221b701f55b273bd6b5acb34e584372ce716.txt",
+      "sha256": "a2eaaf2b3a130686ef922127793d221b701f55b273bd6b5acb34e584372ce716"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/ocl/test_histogram.cpp"
+      ],
+      "notice": "source-notice-a34d17e8a67dd1f13652573de811a83273bb21e94701dc3bc0a43db799a36b63.txt",
+      "sha256": "a34d17e8a67dd1f13652573de811a83273bb21e94701dc3bc0a43db799a36b63"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/emd_new.cpp"
+      ],
+      "notice": "source-notice-a96b1191c57f8d374f0e3fa7b7579e10e26ed55ee80ee880ae77d34ef4e6ca2f.txt",
+      "sha256": "a96b1191c57f8d374f0e3fa7b7579e10e26ed55ee80ee880ae77d34ef4e6ca2f"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/deriv.cpp"
+      ],
+      "notice": "source-notice-ae7e2f7bbecb7ba4f696172e5ba6879c88483240078a04c59a70f7f249d586d3.txt",
+      "sha256": "ae7e2f7bbecb7ba4f696172e5ba6879c88483240078a04c59a70f7f249d586d3"
+    },
+    {
+      "sources": [
+        "modules/core/src/algorithm.cpp",
+        "modules/core/src/parallel.cpp"
+      ],
+      "notice": "source-notice-aea00c72d779872cd198f2c24708fb88971f5dc3b3459a3f5ae0e975877e319a.txt",
+      "sha256": "aea00c72d779872cd198f2c24708fb88971f5dc3b3459a3f5ae0e975877e319a"
+    },
+    {
+      "sources": [
+        "modules/geometry/test/test_ptcloud_utils.cpp",
+        "modules/geometry/test/test_ptcloud_utils.hpp",
+        "modules/geometry/test/test_sac_segmentation.cpp",
+        "modules/geometry/test/test_sampling.cpp"
+      ],
+      "notice": "source-notice-b491678364db54e6c7fa1989dbe2dead7aebc8422a7c74e6e2f063a5641df3fd.txt",
+      "sha256": "b491678364db54e6c7fa1989dbe2dead7aebc8422a7c74e6e2f063a5641df3fd"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/ocl/test_pyramids.cpp"
+      ],
+      "notice": "source-notice-b5ede53bb957baf593590e1ec31bf51051fc8dc8f1f48782b90916ca2e93d4a8.txt",
+      "sha256": "b5ede53bb957baf593590e1ec31bf51051fc8dc8f1f48782b90916ca2e93d4a8"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/usac/bundle.cpp"
+      ],
+      "notice": "source-notice-b67e1f40c56b7421441f9f3aa0923e0fb1a51836c1d3d3dd3ccf220ebcbd8fa3.txt",
+      "sha256": "b67e1f40c56b7421441f9f3aa0923e0fb1a51836c1d3d3dd3ccf220ebcbd8fa3"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/clahe.cpp"
+      ],
+      "notice": "source-notice-b6c1be1a1286513b6067d37c515fc0a23d0fb106e518fa3e8416735c458dd6f6.txt",
+      "sha256": "b6c1be1a1286513b6067d37c515fc0a23d0fb106e518fa3e8416735c458dd6f6"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/zutil.c"
+      ],
+      "notice": "source-notice-b915b12fc76b76d2da9d4cb91dea7c2ff9fc5ae1bdf50c01dcb2e8fe64a42264.txt",
+      "sha256": "b915b12fc76b76d2da9d4cb91dea7c2ff9fc5ae1bdf50c01dcb2e8fe64a42264"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/ocl/test_filters.cpp"
+      ],
+      "notice": "source-notice-b993ea66b75f010861a461fc054ab8889f0d2d324ba49f228694771d792dcb9b.txt",
+      "sha256": "b993ea66b75f010861a461fc054ab8889f0d2d324ba49f228694771d792dcb9b"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/blend.cpp"
+      ],
+      "notice": "source-notice-b9b42e078fe0439d6531c98ab141319b29884fc76df659d3870080b4c63bc8ae.txt",
+      "sha256": "b9b42e078fe0439d6531c98ab141319b29884fc76df659d3870080b4c63bc8ae"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/stb_truetype.hpp"
+      ],
+      "notice": "source-notice-bceffa63ac383a5acad5d836e2173dcf83e88756748ba1888d4bd440cc0fe35f.txt",
+      "sha256": "bceffa63ac383a5acad5d836e2173dcf83e88756748ba1888d4bd440cc0fe35f"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/ptcloud/sampling.cpp"
+      ],
+      "notice": "source-notice-bffeaf15300dcd86a3a29662b302a071089452396f0cb8892ef01a435b47c38f.txt",
+      "sha256": "bffeaf15300dcd86a3a29662b302a071089452396f0cb8892ef01a435b47c38f"
+    },
+    {
+      "sources": [
+        "modules/core/src/matrix_transform.cpp"
+      ],
+      "notice": "source-notice-c21b3f7dc2c749200ac85858b4a1dad5282d2f151832978e915349079ae0a319.txt",
+      "sha256": "c21b3f7dc2c749200ac85858b4a1dad5282d2f151832978e915349079ae0a319"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/sumpixels.dispatch.cpp",
+        "modules/imgproc/src/sumpixels.simd.hpp"
+      ],
+      "notice": "source-notice-c256435c829fd1d4785b316d9e13b9c065512c948fcf4fb507c18c0b0b253055.txt",
+      "sha256": "c256435c829fd1d4785b316d9e13b9c065512c948fcf4fb507c18c0b0b253055"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/adler32.c"
+      ],
+      "notice": "source-notice-c2f30f121fd430b99a0bc52aaa4d35080a3f8fff679250dd73063f24466d9bf1.txt",
+      "sha256": "c2f30f121fd430b99a0bc52aaa4d35080a3f8fff679250dd73063f24466d9bf1"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/gzlib.c"
+      ],
+      "notice": "source-notice-c81378d0e9b4b6ccbeef439a4ed336d0a741e249ac76824cd04eb571b324affa.txt",
+      "sha256": "c81378d0e9b4b6ccbeef439a4ed336d0a741e249ac76824cd04eb571b324affa"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/zlib.h"
+      ],
+      "notice": "source-notice-c895ed8777a908853211cff3a596b6dd5afaf44fde6d45ae613b4484fd71095d.txt",
+      "sha256": "c895ed8777a908853211cff3a596b6dd5afaf44fde6d45ae613b4484fd71095d"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/canny.cpp"
+      ],
+      "notice": "source-notice-c9698ad8987b8f614ec5705845ec10a1ab734ddf58ac60eee6907b38a299e0b1.txt",
+      "sha256": "c9698ad8987b8f614ec5705845ec10a1ab734ddf58ac60eee6907b38a299e0b1"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/five-point.cpp"
+      ],
+      "notice": "source-notice-cfbd64c20647411e1a78cb255047486186d98aa3e05641a98e2fbb16ee45ea8c.txt",
+      "sha256": "cfbd64c20647411e1a78cb255047486186d98aa3e05641a98e2fbb16ee45ea8c"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/filterengine.hpp"
+      ],
+      "notice": "source-notice-d1bccc9907c966d49ee346fb4559f3f0a17c7ee7c171fd64ddb4c973f362cbbb.txt",
+      "sha256": "d1bccc9907c966d49ee346fb4559f3f0a17c7ee7c171fd64ddb4c973f362cbbb"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/precomp.hpp",
+        "modules/imgproc/test/test_drawing.cpp",
+        "modules/geometry/src/precomp.hpp"
+      ],
+      "notice": "source-notice-d36f723ca53eb1f711f785b61b6e6c5afa6f8f08880a4197ca2335dd67adca30.txt",
+      "sha256": "d36f723ca53eb1f711f785b61b6e6c5afa6f8f08880a4197ca2335dd67adca30"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/crc32.c"
+      ],
+      "notice": "source-notice-d4b10bc266ba0b7d388abd11a67c6c3f80258d5bcbe4c352f30176727c4170c4.txt",
+      "sha256": "d4b10bc266ba0b7d388abd11a67c6c3f80258d5bcbe4c352f30176727c4170c4"
+    },
+    {
+      "sources": [
+        "modules/core/src/system.cpp",
+        "modules/imgproc/src/main.cpp",
+        "modules/geometry/src/main.cpp",
+        "modules/geometry/test/test_homography.cpp"
+      ],
+      "notice": "source-notice-d600fb2d42df476f5ed4f735f5f813f6d75343dba9eba4ff4845b9c8f672d9b7.txt",
+      "sha256": "d600fb2d42df476f5ed4f735f5f813f6d75343dba9eba4ff4845b9c8f672d9b7"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/resize.cpp"
+      ],
+      "notice": "source-notice-d816f9f50cd6042f414ddb175b0095ca4274c57fe203b4f387b7ffa81a38cd83.txt",
+      "sha256": "d816f9f50cd6042f414ddb175b0095ca4274c57fe203b4f387b7ffa81a38cd83"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/sumpixels.avx512_skx.hpp"
+      ],
+      "notice": "source-notice-d8355b3c0e73ad6b9fbd99259311824c2023dd802a140f0257e7d1976e5971ee.txt",
+      "sha256": "d8355b3c0e73ad6b9fbd99259311824c2023dd802a140f0257e7d1976e5971ee"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/rotcalipers.cpp"
+      ],
+      "notice": "source-notice-d83ee10e1a88c6e69437fe62c4e9e6ae91a56a661888375b1244175fe619ad9e.txt",
+      "sha256": "d83ee10e1a88c6e69437fe62c4e9e6ae91a56a661888375b1244175fe619ad9e"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/inffast.c"
+      ],
+      "notice": "source-notice-db8266bda98fc81f156eb8da9ce22146cfb515082c304b009a9bd90215eebf3f.txt",
+      "sha256": "db8266bda98fc81f156eb8da9ce22146cfb515082c304b009a9bd90215eebf3f"
+    },
+    {
+      "sources": [
+        "modules/imgproc/test/test_cornersubpix.cpp"
+      ],
+      "notice": "source-notice-ddb2a4a881d4dd2d5c3e6f16cedfc947b81a2474e12e58bba4aee693dfe4f4b0.txt",
+      "sha256": "ddb2a4a881d4dd2d5c3e6f16cedfc947b81a2474e12e58bba4aee693dfe4f4b0"
+    },
+    {
+      "sources": [
+        "modules/core/src/softfloat.cpp"
+      ],
+      "notice": "source-notice-debf79ffd990cc01fc372e9d0ec5e8a099d10a0f62e40714b8cfe8409f34a915.txt",
+      "sha256": "debf79ffd990cc01fc372e9d0ec5e8a099d10a0f62e40714b8cfe8409f34a915"
+    },
+    {
+      "sources": [
+        "modules/geometry/test/test_filter_homography_decomp.cpp"
+      ],
+      "notice": "source-notice-e3324e1047669b8f60dff07038c6a952874410d652accae64aa65b41acfffc1c.txt",
+      "sha256": "e3324e1047669b8f60dff07038c6a952874410d652accae64aa65b41acfffc1c"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/corner.avx.cpp",
+        "modules/imgproc/src/corner.cpp",
+        "modules/imgproc/src/corner.hpp",
+        "modules/imgproc/src/imgwarp.avx2.cpp",
+        "modules/imgproc/src/imgwarp.cpp",
+        "modules/imgproc/src/imgwarp.hpp",
+        "modules/imgproc/src/imgwarp.lasx.cpp",
+        "modules/imgproc/src/imgwarp.sse4_1.cpp",
+        "modules/imgproc/src/pyramids.cpp",
+        "modules/imgproc/src/resize.avx2.cpp",
+        "modules/imgproc/src/resize.hpp",
+        "modules/imgproc/src/resize.lasx.cpp",
+        "modules/imgproc/src/resize.sse4_1.cpp",
+        "modules/imgproc/src/smooth.dispatch.cpp"
+      ],
+      "notice": "source-notice-e36f8bf7697e1fd8e9b02ec735c703b35ae8d21384adb603420af1d53075ee62.txt",
+      "sha256": "e36f8bf7697e1fd8e9b02ec735c703b35ae8d21384adb603420af1d53075ee62"
+    },
+    {
+      "sources": [
+        "modules/core/src/dxt.cpp",
+        "modules/core/test/test_concatenation.cpp",
+        "modules/core/test/test_rotatedrect.cpp",
+        "modules/imgproc/src/drawing.cpp",
+        "modules/imgproc/src/generalized_hough.cpp",
+        "modules/imgproc/src/grabcut.cpp",
+        "modules/imgproc/src/templmatch.cpp",
+        "modules/imgproc/src/utils.cpp",
+        "modules/imgproc/test/test_canny.cpp",
+        "modules/imgproc/test/test_color.cpp",
+        "modules/imgproc/test/test_contours.cpp",
+        "modules/imgproc/test/test_distancetransform.cpp",
+        "modules/imgproc/test/test_filter.cpp",
+        "modules/imgproc/test/test_floodfill.cpp",
+        "modules/imgproc/test/test_histograms.cpp",
+        "modules/imgproc/test/test_imgwarp.cpp",
+        "modules/imgproc/test/test_imgwarp_strict.cpp",
+        "modules/imgproc/test/test_templmatch.cpp",
+        "modules/imgproc/test/test_thresh.cpp",
+        "modules/geometry/include/opencv2/geometry/detail/gcgraph.hpp",
+        "modules/geometry/src/approx.cpp",
+        "modules/geometry/src/convhull.cpp",
+        "modules/geometry/src/geometry.cpp",
+        "modules/geometry/src/linefit.cpp",
+        "modules/geometry/src/matchcontours.cpp",
+        "modules/geometry/src/moments.cpp",
+        "modules/geometry/src/shapedescr.cpp",
+        "modules/geometry/src/subdivision2d.cpp",
+        "modules/geometry/test/test_approxpoly.cpp",
+        "modules/geometry/test/test_convhull.cpp",
+        "modules/geometry/test/test_fundam.cpp",
+        "modules/geometry/test/test_modelest.cpp",
+        "modules/geometry/test/test_moments.cpp",
+        "modules/geometry/test/test_undistort_badarg.cpp",
+        "modules/flann/test/test_lshtable_badarg.cpp"
+      ],
+      "notice": "source-notice-e3c00dd38e6a2c0dfdd5491e00ae9548ddd45d4ae9548d5dbffd67e3683afbd1.txt",
+      "sha256": "e3c00dd38e6a2c0dfdd5491e00ae9548ddd45d4ae9548d5dbffd67e3683afbd1"
+    },
+    {
+      "sources": [
+        "modules/geometry/src/geometry.cpp"
+      ],
+      "notice": "source-notice-e7923e6ad6cdb500c5d9e0470a367398db66c203718afeb36efdb78bac49535d.txt",
+      "sha256": "e7923e6ad6cdb500c5d9e0470a367398db66c203718afeb36efdb78bac49535d"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/phasecorr.cpp"
+      ],
+      "notice": "source-notice-e84b32945d25d5c1261c0af64c56da51582a73cc0be984b226783cb9ff303440.txt",
+      "sha256": "e84b32945d25d5c1261c0af64c56da51582a73cc0be984b226783cb9ff303440"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/cvdef.h",
+        "modules/core/include/opencv2/core/fast_math.hpp",
+        "modules/core/include/opencv2/core/hal/hal.hpp",
+        "modules/core/include/opencv2/core/hal/intrin.hpp",
+        "modules/core/include/opencv2/core/hal/intrin_cpp.hpp",
+        "modules/core/include/opencv2/core/hal/intrin_neon.hpp",
+        "modules/core/include/opencv2/core/hal/intrin_sse.hpp",
+        "modules/core/include/opencv2/core/mat.inl.hpp",
+        "modules/core/include/opencv2/core/utility.hpp",
+        "modules/core/src/hal_internal.cpp",
+        "modules/core/src/hal_internal.hpp",
+        "modules/core/src/hal_replacement.hpp",
+        "modules/imgproc/src/hal_replacement.hpp",
+        "modules/geometry/src/hal_replacement.hpp"
+      ],
+      "notice": "source-notice-e8872a8c67b0780f340f5e7abc3ac7171e09772edf8c9255102939afc895cfa8.txt",
+      "sha256": "e8872a8c67b0780f340f5e7abc3ac7171e09772edf8c9255102939afc895cfa8"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/stackblur.cpp",
+        "modules/imgproc/test/test_stackblur.cpp"
+      ],
+      "notice": "source-notice-ea1d739fa71f75c0d8ef6644a6688050e4ddf6b1f3961331156796effdfd266a.txt",
+      "sha256": "ea1d739fa71f75c0d8ef6644a6688050e4ddf6b1f3961331156796effdfd266a"
+    },
+    {
+      "sources": [
+        "modules/flann/include/opencv2/flann/hierarchical_clustering_index.h"
+      ],
+      "notice": "source-notice-ed373aaa381f9a29c8b0b9573eb1f18fcd1e495fd837a63c001bcdc26b49ac12.txt",
+      "sha256": "ed373aaa381f9a29c8b0b9573eb1f18fcd1e495fd837a63c001bcdc26b49ac12"
+    },
+    {
+      "sources": [
+        "modules/core/src/rand.cpp"
+      ],
+      "notice": "source-notice-edd49e519fe8e4095a94dda993c6bed15cef744e81e27f1f82ba1a3eb28e46dd.txt",
+      "sha256": "edd49e519fe8e4095a94dda993c6bed15cef744e81e27f1f82ba1a3eb28e46dd"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/cornersubpix.cpp",
+        "modules/imgproc/src/distransform.cpp",
+        "modules/imgproc/src/floodfill.cpp",
+        "modules/imgproc/src/samplers.cpp",
+        "modules/imgproc/src/segmentation.cpp",
+        "modules/geometry/src/levmarq.cpp"
+      ],
+      "notice": "source-notice-ef77553a0a15f3e05bcebf9d87de4c07a511e629a8e021a3bef1e72933efd9b1.txt",
+      "sha256": "ef77553a0a15f3e05bcebf9d87de4c07a511e629a8e021a3bef1e72933efd9b1"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/operations.hpp"
+      ],
+      "notice": "source-notice-f3f7b918624aba338c18b2249a886d743b0d2877a64496649a6f111fe31e6eda.txt",
+      "sha256": "f3f7b918624aba338c18b2249a886d743b0d2877a64496649a6f111fe31e6eda"
+    },
+    {
+      "sources": [
+        "modules/core/test/ocl/test_image2d.cpp",
+        "modules/imgproc/perf/opencl/perf_houghlines.cpp",
+        "modules/imgproc/perf/perf_floodfill.cpp",
+        "modules/imgproc/test/ocl/test_houghlines.cpp",
+        "modules/geometry/perf/perf_moments.cpp"
+      ],
+      "notice": "source-notice-f5197ded5d89be2a16c0a7d8e37299e047a750c39a3adb99bfbbc04cb9e0491f.txt",
+      "sha256": "f5197ded5d89be2a16c0a7d8e37299e047a750c39a3adb99bfbbc04cb9e0491f"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/gzread.c"
+      ],
+      "notice": "source-notice-f6d83901a2662cdc85332dbbc82ba7dac18b1f6994bbec3c7793fb1e54df12a0.txt",
+      "sha256": "f6d83901a2662cdc85332dbbc82ba7dac18b1f6994bbec3c7793fb1e54df12a0"
+    },
+    {
+      "sources": [
+        "modules/core/include/opencv2/core/va_intel.hpp",
+        "modules/core/src/va_intel.cpp"
+      ],
+      "notice": "source-notice-f71e4163255cff64747a1086d8af02da8eba79599ecf97a5eb5239b39b3781be.txt",
+      "sha256": "f71e4163255cff64747a1086d8af02da8eba79599ecf97a5eb5239b39b3781be"
+    },
+    {
+      "sources": [
+        "modules/core/src/kmeans.cpp"
+      ],
+      "notice": "source-notice-fa932ad5c63ca9b979ff353d0daa7e29b79d3320063db6ee0cd7efa50ee3600c.txt",
+      "sha256": "fa932ad5c63ca9b979ff353d0daa7e29b79d3320063db6ee0cd7efa50ee3600c"
+    },
+    {
+      "sources": [
+        "modules/geometry/perf/perf_affine2d.cpp",
+        "modules/geometry/test/test_affine2d_estimator.cpp",
+        "modules/geometry/test/test_affine_partial2d_estimator.cpp",
+        "modules/geometry/test/test_translation2d_estimator.cpp"
+      ],
+      "notice": "source-notice-fc978ee0fb41694a726a9e79a023c54f373cfddd68924aa7a37c890cf781746f.txt",
+      "sha256": "fc978ee0fb41694a726a9e79a023c54f373cfddd68924aa7a37c890cf781746f"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/inffast.h"
+      ],
+      "notice": "source-notice-fca828214f80f9d56bc371e322ff9ed2875a92880cec1b70ec710ca802a3093e.txt",
+      "sha256": "fca828214f80f9d56bc371e322ff9ed2875a92880cec1b70ec710ca802a3093e"
+    },
+    {
+      "sources": [
+        "modules/imgproc/src/accum.cpp"
+      ],
+      "notice": "source-notice-fd29fb5090bf6d65d13bf9b844ecb11afb60dec4125adac81e5431b22326621f.txt",
+      "sha256": "fd29fb5090bf6d65d13bf9b844ecb11afb60dec4125adac81e5431b22326621f"
+    },
+    {
+      "sources": [
+        "3rdparty/zlib/trees.c"
+      ],
+      "notice": "source-notice-fe131a25cea3bc3fcf785bc2334551738580eba32c6c1609f5a2fda1c0bb2c1b.txt",
+      "sha256": "fe131a25cea3bc3fcf785bc2334551738580eba32c6c1609f5a2fda1c0bb2c1b"
+    }
+  ]
+}

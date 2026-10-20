@@ -1,3 +1,5 @@
+import 'application/scan_corner_editor.dart';
+import 'src/rust/vision.dart';
 import 'application/print_layout_controls.dart';
 import 'application/camera_capture.dart';
 import 'application/recognized_text.dart';
@@ -205,7 +207,7 @@ extension ToolLabel on Tool {
     Tool.merge =>
       'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
     Tool.scan =>
-      'scan certificate pages document camera ocr text recognize printed english bangla',
+      'scan certificate pages document camera corners perspective straighten tilted deskew ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
     Tool.print => 'print sheet printing copies paper a4 letter dpi',
@@ -437,11 +439,13 @@ class _StudioHomeState extends State<StudioHome> {
 class SelectedSource {
   final String name;
   final Uint8List bytes;
+  PageCorners? corners;
   String scanMode = 'original';
   int scanRotation = 0;
   double brightness = 0, contrast = 0;
   ScanOptions get scanOptions => scanSettings(
     mode: scanMode,
+    corners: corners,
     rotation: scanRotation,
     brightness: brightness.round(),
     contrast: contrast,
@@ -480,7 +484,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   final form = GlobalKey<FormState>();
   List<SelectedSource> sources = [];
   StudioOutput? output;
-  String? error, saved;
+  String? error, saved, saveError;
   bool busy = false,
       png = false,
       cover = false,
@@ -491,7 +495,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   int rotation = 0, quality = 60, threshold = 230;
   int previewIndex = 0, draftDays = 7;
   String? draftMessage;
-  Future<bool>? textRecognitionAvailable;
+  Future<bool>? textRecognitionAvailable, geometryAvailable;
   bool get imageTool =>
       widget.tool == Tool.photo || widget.tool == Tool.signature;
   @override
@@ -510,6 +514,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     filename.text = suggestedName;
     if (widget.tool == Tool.scan) {
       textRecognitionAvailable = ocrAvailable().catchError((_) => false);
+      geometryAvailable = scanGeometryAvailable().catchError((_) => false);
     }
   }
 
@@ -551,6 +556,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     setState(() {
       output = null;
       saved = null;
+      saveError = null;
       error = null;
     });
   }
@@ -579,6 +585,9 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               widget.tool == Tool.pack)
           ? sources.fold(0, (n, s) => n + s.bytes.length)
           : 0;
+      if (widget.tool == Tool.pack && slot != null && slot < sources.length) {
+        total -= sources[slot].bytes.length;
+      }
       for (final f in files) {
         final size = await f.length();
         if (size > 64 * 1024 * 1024 || total + size > 64 * 1024 * 1024) {
@@ -591,10 +600,16 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       if (!mounted) return;
       setState(() {
         if (widget.tool == Tool.pack) {
-          if (slot != sources.length) {
-            throw Exception('Select the application documents in order.');
+          if (slot == null || slot < 0 || slot > sources.length || slot >= 3) {
+            throw const FormatException(
+              'Choose a document slot to add or replace.',
+            );
           }
-          sources.add(incoming.first);
+          if (slot == sources.length) {
+            sources.add(incoming.first);
+          } else {
+            sources[slot] = incoming.first;
+          }
         } else if (widget.tool == Tool.merge || widget.tool == Tool.scan) {
           sources.addAll(incoming);
         } else {
@@ -603,7 +618,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         output = null;
         error = null;
         saved = null;
-        previewIndex = 0;
+        saveError = null;
+        previewIndex = widget.tool == Tool.pack ? slot! : 0;
       });
     } catch (e) {
       if (mounted) setState(() => error = clean(e));
@@ -639,6 +655,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         previewIndex = sources.length - 1;
         output = null;
         saved = null;
+        saveError = null;
       });
     } on PlatformException catch (e) {
       if (mounted) {
@@ -726,6 +743,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       busy = true;
       error = null;
       saved = null;
+      saveError = null;
       output = null;
     });
     try {
@@ -810,13 +828,13 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     if (output == null || busy || !form.currentState!.validate()) return;
     setState(() {
       busy = true;
-      error = null;
+      saveError = null;
     });
     try {
       final location = await ExportService.saveCopy(output!, filename.text);
       if (mounted && location != null) setState(() => saved = location);
     } catch (e) {
-      if (mounted) setState(() => error = clean(e));
+      if (mounted) setState(() => saveError = clean(e));
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -918,18 +936,24 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               (i) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: OutlinedButton.icon(
-                  onPressed: busy || sources.length != i
+                  onPressed: busy || sources.length < i
                       ? null
                       : () => select(slot: i),
                   icon: Icon(
                     sources.length > i ? Icons.check_circle_outline : Icons.add,
                   ),
                   label: Text(
-                    [
-                      'Choose photo',
-                      'Choose signature',
-                      'Choose certificate PDF',
-                    ][i],
+                    sources.length > i
+                        ? [
+                            'Replace photo',
+                            'Replace signature',
+                            'Replace certificate PDF',
+                          ][i]
+                        : [
+                            'Choose photo',
+                            'Choose signature',
+                            'Choose certificate PDF',
+                          ][i],
                   ),
                 ),
               ),
@@ -970,7 +994,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  '${(e.value.bytes.length / 1024).toStringAsFixed(1)} KiB',
+                  '${widget.tool == Tool.pack ? '${['Photo', 'Signature', 'Certificate'][e.key]} · ' : ''}${(e.value.bytes.length / 1024).toStringAsFixed(1)} KiB',
                 ),
                 selected: previewIndex == e.key,
                 leading: Text(
@@ -1002,6 +1026,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                                         );
                                         output = null;
                                         saved = null;
+                                        saveError = null;
                                       });
                                     },
                               icon: const Icon(Icons.arrow_upward),
@@ -1031,6 +1056,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                                             );
                                       output = null;
                                       saved = null;
+                                      saveError = null;
                                     });
                                   },
                             icon: const Icon(Icons.close),
@@ -1047,6 +1073,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                         sources = [];
                         output = null;
                         saved = null;
+                        saveError = null;
                       });
                     },
               child: const Text('Clear selection'),
@@ -1579,10 +1606,22 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             const SizedBox(height: 12),
             TextFormField(
               controller: filename,
+              onChanged: (_) => setState(() {
+                saveError = null;
+                saved = null;
+              }),
               validator: (s) =>
                   s == null || s.trim().isEmpty ? 'Enter a filename.' : null,
               decoration: const InputDecoration(labelText: 'Filename'),
             ),
+            if (saveError != null)
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  saveError!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: busy ? null : save,
@@ -1621,6 +1660,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             rotation: s.scanRotation,
             brightness: s.brightness,
             contrast: s.contrast,
+            corners: s.corners,
           ),
         )
         .toList();
@@ -1694,7 +1734,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               ..scanMode = p.mode
               ..scanRotation = p.rotation
               ..brightness = p.brightness
-              ..contrast = p.contrast,
+              ..contrast = p.contrast
+              ..corners = p.corners,
           )
           .toList();
       if (mounted) {
@@ -1704,6 +1745,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           output = null;
           error = null;
           saved = null;
+          saveError = null;
           draftMessage =
               'Restored ${incoming.length} pages. The saved draft is still available.';
         });
@@ -1722,6 +1764,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     }
   }
 
+  Future<void> editCorners(SelectedSource source) async {
+    final result = await Navigator.of(context).push<CornerEditResult>(
+      MaterialPageRoute(
+        builder: (_) =>
+            ScanCornerEditor(source: source.bytes, initial: source.corners),
+      ),
+    );
+    if (!mounted || result == null) return;
+    setState(() => source.corners = result.corners);
+    changed();
+  }
+
   Widget scanControls() {
     final source = sources[previewIndex.clamp(0, sources.length - 1)];
     return Column(
@@ -1729,6 +1783,40 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       children: [
         const SizedBox(height: 16),
         Text('Editing page ${previewIndex + 1}: ${source.name}'),
+        FutureBuilder<bool>(
+          future: geometryAvailable,
+          builder: (context, snapshot) {
+            if (snapshot.data != true) {
+              if (source.corners != null &&
+                  snapshot.connectionState == ConnectionState.done) {
+                return const Text(
+                  'This draft has page corners, but the local correction engine is unavailable in this build. Remove the correction below or open it in a build with the engine.',
+                );
+              }
+              return const SizedBox.shrink();
+            }
+            return OutlinedButton.icon(
+              onPressed: busy ? null : () => editCorners(source),
+              icon: const Icon(Icons.crop_free),
+              label: Text(
+                source.corners == null
+                    ? 'Set page corners'
+                    : 'Edit page corners',
+              ),
+            );
+          },
+        ),
+        if (source.corners != null)
+          TextButton.icon(
+            onPressed: busy
+                ? null
+                : () {
+                    setState(() => source.corners = null);
+                    changed();
+                  },
+            icon: const Icon(Icons.crop_original),
+            label: const Text('Remove page corner correction'),
+          ),
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
           key: ValueKey('${source.name}-$previewIndex-${source.scanMode}'),
@@ -1798,6 +1886,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               ? null
               : () {
                   setState(() {
+                    source.corners = null;
                     source.scanMode = 'original';
                     source.scanRotation = 0;
                     source.brightness = 0;
@@ -1812,6 +1901,28 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   }
 
   Widget previewContent() {
+    if (widget.tool == Tool.pack && sources.isNotEmpty && output == null) {
+      final index = previewIndex.clamp(0, sources.length - 1);
+      final source = sources[index];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Selected ${['photo', 'signature', 'certificate'][index]} — original',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 12),
+          if (index == 2)
+            PdfPreview(data: source.bytes)
+          else
+            SafeImagePreview(
+              bytes: source.bytes,
+              semanticLabel:
+                  'Selected ${index == 0 ? 'photo' : 'signature'} source image',
+            ),
+        ],
+      );
+    }
     if (output?.format == 'pdf') {
       return PdfPreview(data: output!.bytes, pageCount: output!.pages);
     }

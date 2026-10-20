@@ -336,3 +336,60 @@ fn archive_validation_reopens_document_instead_of_trusting_manifest_hash() {
     valid.data = bytes;
     assert!(export::verify_output(&valid).is_err());
 }
+
+#[test]
+fn application_pack_failures_identify_the_document_that_needs_repair() {
+    use studio_core::api;
+    let good = image(40, 20);
+    let certificate = pdf::images_to_pdf(&[good.clone()], &Default::default())
+        .unwrap()
+        .data;
+    let original = (good.clone(), certificate.clone());
+    assert!(
+        api::create_application_pack(vec![1], good.clone(), certificate.clone(), 100)
+            .unwrap_err()
+            .starts_with("Photo:")
+    );
+    assert!(
+        api::create_application_pack(good.clone(), vec![1], certificate.clone(), 100)
+            .unwrap_err()
+            .starts_with("Signature:")
+    );
+    assert!(
+        api::create_application_pack(good.clone(), good.clone(), vec![1], 100)
+            .unwrap_err()
+            .starts_with("Certificate:")
+    );
+    assert_eq!((good, certificate), original);
+}
+
+#[test]
+fn pack_result_lists_actual_archived_names_dimensions_and_bytes() {
+    let photo = photo::process(&image(40, 20), &Default::default()).unwrap();
+    let expected_bytes = photo.data.len();
+    let packed = export::pack(vec![("ছবি.jpg".into(), photo)]).unwrap();
+    let entry = packed
+        .info
+        .findings
+        .iter()
+        .find(|finding| finding.code == "archive_entry_verified")
+        .unwrap();
+    assert!(entry.message.contains("ছবি.jpg"));
+    assert!(entry.message.contains("300 × 300 pixels"));
+    assert!(entry.message.contains(&format!("{expected_bytes} bytes")));
+    let mut archive = zip::ZipArchive::new(Cursor::new(&packed.data)).unwrap();
+    let mut saved = Vec::new();
+    archive
+        .by_name("ছবি.jpg")
+        .unwrap()
+        .read_to_end(&mut saved)
+        .unwrap();
+    assert_eq!(saved.len(), expected_bytes);
+    assert_eq!(
+        (
+            image::load_from_memory(&saved).unwrap().width(),
+            image::load_from_memory(&saved).unwrap().height()
+        ),
+        (300, 300)
+    );
+}

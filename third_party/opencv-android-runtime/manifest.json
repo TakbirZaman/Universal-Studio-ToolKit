@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "ndk_version": "28.2.13676358",
+  "source": "Unmodified notices from the official installed Android NDK, native audit CI run 39314977313",
+  "artifact_id": 12217850377,
+  "artifact_sha256": "fe9dd495922ce706e5616faccf55b8b792bd0cd664a37ed3d5e1bf8de3d27801",
+  "scope": "Conservative complete SDK/toolchain notice retention for static libc++/ABI/unwind/compiler-rt. SDK tools are not redistributed. Aggregate GPL tool notices do not relicense the application. Android system libraries are not bundled.",
+  "entries": [
+    {
+      "notice": "Android-NDK28.2-NOTICE.toolchain.txt",
+      "sha256": "789714a9076571c580cf531bdcebec776a4d889c12c3c1108adafc6e4338710a"
+    },
+    {
+      "notice": "Android-NDK28.2-NOTICE.txt",
+      "sha256": "faf0dc52cf6ce9ab09a04b0c074a378dd2565ee1ed9bc1179d83793bcdba012e"
+    }
+  ]
+}
