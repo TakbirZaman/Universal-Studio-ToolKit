@@ -1,0 +1,17 @@
+# Remaining launch work
+
+The original scope remains authoritative. Implemented development slices are not full launch completion. See REQUIREMENTS/STATUS for evidence and deferred exclusions.
+
+1. Application packs: editable required/optional slots; accepted input/output formats; all size/aspect/page/filename constraints; safe processing recipes; preset schema/revision/source; persistence/import/export; folder export; per-slot review/retry; managed studio sources.
+2. Photo/signature: direct crop interaction and aspect locking; manual signature refinement and consented local storage/deletion; visual PDF signature placement with crop/rotation transforms; face-assisted crop suggestions with zero/multiple-face selection. Flexible compression has a separately tested recipe candidate; complete its platform verification/integration.
+3. PDF: thumbnail arrangement/split polish, additional placement/margin controls, validated AcroForm filling, embedded-image optimization and explicitly labelled raster compression, OCR/searchable PDF geometry and reading order. Preserve supported structures and continue rejecting unsupported/protected input rather than silently discarding it.
+4. Scanner: actual Android camera/gallery/provider/recreation tests; desktop camera capability where practical; broader boundary/quality heuristic fixtures and edge-case recovery. Manual straighten/corners/perspective are implemented; automatic angle detection is not claimed.
+5. OCR: offline Windows/Android engine packaging and English/Bangla assets, native/runtime/transitive notices, editable result acceptance and geometry-validated searchable PDF export. Face/background models require separate licensing/resource/platform review.
+6. Shared workflows: managed document references and lifetimes, direct use of prepared studio outputs in packs, integrated recipes and selective retries without unnecessary user export/import.
+7. Accessibility/product: localization-ready string catalog and Bangla interface, keyboard-only complete journeys, reduced-motion/system-scaling audit, real screen readers, desktop drop, open/share/reveal and process-another actions after save. The five first-use scenarios have a documented heuristic review; representative-user observation/timing is outstanding.
+8. Defensive processing: worker isolation, process-wide memory/time budgets and adversarial parser tests; abandoned temporary-job cleanup; additional Unicode normalization/case collision and provider partial-write/failure tests; complete colour-profile/gamma policy and interoperability review.
+9. Distribution: complete all native/transitive license obligations; clean Windows/Linux/Android acceptance; Linux AppImage where practical; printer acceptance; private stable production signing/key backup; durable installer delivery. Current installable APKs use disposable development identities.
+
+Current source and CI links are in CHECKPOINT. Saving updated installer copies was blocked by file-service authorization before transfer; session downloads and GitHub CI artifacts remain distinct from the older saved copies.
+
+Deferred advanced features remain outside completion claims: general Word conversion/reconstruction, certificate-backed signing, secure redaction, authorized encryption/unlocking before interoperability, cloud/remote AI and payment infrastructure. No unavailable feature should appear as a functioning control.

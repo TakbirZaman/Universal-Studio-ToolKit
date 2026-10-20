@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "source_commit": "77505824d25135474fffa397256c60e2b29aadd0",
+  "complete_launch": false,
+  "clean_device_verified": false,
+  "build_runs": {
+    "linux": 39403577913,
+    "windows": 39403577707,
+    "android": 39403577374,
+    "bridge": 39403577509,
+    "notices": 39403577612
+  },
+  "files": [
+    {
+      "name": "universal-studio-android-arm64-debug.apk",
+      "bytes": 99430975,
+      "sha256": "ac422c160c851743210f9ba8b9e1afdb3a294b09c8b38c95294493f4204b690e"
+    },
+    {
+      "name": "universal-studio-android-arm64-development-release.apk",
+      "bytes": 35299421,
+      "sha256": "16d0fa0ba25f9ea050daaa837f43313790bebd7f730c99beb465757674bd9b58"
+    },
+    {
+      "name": "universal-studio-android-arm64-unsigned.apk",
+      "bytes": 35227146,
+      "sha256": "2fb6ecf1436fc49048319488281fc5555fec92091496f905b4b7ae1e0bb9124d"
+    },
+    {
+      "name": "universal-studio-linux-x64.tar.gz",
+      "bytes": 21617423,
+      "sha256": "e8a4b789c7a1d9feab1114d89bd75551becf706481a51c8133e655abc8ed2560"
+    },
+    {
+      "name": "universal-studio-windows-x64.zip",
+      "bytes": 22283584,
+      "sha256": "e6fe253137d6da5497f3169ee1313d8b0839bea4da8299bfadcb7fda7d615465"
+    }
+  ],
+  "desktop_notice_checks": {
+    "linux": {
+      "dependencies": 256,
+      "notice_files_verified": 471,
+      "license_obligations_cleared": false
+    },
+    "windows": {
+      "dependencies": 256,
+      "notice_files_verified": 471,
+      "license_obligations_cleared": false
+    }
+  },
+  "android_notice_checks": {
+    "universal-studio-android-arm64-debug.apk": {
+      "notice_references": 471,
+      "native": [
+        {
+          "name": "lib/arm64-v8a/libVkLayer_khronos_validation.so",
+          "bytes": 15240080,
+          "sha256": "ae445f7e74d402e3a367adb230b1edd9841899fcb3310166e5cc96a09ad37a3f"
+        },
+        {
+          "name": "lib/arm64-v8a/libdartjni.so",
+          "bytes": 97768,
+          "sha256": "20c0c35e8d559691e225e3f8f5775ba8f35aba4d30126492487978eacf7cde14"
+        },
+        {
+          "name": "lib/arm64-v8a/libflutter.so",
+          "bytes": 38828704,
+          "sha256": "e68c4c8640f0ba1ea971e75b1a7214a694c00fa0966933ffff72dd8bfda7f749"
+        },
+        {
+          "name": "lib/arm64-v8a/libpdfium.so",
+          "bytes": 6468272,
+          "sha256": "323b0da6b7d5cbc096528d3025c8a649c606a1ca6954e83a7bf1b4ca172c658b"
+        },
+        {
+          "name": "lib/arm64-v8a/libstudio_core.so",
+          "bytes": 5290792,
+          "sha256": "1024422fa68e18dc961b8ada2fd7f38777128209a424f0280d8c5d209cecedc2"
+        },
+        {
+          "name": "lib/arm64-v8a/libust_cv.so",
+          "bytes": 3255264,
+          "sha256": "832a76919f07949846894bac01f62e0bdcc3d83afb82eb3d13f649ee684a9e30"
+        }
+      ]
+    },
+    "universal-studio-android-arm64-development-release.apk": {
+      "notice_references": 471,
+      "native": [
+        {
+          "name": "lib/arm64-v8a/libapp.so",
+          "bytes": 5964680,
+          "sha256": "8d00662f0532b9065e74b13224f74d8062228dbaf4b823dc6d3bf8da51a4ee1d"
+        },
+        {
+          "name": "lib/arm64-v8a/libdartjni.so",
+          "bytes": 131248,
+          "sha256": "b86b6f43c94069b94622f65e414d3c61c9d64fa9f4553a33c45b49c6da38c306"
+        },
+        {
+          "name": "lib/arm64-v8a/libflutter.so",
+          "bytes": 11747864,
+          "sha256": "34f4113ae93b2c7069030f0bcfede18e7c83ed548b71a75c9ebb749403d3a060"
+        },
+        {
+          "name": "lib/arm64-v8a/libpdfium.so",
+          "bytes": 6468272,
+          "sha256": "323b0da6b7d5cbc096528d3025c8a649c606a1ca6954e83a7bf1b4ca172c658b"
+        },
+        {
+          "name": "lib/arm64-v8a/libstudio_core.so",
+          "bytes": 5290792,
+          "sha256": "1024422fa68e18dc961b8ada2fd7f38777128209a424f0280d8c5d209cecedc2"
+        },
+        {
+          "name": "lib/arm64-v8a/libust_cv.so",
+          "bytes": 3255264,
+          "sha256": "832a76919f07949846894bac01f62e0bdcc3d83afb82eb3d13f649ee684a9e30"
+        }
+      ]
+    },
+    "universal-studio-android-arm64-unsigned.apk": {
+      "notice_references": 471,
+      "native": [
+        {
+          "name": "lib/arm64-v8a/libapp.so",
+          "bytes": 5964680,
+          "sha256": "8d00662f0532b9065e74b13224f74d8062228dbaf4b823dc6d3bf8da51a4ee1d"
+        },
+        {
+          "name": "lib/arm64-v8a/libdartjni.so",
+          "bytes": 131248,
+          "sha256": "b86b6f43c94069b94622f65e414d3c61c9d64fa9f4553a33c45b49c6da38c306"
+        },
+        {
+          "name": "lib/arm64-v8a/libflutter.so",
+          "bytes": 11747864,
+          "sha256": "34f4113ae93b2c7069030f0bcfede18e7c83ed548b71a75c9ebb749403d3a060"
+        },
+        {
+          "name": "lib/arm64-v8a/libpdfium.so",
+          "bytes": 6468272,
+          "sha256": "323b0da6b7d5cbc096528d3025c8a649c606a1ca6954e83a7bf1b4ca172c658b"
+        },
+        {
+          "name": "lib/arm64-v8a/libstudio_core.so",
+          "bytes": 5290792,
+          "sha256": "1024422fa68e18dc961b8ada2fd7f38777128209a424f0280d8c5d209cecedc2"
+        },
+        {
+          "name": "lib/arm64-v8a/libust_cv.so",
+          "bytes": 3255264,
+          "sha256": "832a76919f07949846894bac01f62e0bdcc3d83afb82eb3d13f649ee684a9e30"
+        }
+      ]
+    }
+  },
+  "local_source_checks": {
+    "rust": 73,
+    "flutter": 41,
+    "analysis": "No issues found"
+  },
+  "actual_extracted_release_libraries_workflow_tests_passed": 12,
+  "bridge_artifact": {
+    "id": 12256443230,
+    "sha256": "35d4e4f07e7c2f47053d9a87e042c24cae40441c879568755204fb34a927176e",
+    "all_nine_generated_files_match": true
+  },
+  "scanner_inspection": {
+    "linux": {
+      "schema_version": 1,
+      "platform": "linux-x64",
+      "library": "lib/libust_cv.so",
+      "packaged_library_bytes": 4477760,
+      "packaged_library_sha256": "9030da23f44437c6cfce5e77a851dbfabdffed6327787d00c5181cee54b799db",
+      "build_input_sha256": "9030da23f44437c6cfce5e77a851dbfabdffed6327787d00c5181cee54b799db",
+      "packager_changed_binary": false,
+      "retained_notice_records": 155,
+      "notice_content_verified": true,
+      "required_elf_exports_verified": true,
+      "packaged_pixels_verified_on_build_host": true,
+      "device_processing_verified": false
+    },
+    "windows": {
+      "schema_version": 1,
+      "platform": "windows-x64",
+      "library": "ust_cv.dll",
+      "packaged_library_bytes": 2938880,
+      "packaged_library_sha256": "21f5f91cf4e7963780f64cbe1c65feb0e2b6117aacfba9e7356635f767d66b3c",
+      "build_input_sha256": "21f5f91cf4e7963780f64cbe1c65feb0e2b6117aacfba9e7356635f767d66b3c",
+      "packager_changed_binary": false,
+      "retained_notice_records": 155,
+      "notice_content_verified": true,
+      "required_elf_exports_verified": false,
+      "packaged_pixels_verified_on_build_host": false,
+      "device_processing_verified": false
+    },
+    "android": {
+      "schema_version": 1,
+      "platform": "android-arm64",
+      "library": "lib/arm64-v8a/libust_cv.so",
+      "packaged_library_bytes": 3255264,
+      "packaged_library_sha256": "832a76919f07949846894bac01f62e0bdcc3d83afb82eb3d13f649ee684a9e30",
+      "build_input_sha256": "d6cbf83f52111582df3a3b291bb38d3cb442620197393370963981ef77a65791",
+      "packager_changed_binary": true,
+      "retained_notice_records": 157,
+      "notice_content_verified": true,
+      "required_elf_exports_verified": true,
+      "packaged_pixels_verified_on_build_host": false,
+      "device_processing_verified": false
+    }
+  },
+  "android_signatures_privacy_and_16k_alignment_verified": true,
+  "actual_font_bytes_verified": true,
+  "linux_ocr_model_hashes_verified": true,
+  "persisted_download_update_succeeded": false,
+  "persistent_delivery_blocker": "File-service authorization denied before transfer; prior saved versions unchanged."
+}

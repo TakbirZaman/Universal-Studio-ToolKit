@@ -2,14 +2,15 @@
 
 This is working development software, not a completed launch. The full target remains in REQUIREMENTS.md. “Built” means the stated build-host checks passed, not clean-device or interactive acceptance.
 
-Current integration includes scanner geometry/manual straightening and pack/signature first-use recovery in addition to the earlier physical photo, sequential scan, print, PDF overlay and text workflows. Local73 Rust/41 Flutter checks pass with clean analysis. Latest complete platform packaging sourceffc4753 passes Linux39401787599, Windows39401787571 and Android39401787595; subsequent pack/signature integration packaging remains pending. Scanner-enabled baseline6d7d6f9 packages are independently inspected and linked in the current session. The saved-copy update was blocked by authorization before transfer; earlier saved downloads remain unchanged. Historical evidence remains in the evidence directory.
+Integrated main runtime7750582 includes scanner correction/manual straightening and pack/signature first-use recovery alongside earlier photo/print/PDF/OCR workflows. All five platform/bridge/notice workflows pass; local73 Rust/41 Flutter checks and12 actual extracted-Linux-release workflow checks pass. All four current session installers are independently verified. Persistent replacement was blocked by file-service authorization before transfer; earlier saved copies remain unchanged. Flexible recipe candidate24eb562 on work/flexible-photo has76 Rust/43 Flutter local checks but awaits its own platform verification/integration; it is not in7750582 installers. Historical evidence remains in the evidence directory.
 
 | Capability | Core/interface evidence | Linux | Windows | Android |
 |---|---|---|---|---|
 | JPEG/PNG resize, compression and EXIF | Actual dimensions/bytes, orientation1–8 and same-source quality search tested | Native/UI checks pass | Native/interface gates pass | APK builds; device behavior pending |
 | Physical mm/DPI photo size | JPEG JFIF/PNG pHYs, pixel rounding, 16-bit/alpha and independent Pillow checks; real result UI tested | Packaged main 10d | Packaged main 10d | Packaged main 10d; device/printer pending |
 | Fit/fill, rotate, numeric recipe crop/flip | Processing tests; basic controls and recipe editor | Implemented | Built | Built, device pending |
-| Flexible dimensions / direct crop gestures / face suggestions | Remaining | Unavailable | Unavailable | Unavailable |
+| Flexible recipe dimensions | Candidate24eb562: explicit bounds, actual-byte search and local exports verified; not in main775 packages | Local candidate | Candidate build pending | Candidate/device pending |
+| Direct crop gestures / face suggestions | Remaining | Unavailable | Unavailable | Unavailable |
 | Threshold signature cleanup and PNG backgrounds | Actual transparent pixels plus checkerboard/light/dark preview | Implemented | Built | Built, device pending |
 | Manual signature mask/storage/PDF placement | Remaining | Unavailable | Unavailable | Unavailable |
 | Supported PDF merge/select/delete/reorder/rotate | Reopen, page order/rotation, text and PDFium appearance checks | Implemented | Native/interface gates pass | Built, device pending |
@@ -80,3 +81,7 @@ The corner editor offers a collapsed manual straightening adjustment (±10°), c
 ### Pack/signature first-use recovery candidate — 2026-10-20
 
 The fixed example pack now supports replacing a selected document without clearing the others, cancellation recovery, role labels and actual original-source previews. Native errors name the affected slot, results list verified archived filenames/measurements, and save errors appear beside Save. Four focused actual export workflows pass at desktop/narrow dark200%, including Unicode/no-clobber ZIP save and transparent PNG; independent ZIP/Pillow/pypdf checks pass. A narrow signature-background dropdown overflow was fixed. This does not implement custom/optional slot definitions or managed sources. See ADR019 and the explicitly heuristic FIRST-USE-REVIEW-20261020.
+
+### Approved flexible compression candidate —2026-10-20
+
+Version3 photo recipes support explicit flexible minimum/maximum dimensions with required limits. Core JPEG/PNG/quality/bounds/cancellation/recipe checks pass; actual desktop and narrow-dark200% recipe/export workflows produce independently verified136×102 JPEGs at8029 bytes below8KiB. Fixed dimensions remain default; unsampled larger sizes may also fit. Full local checks pass76 Rust/43 Flutter tests and clean analysis. This is a candidate, separate from integrated main7750582 packages (73 Rust/41 Flutter). No extra API dependency, asset or generated binding change is introduced. Platform packaging remains pending; direct crop/face assistance and remaining scope are unchanged.
