@@ -67,27 +67,23 @@ fn corners_reject_crossings_nonfinite_small_and_unbounded_shapes() {
         serde_json::from_str::<PageCorners>(&encoded.replace("\"top_left\"", "\"extra\"")).is_err()
     );
 }
-fn require_native() -> bool {
-    if std::env::var_os("UST_VISION_LIBRARY").is_none() {
-        eprintln!(
-            "Native vision integration not provisioned; only geometry validation runs. Set UST_VISION_LIBRARY for native checks."
-        );
-        return false;
-    }
+fn require_native() {
+    assert!(
+        std::env::var_os("UST_VISION_LIBRARY").is_some(),
+        "Provision UST_VISION_LIBRARY before running native scanner tests"
+    );
     assert!(
         vision::available(),
         "Explicit native test library must load with the expected ABI/version"
     );
-    true
 }
 fn source() -> RgbaImage {
     RgbaImage::from_fn(101, 201, |x, y| Rgba([x as u8, y as u8, 100, 255]))
 }
 #[test]
+#[ignore = "Requires UST_VISION_LIBRARY; run with --include-ignored after provisioning the adapter"]
 fn native_identity_crop_rotation_and_saved_output_are_actual_pixels() {
-    if !require_native() {
-        return;
-    }
+    require_native();
     let original = source();
     assert_eq!(
         vision::perspective(original.clone(), PageCorners::default()).unwrap(),
@@ -136,10 +132,9 @@ fn native_identity_crop_rotation_and_saved_output_are_actual_pixels() {
     assert!(vision::perspective(original, rectangle(0., 0., 0., 0.)).is_err());
 }
 #[test]
+#[ignore = "Requires UST_VISION_LIBRARY; run with --include-ignored after provisioning the adapter"]
 fn native_suggestions_blank_and_concurrent_calls_are_safe() {
-    if !require_native() {
-        return;
-    }
+    require_native();
     let blank = RgbaImage::from_pixel(272, 184, Rgba([255, 255, 255, 255]));
     assert_eq!(vision::suggest(&blank).unwrap(), None);
     let page = RgbaImage::from_fn(272, 184, |x, y| {
@@ -171,10 +166,9 @@ fn native_suggestions_blank_and_concurrent_calls_are_safe() {
 }
 
 #[test]
+#[ignore = "Requires UST_VISION_LIBRARY; run with --include-ignored after provisioning the adapter"]
 fn native_orientation_preview_session_and_depth_use_the_same_geometry() {
-    if !require_native() {
-        return;
-    }
+    require_native();
     let mut pages = Vec::new();
     for n in [1, 6, 3] {
         let data = std::fs::read(format!("tests/fixtures/orientation-{n}.jpg")).unwrap();

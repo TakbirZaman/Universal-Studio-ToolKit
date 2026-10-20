@@ -11,6 +11,11 @@ import re
 import subprocess
 
 
+def file_sha256(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
 def build(args):
     root = Path(__file__).resolve().parents[1]
     policy = json.loads((root / 'native/opencv/SOURCE.json').read_text())
@@ -67,7 +72,7 @@ def build(args):
     library = libraries[0]
     return {'platform': args.platform, 'opencv': policy['version'], 'opencv_source_commit': policy['commit'],
             'library': str(library), 'bytes': library.stat().st_size,
-            'sha256': hashlib.file_digest(library.open('rb'), 'sha256').hexdigest(),
+            'sha256': file_sha256(library),
             'application_staging_complete': False, 'platform_runtime_verified': False}
 
 

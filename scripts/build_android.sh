@@ -20,6 +20,11 @@ cp rust/target/aarch64-linux-android/release/libstudio_core.so android/app/src/m
 mkdir -p android/app/src/main/assets/third_party
 cp -R third_party/. android/app/src/main/assets/third_party/
 cp LICENSE android/app/src/main/assets/third_party/PROJECT-LICENSE
+if [ -n "${UST_VISION_LIBRARY:-}" ] || [ -n "${UST_VISION_BUILD_REPORT:-}" ]; then
+  : "${UST_VISION_LIBRARY:?Supply a verified native scanner library}"
+  : "${UST_VISION_BUILD_REPORT:?Supply its source build and verification report}"
+  python3 scripts/stage_vision_adapter.py --platform android-arm64 --library "$UST_VISION_LIBRARY" --report "$UST_VISION_BUILD_REPORT" --library-directory android/app/src/main/jniLibs/arm64-v8a --notices-directory android/app/src/main/assets/third_party
+fi
 flutter pub get --enforce-lockfile
 flutter build apk --release --no-pub --target-platform android-arm64
 mkdir -p dist

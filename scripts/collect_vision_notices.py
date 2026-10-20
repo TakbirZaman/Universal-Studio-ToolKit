@@ -48,7 +48,7 @@ def collect(source: Path, output: Path):
     # Includes tests/unused paths conservatively; exact linked-object applicability
     # remains a separate per-platform review.
     groups = {}
-    for directory in ['modules/core', 'modules/imgproc', 'modules/geometry', 'modules/flann', '3rdparty/zlib']:
+    for directory in ['modules/core', 'modules/imgproc', 'modules/geometry', 'modules/flann', '3rdparty/zlib', '3rdparty/dlpack']:
         for path in sorted((source / directory).rglob('*')):
             if not path.is_file() or path.suffix not in {'.h', '.hpp', '.c', '.cpp', '.cc', '.inl'}:
                 continue

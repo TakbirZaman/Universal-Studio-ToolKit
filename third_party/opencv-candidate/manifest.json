@@ -439,6 +439,13 @@
     },
     {
       "sources": [
+        "3rdparty/dlpack/include/dlpack/dlpack.h"
+      ],
+      "notice": "source-notice-4b98e0b2fdf0c792d3f2f0934e734dc3ac9aa111ef920f4cf934c2390189ea4f.txt",
+      "sha256": "4b98e0b2fdf0c792d3f2f0934e734dc3ac9aa111ef920f4cf934c2390189ea4f"
+    },
+    {
+      "sources": [
         "modules/core/include/opencv2/core/hal/intrin_math.hpp"
       ],
       "notice": "source-notice-510a341f669fbf53c0f13760178cb6739041bdf5d2c2e36f06f03555403c199d.txt",

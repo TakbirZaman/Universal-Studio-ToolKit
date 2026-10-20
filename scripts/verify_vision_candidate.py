@@ -11,13 +11,18 @@ import tarfile
 import urllib.request
 
 
+def file_sha256(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
 def run(platform, work, toolchain=None):
     root = Path(__file__).resolve().parents[1]
     policy = json.loads((root / 'native/opencv/SOURCE.json').read_text())
     work.mkdir(parents=True, exist_ok=True)
     archive = work / 'opencv.tar.gz'
     urllib.request.urlretrieve('https://github.com/opencv/opencv/archive/' + policy['commit'] + '.tar.gz', archive)
-    if archive.stat().st_size != policy['archive_bytes'] or hashlib.file_digest(archive.open('rb'), 'sha256').hexdigest() != policy['archive_sha256']:
+    if archive.stat().st_size != policy['archive_bytes'] or file_sha256(archive) != policy['archive_sha256']:
         raise ValueError('OpenCV source archive does not match the pin.')
     with tarfile.open(archive) as package:
         package.extractall(work / 'source', filter='data')
@@ -87,11 +92,11 @@ def run(platform, work, toolchain=None):
             (notice_directory / ('Android-NDK28.2-' + name + '.txt')).write_bytes(content)
             ndk_notices[name] = hashlib.sha256(content).hexdigest()
         report = {'platform': platform, 'source_archive_verified': True, 'opencv': policy['version'],
-                  'ndk': '28.2.13676358', 'elf64_aarch64': True, 'minimum_load_alignment': min(int(line[-1], 16) for line in loads),
+                  'opencv_source_commit': policy['commit'], 'ndk': '28.2.13676358', 'elf64_aarch64': True, 'minimum_load_alignment': min(int(line[-1], 16) for line in loads),
                   'required_symbols_present': True, 'needed_libraries': needed,
                   'library_bytes': library.stat().st_size,
-                  'library_sha256': hashlib.file_digest(library.open('rb'), 'sha256').hexdigest(),
-                  'ndk_notice_sha256': hashlib.file_digest(notice.open('rb'), 'sha256').hexdigest(),
+                  'library_sha256': file_sha256(library),
+                  'ndk_notice_sha256': file_sha256(notice),
                   'ndk_notices': ndk_notices,
                   'runtime_pixel_processing_verified': False, 'application_staging_complete': False,
                   'complete_license_clearance': False}
@@ -104,6 +109,8 @@ def run(platform, work, toolchain=None):
     # Generic verification script never certifies app/platform integration.
     parsed['tested_adapter_platform'] = platform
     parsed['source_archive_verified'] = True
+    parsed['opencv_source_commit'] = policy['commit']
+    parsed['library_bytes'] = libraries[0].stat().st_size
     parsed['link_review'] = link_review
     (work / 'pixel-verification.json').write_text(json.dumps(parsed, indent=2) + '\n', encoding='utf-8')
     print(report)

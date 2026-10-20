@@ -2,7 +2,7 @@ name: Verify and build Linux
 on:
   push:
     branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective]
-    paths: ['rust/**', 'lib/**', 'test/**', 'pubspec*', 'third_party/**', 'linux/**', 'scripts/build_linux.sh', 'scripts/smoke_linux.sh', '.github/workflows/verify-linux.yml']
+    paths: ['rust/**', 'lib/**', 'test/**', 'pubspec*', 'third_party/**', 'linux/**', 'native/opencv/**', 'scripts/*vision*', 'scripts/build_linux.sh', 'scripts/smoke_linux.sh', '.github/workflows/verify-linux.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -45,10 +45,17 @@ jobs:
           /usr/bin/python3 scripts/test_stage_ocr_models.py
           /usr/bin/python3 scripts/create_ocr_test_pages.py --output "$UST_OCR_SMOKE_DIR"
           /usr/bin/tesseract --version
+      - name: Build and verify pinned scanner engine (development provisioning)
+        run: |
+          python3 -m pip install cmake==3.28.4 ninja==1.13.2 numpy==2.3.5 Pillow==12.3.0
+          python3 scripts/verify_vision_candidate.py --platform linux-x64 --work "$RUNNER_TEMP/ust-vision"
+          echo "UST_VISION_LIBRARY=$RUNNER_TEMP/ust-vision/build/adapter/libust_cv.so" >> "$GITHUB_ENV"
+          echo "UST_VISION_BUILD_REPORT=$RUNNER_TEMP/ust-vision/pixel-verification.json" >> "$GITHUB_ENV"
       - name: Verify locked Rust core
         run: |
           cargo fmt --manifest-path rust/Cargo.toml --check
-          cargo test --locked --manifest-path rust/Cargo.toml
+          cargo test --locked --manifest-path rust/Cargo.toml -- --include-ignored
+          python3 -W error::ResourceWarning scripts/test_stage_vision_adapter.py
           cargo build --locked --manifest-path rust/Cargo.toml
       - name: Analyze and test Flutter integration
         run: |
@@ -66,6 +73,9 @@ jobs:
           ! grep -q 'not found' /tmp/ust-runtime.txt
           test -f build/linux/x64/release/bundle/lib/libstudio_core.so
           test -f build/linux/x64/release/bundle/lib/libpdfium.so
+          test -f build/linux/x64/release/bundle/lib/libust_cv.so
+          ldd build/linux/x64/release/bundle/lib/libust_cv.so | tee /tmp/ust-vision-runtime.txt
+          ! grep -q 'not found' /tmp/ust-vision-runtime.txt
           sha256sum dist/universal-studio-linux-x64.tar.gz > dist/SHA256SUMS
       - name: Launch packaged application on build host
         run: xvfb-run -a bash scripts/smoke_linux.sh

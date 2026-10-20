@@ -8,6 +8,11 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
+def file_sha256(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
 def verify(path):
     library = c.CDLL(str(path.resolve()))
     library.ust_cv_abi_version.restype = c.c_uint32
@@ -86,7 +91,7 @@ def verify(path):
             'perspective_max_gradient_error':max(errors),'source_unchanged':True,
             'invalid_inputs_leave_output_unchanged':True,'blank_has_no_suggestion':True,
             'synthetic_quad_suggestion_verified':True,'sample_images_uploaded':False,
-            'library_sha256':hashlib.file_digest(path.open('rb'),'sha256').hexdigest(),
+            'library_sha256':file_sha256(path),
             'windows_android_verified':False,'application_integration_complete':False}
 
 
