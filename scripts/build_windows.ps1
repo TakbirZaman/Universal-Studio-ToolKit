@@ -22,6 +22,8 @@ if ($env:UST_VISION_LIBRARY -or $env:UST_VISION_BUILD_REPORT) {
     if (!$env:UST_VISION_LIBRARY -or !$env:UST_VISION_BUILD_REPORT) { throw 'Supply both the verified scanner library and build report' }
     python scripts/stage_vision_adapter.py --platform windows-x64 --library "$env:UST_VISION_LIBRARY" --report "$env:UST_VISION_BUILD_REPORT" --library-directory $bundle --notices-directory (Join-Path $bundle 'third_party')
     if ($LASTEXITCODE -ne 0) { throw 'Native scanner staging failed' }
+    python scripts/verify_packaged_vision.py --platform windows-x64 --package $bundle
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged native scanner verification failed' }
 }
 Copy-Item docs/LIMITATIONS.md (Join-Path $bundle 'KNOWN-LIMITATIONS.md')
 & (Join-Path $PSScriptRoot 'stage_windows_runtime.ps1') -Bundle $bundle

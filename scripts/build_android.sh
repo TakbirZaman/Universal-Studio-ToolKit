@@ -65,4 +65,7 @@ studio_stage="backup privacy policy verification"
 python3 scripts/test_android_privacy.py
 for studio_apk in dist/universal-studio-android-arm64-unsigned.apk dist/universal-studio-android-arm64-debug.apk dist/universal-studio-android-arm64-development-release.apk; do
   python3 scripts/verify_android_privacy.py "$studio_apk" "$ANDROID_HOME/build-tools/36.0.0/aapt2"
+  if [ -n "${UST_VISION_LIBRARY:-}" ]; then
+    python3 scripts/verify_packaged_vision.py --platform android-arm64 --package "$studio_apk"
+  fi
 done

@@ -34,6 +34,23 @@ class NativeStagingTests(unittest.TestCase):
             self.assertTrue((root / 'notices/opencv-candidate/upstream-geometry.cpp.txt').is_file())
             self.assertEqual(result['platform'], self.platform)
             self.assertNotIn(str(self.library), json.dumps(result))
+            from verify_packaged_vision import verify as verify_package
+            # Match the actual platform bundle layout for independent inspection.
+            if self.platform == 'linux-x64':
+                bundle = root / 'bundle'
+                bundle.mkdir()
+                (root / 'lib').rename(bundle / 'lib')
+                (root / 'notices').rename(bundle / 'third_party')
+            else:
+                bundle = root / 'lib'
+                (root / 'notices').rename(bundle / 'third_party')
+            inspection = verify_package(self.platform, bundle)
+            self.assertEqual(inspection['packaged_library_sha256'], self.report['library_sha256'])
+            self.assertEqual(inspection['retained_notice_records'], 155)
+            retained = bundle / 'third_party/opencv-candidate/Boost-1.0.txt'
+            retained.write_text('tampered')
+            with self.assertRaisesRegex(ValueError, 'content mismatch'):
+                verify_package(self.platform, bundle)
 
     def test_changed_binary_report_is_rejected_before_writing(self):
         with tempfile.TemporaryDirectory() as temporary:

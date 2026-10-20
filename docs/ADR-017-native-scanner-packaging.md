@@ -14,3 +14,5 @@ The scoped component review retains 155 OpenCV notice/source records and the com
 Native Rust integration tests are explicitly ignored by default and require an explicitly provisioned engine when included. Linux and Windows application CI must include these tests. Missing engines must never produce a successful test that did no native work.
 
 Original source files and saved documents are unaffected. Routine offline application processing does not fetch code, assets or licenses. Existing baseline builds may omit the adapter, but must retain truthful capability reporting.
+
+Follow-up verification: a separate package inspector validates the saved library header, ELF dynamic entry points, source/platform provenance and every pinned notice. It records the actual packaged hash and compares desktop bytes to the staged input. For Android it allows ordinary packager stripping, verifies retained entry points and records the changed hash explicitly. This is structural package evidence; it does not execute Android processing. The actual staged Linux layout and tampered-notice rejection pass local regression.

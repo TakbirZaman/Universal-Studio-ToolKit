@@ -15,6 +15,7 @@ if [ -n "${UST_VISION_LIBRARY:-}" ] || [ -n "${UST_VISION_BUILD_REPORT:-}" ]; th
   : "${UST_VISION_LIBRARY:?Supply a verified native scanner library}"
   : "${UST_VISION_BUILD_REPORT:?Supply its source build and verification report}"
   python3 scripts/stage_vision_adapter.py --platform linux-x64 --library "$UST_VISION_LIBRARY" --report "$UST_VISION_BUILD_REPORT" --library-directory "$bundle/lib" --notices-directory "$bundle/third_party"
+  python3 scripts/verify_packaged_vision.py --platform linux-x64 --package "$bundle"
 fi
 if [ -n "${UST_OCR_MODEL_SOURCE:-}" ]; then
   python3 scripts/stage_ocr_models.py --source "$UST_OCR_MODEL_SOURCE" --bundle "$bundle"
