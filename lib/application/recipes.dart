@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../src/rust/api.dart' as core;
 import 'preferences.dart';
 import 'export_service.dart';
+import 'saved_copy_actions.dart';
 import 'recipe_batch.dart';
 
 class RecipesScreen extends ConsumerStatefulWidget {
@@ -47,6 +48,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   String? message, sourceName;
   Uint8List? source;
   core.StudioOutput? output;
+  SavedCopyReceipt? savedCopy;
   RecipeBatch? batch;
   List<String> saved = [];
   String value(String key) => fields[key]!.text.trim();
@@ -69,6 +71,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   void changed() {
     setState(() {
       output = null;
+      savedCopy = null;
       message = null;
     });
   }
@@ -190,6 +193,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         if (s['type'] == 'rename') fields['filename']!.text = s['filename'];
       }
       output = null;
+      savedCopy = null;
       message = 'Recipe loaded. Review settings before processing.';
     });
   }
@@ -277,6 +281,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         source = bytes;
         sourceName = f.name;
         output = null;
+        savedCopy = null;
       });
     }
   });
@@ -585,7 +590,14 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                             'recipe.json',
                           );
                           if (mounted && path != null) {
-                            setState(() => message = 'Saved: $path');
+                            setState(() {
+                              message = 'Saved: $path';
+                              savedCopy = SavedCopyReceipt(
+                                path,
+                                'json',
+                                jsonOutput(json).bytes,
+                              );
+                            });
                           }
                         });
                       },
@@ -619,6 +631,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
           if (busy) const LinearProgressIndicator(),
           if (message != null)
             Semantics(liveRegion: true, child: Text(message!)),
+          if (savedCopy != null) SavedCopyActions.receipt(savedCopy!),
           if (output != null) ...[
             SafeImagePreview(
               bytes: output!.bytes,
@@ -638,10 +651,15 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                         value('filename'),
                       );
                       if (mounted && path != null) {
-                        setState(
-                          () => message =
-                              'Saved: $path. Your original file is unchanged.',
-                        );
+                        setState(() {
+                          message =
+                              'Saved: $path. Your original file is unchanged.';
+                          savedCopy = SavedCopyReceipt(
+                            path,
+                            output!.format,
+                            output!.bytes,
+                          );
+                        });
                       }
                     }),
               child: const Text('Save a copy'),
@@ -660,7 +678,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
             child: const Text('Choose batch photos'),
           ),
           if (batch != null) ...[
-            for (final item in batch!.items)
+            for (final item in batch!.items) ...[
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text('${item.sourceName} → ${item.outputName}'),
@@ -685,6 +703,13 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                               }),
                       ),
               ),
+              if (item.savedLocation != null && item.output != null)
+                SavedCopyActions(
+                  location: item.savedLocation!,
+                  format: item.output!.format,
+                  bytes: item.output!.bytes,
+                ),
+            ],
             FilledButton(
               onPressed: busy
                   ? null

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-20",
+  "scope": "Local Dart/application checks; native compilation and external application/device acceptance pending",
+  "rust_baseline_tests": 76,
+  "flutter_tests_passed": 49,
+  "analysis": "No issues found",
+  "changed_desktop_copies_rejected_before_handoff": true,
+  "only_absolute_document_paths_and_content_uris_accepted": true,
+  "unsupported_controls_hidden": true,
+  "responsive_control_scales": [
+    1,
+    2
+  ],
+  "actual_pack_signature_reset_preserves_saved_files": true,
+  "native_channel_tests_use_mock_os_adapter": true,
+  "windows_shell_adapter_implemented": true,
+  "android_verified_receipts_read_only_intents_implemented": true,
+  "linux_graphical_session_helpers_implemented": true,
+  "native_platform_compilation_verified": false,
+  "external_viewer_or_android_chooser_runtime_verified": false,
+  "no_new_dependency_or_asset": true
+}

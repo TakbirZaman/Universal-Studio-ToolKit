@@ -11,6 +11,7 @@ import '../src/rust/api.dart' as core;
 import '../src/rust/jobs.dart';
 import '../src/rust/ocr.dart';
 import 'export_service.dart';
+import 'saved_copy_actions.dart';
 
 String _decodeText(Uint8List bytes) => utf8.decode(bytes);
 Uint8List _encodeText(String edited) {
@@ -40,6 +41,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
   JobState? state;
   bool busy = false, preparingText = false;
   String? error, saved;
+  SavedCopyReceipt? savedCopy;
   Timer? timer;
 
   @override
@@ -60,6 +62,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       busy = true;
       error = null;
       saved = null;
+      savedCopy = null;
     });
     timer = Timer.periodic(const Duration(milliseconds: 150), (_) {
       final progress = core.ocrTaskState(task: handle);
@@ -116,6 +119,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       busy = true;
       error = null;
       saved = null;
+      savedCopy = null;
     });
     try {
       final edited = text.text;
@@ -127,10 +131,11 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
       final output = await core.prepareEditedText(data: bytes);
       final location = await ExportService.saveCopy(output, filename.text);
       if (mounted && location != null) {
-        setState(
-          () => saved =
-              'Saved ${filename.text} at $location. Verified UTF-8 · ${output.bytes.length} bytes.',
-        );
+        setState(() {
+          saved =
+              'Saved ${filename.text} at $location. Verified UTF-8 · ${output.bytes.length} bytes.';
+          savedCopy = SavedCopyReceipt(location, output.format, output.bytes);
+        });
       }
     } catch (e) {
       if (mounted) setState(() => error = e.toString());
@@ -256,7 +261,10 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
               enabled: !busy,
               minLines: 8,
               maxLines: 20,
-              onChanged: (_) => setState(() => saved = null),
+              onChanged: (_) => setState(() {
+                saved = null;
+                savedCopy = null;
+              }),
               decoration: const InputDecoration(
                 labelText: 'Edit recognized text',
                 alignLabelWithHint: true,
@@ -265,6 +273,10 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
             const SizedBox(height: 16),
             TextField(
               controller: filename,
+              onChanged: (_) => setState(() {
+                saved = null;
+                savedCopy = null;
+              }),
               enabled: !busy,
               decoration: const InputDecoration(
                 labelText: 'Filename (ends in .txt)',
@@ -289,6 +301,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
               ),
             if (saved != null)
               Semantics(liveRegion: true, child: Text('✓ $saved')),
+            if (savedCopy != null) SavedCopyActions.receipt(savedCopy!),
           ],
         ),
       ),

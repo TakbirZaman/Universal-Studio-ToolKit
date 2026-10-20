@@ -26,6 +26,7 @@ bool FlutterWindow::OnCreate() {
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+  saved_documents_ = CreateSavedDocumentsChannel(flutter_controller_->engine()->messenger(), GetHandle());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     this->Show();
@@ -40,6 +41,7 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  if (saved_documents_) { saved_documents_->SetMethodCallHandler(nullptr); saved_documents_.reset(); }
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }

@@ -14,6 +14,7 @@ import 'src/rust/scanner.dart';
 import 'dart:io';
 
 import 'application/recipes.dart';
+import 'application/saved_copy_actions.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -1638,7 +1639,34 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                 padding: const EdgeInsets.only(top: 16),
                 child: Semantics(
                   liveRegion: true,
-                  child: SelectableText('✓ Saved and verified\n$saved'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SelectableText('✓ Saved and verified\n$saved'),
+                      const SizedBox(height: 12),
+                      SavedCopyActions(
+                        location: saved!,
+                        format: output!.format,
+                        bytes: output!.bytes,
+                        onAnother: () => setState(() {
+                          sources = [];
+                          output = null;
+                          saved = null;
+                          saveError = null;
+                          error = null;
+                          previewIndex = 0;
+                          rotation = 0;
+                          cover = false;
+                          flatten = false;
+                          pages.clear();
+                          pageNumbers = false;
+                          watermarkEnabled = false;
+                          showOriginal = false;
+                          filename.text = suggestedName;
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],

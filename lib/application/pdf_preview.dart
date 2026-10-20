@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'export_service.dart';
+import 'saved_copy_actions.dart';
 import '../src/rust/api.dart' as core;
 
 class PdfPreview extends StatefulWidget {
@@ -16,6 +17,7 @@ class _PdfPreviewState extends State<PdfPreview> {
   bool loading = true;
   core.StudioOutput? preview;
   String? error, saved;
+  SavedCopyReceipt? savedCopy;
   @override
   void initState() {
     super.initState();
@@ -38,6 +40,7 @@ class _PdfPreviewState extends State<PdfPreview> {
       loading = true;
       error = null;
       saved = null;
+      savedCopy = null;
       preview = null;
     });
     try {
@@ -69,10 +72,10 @@ class _PdfPreviewState extends State<PdfPreview> {
       final name = 'page-${index + 1}.png';
       final destination = await ExportService.saveCopy(value, name);
       if (destination != null && mounted) {
-        setState(
-          () => saved =
-              'Saved $name at $destination. The original PDF is unchanged.',
-        );
+        setState(() {
+          saved = 'Saved $name at $destination. The original PDF is unchanged.';
+          savedCopy = SavedCopyReceipt(destination, value.format, value.bytes);
+        });
       }
     } catch (e) {
       if (mounted) setState(() => error = e.toString());
@@ -150,6 +153,7 @@ class _PdfPreviewState extends State<PdfPreview> {
           padding: const EdgeInsets.only(top: 12),
           child: Semantics(liveRegion: true, child: SelectableText(saved!)),
         ),
+      if (savedCopy != null) SavedCopyActions.receipt(savedCopy!),
       const SizedBox(height: 8),
       const Text(
         'PNG export is a raster image. It does not retain selectable text, forms or vector editing.',
