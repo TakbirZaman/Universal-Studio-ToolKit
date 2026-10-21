@@ -64,6 +64,12 @@ enum Request {
         #[serde(default)]
         raster_dpi: Option<u16>,
     },
+    Pack {
+        inputs: Vec<Option<String>>,
+        preset: String,
+        directory: String,
+        filename: String,
+    },
     Recipe {
         input: String,
         recipe: String,
@@ -216,6 +222,31 @@ fn run() -> Result<OutputInfo> {
             directory,
             filename,
         ),
+        Request::Pack {
+            inputs,
+            preset,
+            directory,
+            filename,
+        } => {
+            let preset = studio_core::packs::PackPreset::parse(&read(&preset)?)?;
+            if inputs.len() != preset.slots.len() {
+                return Err(invalid("Supply one source or null for each pack slot."));
+            }
+            let mut total = 0usize;
+            let mut sources = Vec::new();
+            for input in inputs {
+                let bytes = match input {
+                    Some(path) => read(&path)?,
+                    None => Vec::new(),
+                };
+                total += bytes.len();
+                if total > MAX_INPUT_BYTES {
+                    return Err(invalid("Pack sources exceed 64 MiB."));
+                }
+                sources.push(bytes);
+            }
+            (preset.prepare(sources)?, directory, filename)
+        }
         Request::Recipe {
             input,
             recipe: r,

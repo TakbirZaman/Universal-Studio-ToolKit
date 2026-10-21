@@ -291,6 +291,18 @@ Future<StudioOutput> extractPdfText({required List<int> data}) =>
 Future<StudioOutput> preparePlainText({required List<int> data}) =>
     RustLib.instance.api.crateApiPreparePlainText(data: data);
 
+/// Custom pack definitions contain requirements only; sources are passed separately.
+Future<StudioOutput> createCustomApplicationPack({
+  required List<Uint8List> inputs,
+  required String presetJson,
+}) => RustLib.instance.api.crateApiCreateCustomApplicationPack(
+  inputs: inputs,
+  presetJson: presetJson,
+);
+
+Future<StudioOutput> validatePackPreset({required String presetJson}) =>
+    RustLib.instance.api.crateApiValidatePackPreset(presetJson: presetJson);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
 abstract class OcrTask implements RustOpaqueInterface {}
 

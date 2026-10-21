@@ -1,3 +1,6 @@
+import 'pdf_preview.dart';
+import 'safe_image_preview.dart';
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -24,7 +27,7 @@ class _Slot {
   final limit = TextEditingController(text: '100');
   final minimumPages = TextEditingController(text: '1');
   final maximumPages = TextEditingController(text: '200');
-  bool required = true;
+  bool required = true, showPreview = false;
   String format = 'jpeg';
   String? sourceName;
   Uint8List? bytes;
@@ -68,6 +71,21 @@ class _Slot {
       );
     }
     slot.format = formats.single as String;
+    if ((slot.format == 'pdf' &&
+            (json['width'] != null ||
+                json['height'] != null ||
+                json['min_pages'] == null ||
+                json['max_pages'] == null)) ||
+        (slot.format != 'pdf' &&
+            (json['width'] == null ||
+                json['height'] == null ||
+                json['min_pages'] != null ||
+                json['max_pages'] != null))) {
+      slot.dispose();
+      throw const FormatException(
+        'This editor needs image pixel dimensions or a PDF page range. Imported constraints were not changed.',
+      );
+    }
     slot.width.text = '${json['width'] ?? 300}';
     slot.height.text = '${json['height'] ?? 300}';
     final limit = json['max_bytes'] as Map<String, dynamic>?;
@@ -214,11 +232,12 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
         inputs: slots.map((slot) => slot.bytes ?? Uint8List(0)).toList(),
         presetJson: preset(),
       );
-      if (mounted)
+      if (mounted) {
         setState(() {
           output = result;
           saved = null;
         });
+      }
     });
   }
 
@@ -321,6 +340,23 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                 ? 'No source selected'
                 : '${slot.sourceName} · ${slot.bytes!.length} bytes',
           ),
+          if (slot.bytes != null)
+            ExpansionTile(
+              title: const Text('Review selected source'),
+              onExpansionChanged: (value) =>
+                  setState(() => slot.showPreview = value),
+              children: [
+                if (slot.showPreview)
+                  slot.format == 'pdf'
+                      ? PdfPreview(data: slot.bytes!)
+                      : SafeImagePreview(
+                          bytes: slot.bytes!,
+                          height: 220,
+                          semanticLabel:
+                              'Selected source for ${slot.label.text}',
+                        ),
+              ],
+            ),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -499,8 +535,9 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                                 output!,
                                 zipName.text,
                               );
-                              if (mounted && location != null)
+                              if (mounted && location != null) {
                                 setState(() => saved = location);
+                              }
                             }),
                       icon: const Icon(Icons.save_alt),
                       label: const Text('Save application ZIP'),

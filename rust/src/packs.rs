@@ -110,7 +110,8 @@ impl PackPreset {
         }
         let mut seen = std::collections::HashSet::new();
         for slot in &self.slots {
-            crate::export::safe_name(&slot.filename)?;
+            crate::export::safe_name(&slot.filename)
+                .map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
             if !seen.insert(slot.filename.to_lowercase())
                 || slot.label.trim().is_empty()
                 || slot.label.len() > 128
@@ -126,6 +127,22 @@ impl PackPreset {
                     .any(|f| !["jpeg", "png", "pdf"].contains(&f.as_str()))
             {
                 return Err(invalid("Pack contains an unsupported output format."));
+            }
+            let extension = std::path::Path::new(&slot.filename)
+                .extension()
+                .and_then(|value| value.to_str())
+                .unwrap_or("")
+                .to_lowercase();
+            let filename_format = if extension == "jpg" {
+                "jpeg"
+            } else {
+                &extension
+            };
+            if !slot.formats.iter().any(|format| format == filename_format) {
+                return Err(invalid(&format!(
+                    "{}: filename extension must match an accepted output format.",
+                    slot.label
+                )));
             }
             if slot.width.is_some_and(|n| n == 0 || n > 12000)
                 || slot.height.is_some_and(|n| n == 0 || n > 12000)
