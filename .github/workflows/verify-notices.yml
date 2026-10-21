@@ -1,5 +1,7 @@
 name: Verify dependency notice provenance
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main, work/license-provenance]
     paths: ['third_party/**', 'scripts/*notice*', 'scripts/test_notice_provenance.py', 'Cargo.lock', 'rust/Cargo.lock', 'pubspec.lock', '.gitattributes', '.github/workflows/verify-notices.yml']
