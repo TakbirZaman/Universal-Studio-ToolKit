@@ -103,7 +103,10 @@ void main() {
         expect(find.text('Original: 20 × 40 pixels'), findsOneWidget);
         final handle = find.bySemanticsLabel('Top left crop handle');
         await tester.ensureVisible(handle);
-        await tester.drag(handle, const Offset(55, 55));
+        await tester.dragFrom(
+          tester.getCenter(handle) - const Offset(16, 16),
+          const Offset(55, 55),
+        );
         await tester.pump();
         final left = field('Left edge (pixels)');
         final before = int.parse(

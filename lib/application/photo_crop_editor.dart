@@ -241,9 +241,31 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
       ),
     ),
   );
+  Widget sourceImage() => Image.memory(
+    preview!.bytes,
+    fit: BoxFit.fill,
+    gaplessPlayback: true,
+    frameBuilder: (context, child, frame, synchronous) {
+      if ((frame != null || synchronous) && !previewReady) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) setState(() => previewReady = true);
+        });
+      }
+      return child;
+    },
+    errorBuilder: (context, _, _) => const Text(
+      'Preview could not be decoded. Cancel and choose another image.',
+    ),
+    semanticLabel: 'Orientation-corrected source with crop selection',
+  );
+
   Widget imageView() => LayoutBuilder(
     builder: (context, constraints) {
-      final width = math.min(800.0, constraints.maxWidth - 48);
+      const margin = 24.0;
+      final width = math.max(
+        1.0,
+        math.min(800.0, constraints.maxWidth - margin * 2),
+      );
       final height = math.min(420.0, MediaQuery.sizeOf(context).height * .42);
       final size = applyBoxFit(
         BoxFit.contain,
@@ -252,83 +274,67 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
       ).destination;
       final crop = selection!;
       final rect = Rect.fromLTWH(
-        crop.x / imageWidth * size.width,
-        crop.y / imageHeight * size.height,
+        margin + crop.x / imageWidth * size.width,
+        margin + crop.y / imageHeight * size.height,
         crop.width / imageWidth * size.width,
         crop.height / imageHeight * size.height,
       );
-      return Padding(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: SizedBox(
-            width: size.width,
-            height: size.height,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: Image.memory(
-                    preview!.bytes,
-                    fit: BoxFit.fill,
-                    gaplessPlayback: true,
-                    frameBuilder: (context, child, frame, synchronous) {
-                      if ((frame != null || synchronous) && !previewReady) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (mounted) setState(() => previewReady = true);
-                        });
-                      }
-                      return child;
-                    },
-                    errorBuilder: (context, _, _) => const Text(
-                      'Preview could not be decoded. Cancel and choose another image.',
+      return Center(
+        child: SizedBox(
+          width: size.width + margin * 2,
+          height: size.height + margin * 2,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: margin,
+                top: margin,
+                width: size.width,
+                height: size.height,
+                child: sourceImage(),
+              ),
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: CustomPaint(painter: _CropPainter(rect)),
+                ),
+              ),
+              Positioned(
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
+                child: GestureDetector(
+                  dragStartBehavior: DragStartBehavior.down,
+                  behavior: HitTestBehavior.translucent,
+                  onPanStart: (details) {
+                    remember();
+                    dragOrigin = details.globalPosition;
+                    dragSelection = selection;
+                  },
+                  onPanUpdate: (details) => update(
+                    (dragSelection ?? selection!).translate(
+                      ((details.globalPosition.dx -
+                                  (dragOrigin?.dx ??
+                                      details.globalPosition.dx)) /
+                              size.width *
+                              imageWidth)
+                          .round(),
+                      ((details.globalPosition.dy -
+                                  (dragOrigin?.dy ??
+                                      details.globalPosition.dy)) /
+                              size.height *
+                              imageHeight)
+                          .round(),
+                      imageWidth,
+                      imageHeight,
                     ),
-                    semanticLabel:
-                        'Orientation-corrected source with crop selection',
+                    record: false,
                   ),
                 ),
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: CustomPaint(painter: _CropPainter(rect)),
-                  ),
-                ),
-                Positioned(
-                  left: rect.left,
-                  top: rect.top,
-                  width: rect.width,
-                  height: rect.height,
-                  child: GestureDetector(
-                    dragStartBehavior: DragStartBehavior.down,
-                    behavior: HitTestBehavior.translucent,
-                    onPanStart: (details) {
-                      remember();
-                      dragOrigin = details.globalPosition;
-                      dragSelection = selection;
-                    },
-                    onPanUpdate: (details) => update(
-                      (dragSelection ?? selection!).translate(
-                        ((details.globalPosition.dx -
-                                    (dragOrigin?.dx ??
-                                        details.globalPosition.dx)) /
-                                size.width *
-                                imageWidth)
-                            .round(),
-                        ((details.globalPosition.dy -
-                                    (dragOrigin?.dy ??
-                                        details.globalPosition.dy)) /
-                                size.height *
-                                imageHeight)
-                            .round(),
-                        imageWidth,
-                        imageHeight,
-                      ),
-                      record: false,
-                    ),
-                  ),
-                ),
-                handle(0, rect.left, rect.top, size.width, size.height),
-                handle(1, rect.right, rect.bottom, size.width, size.height),
-              ],
-            ),
+              ),
+              handle(0, rect.left, rect.top, size.width, size.height),
+              handle(1, rect.right, rect.bottom, size.width, size.height),
+            ],
           ),
         ),
       );
@@ -480,7 +486,7 @@ class _CropPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final mask = Path()
       ..fillType = PathFillType.evenOdd
-      ..addRect(Offset.zero & size)
+      ..addRect(Rect.fromLTWH(24, 24, size.width - 48, size.height - 48))
       ..addRect(rect);
     canvas.drawPath(mask, Paint()..color = Colors.black.withValues(alpha: .55));
     canvas.drawRect(
