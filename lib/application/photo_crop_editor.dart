@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import '../src/rust/api.dart' as core;
@@ -189,6 +190,7 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
         label: index == 0 ? 'Top left crop handle' : 'Bottom right crop handle',
         hint: 'Drag, or focus and use arrow keys. Shift changes ten pixels.',
         child: GestureDetector(
+          dragStartBehavior: DragStartBehavior.down,
           behavior: HitTestBehavior.opaque,
           onTap: () => handles[index].requestFocus(),
           onPanStart: (details) {
@@ -295,6 +297,7 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
                   width: rect.width,
                   height: rect.height,
                   child: GestureDetector(
+                    dragStartBehavior: DragStartBehavior.down,
                     behavior: HitTestBehavior.translucent,
                     onPanStart: (details) {
                       remember();
