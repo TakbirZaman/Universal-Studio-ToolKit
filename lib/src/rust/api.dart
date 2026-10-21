@@ -303,6 +303,10 @@ Future<StudioOutput> createCustomApplicationPack({
 Future<StudioOutput> validatePackPreset({required String presetJson}) =>
     RustLib.instance.api.crateApiValidatePackPreset(presetJson: presetJson);
 
+/// Orientation-corrected dimensions after the same guarded decode used for export.
+Future<Uint32List> photoSourceDimensions({required List<int> data}) =>
+    RustLib.instance.api.crateApiPhotoSourceDimensions(data: data);
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<OcrTask>>
 abstract class OcrTask implements RustOpaqueInterface {}
 

@@ -997,6 +997,22 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
+          if (widget.tool == Tool.photo && sources.isNotEmpty)
+            OutlinedButton.icon(
+              onPressed: busy
+                  ? null
+                  : () => Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (_) => RecipesScreen(
+                          initialSource: sources.first.bytes,
+                          initialSourceName: sources.first.name,
+                          openCrop: true,
+                        ),
+                      ),
+                    ),
+              icon: const Icon(Icons.crop),
+              label: const Text('Crop and resize'),
+            ),
           if (widget.tool == Tool.pack) ...[
             OutlinedButton.icon(
               onPressed: busy
