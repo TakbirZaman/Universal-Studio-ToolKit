@@ -4,12 +4,16 @@ class PixelCrop {
   final int x, y, width, height;
   const PixelCrop(this.x, this.y, this.width, this.height);
   bool fits(int imageWidth, int imageHeight) =>
+      imageWidth >= 1 &&
+      imageHeight >= 1 &&
       x >= 0 &&
+      x < imageWidth &&
       y >= 0 &&
+      y < imageHeight &&
       width >= 1 &&
       height >= 1 &&
-      x + width <= imageWidth &&
-      y + height <= imageHeight;
+      width <= imageWidth - x &&
+      height <= imageHeight - y;
   bool matchesAspect(double? ratio) =>
       ratio == null || (width - height * ratio).abs() <= 1.01;
   PixelCrop translate(int dx, int dy, int imageWidth, int imageHeight) =>

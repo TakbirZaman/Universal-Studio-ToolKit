@@ -5,6 +5,22 @@ import 'package:universal_studio_toolkit/application/photo_crop_geometry.dart';
 
 void main() {
   test(
+    'coordinates reject empty, out-of-bounds and overflowing rectangles',
+    () {
+      for (final crop in [
+        const PixelCrop(-1, 0, 1, 1),
+        const PixelCrop(0, 0, 0, 1),
+        const PixelCrop(12000, 0, 1, 1),
+        const PixelCrop(0x7fffffffffffffff, 0, 1, 1),
+        const PixelCrop(1, 0, 0x7fffffffffffffff, 1),
+        const PixelCrop(0, 0x7fffffffffffffff, 1, 1),
+      ]) {
+        expect(crop.fits(12000, 12000), isFalse);
+      }
+      expect(const PixelCrop(11999, 11999, 1, 1).fits(12000, 12000), isTrue);
+    },
+  );
+  test(
     'full source, aspect locks and translations preserve valid integer bounds',
     () {
       for (final size in [(4000, 3000), (3, 1), (1, 3), (1, 1), (300, 100)]) {
