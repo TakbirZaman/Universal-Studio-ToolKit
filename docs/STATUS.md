@@ -94,3 +94,12 @@ Native Windows and Android adapters plus Linux desktop handoff are implemented, 
 ### Integrated custom packs and session sources — 2026-10-21
 
 Main80a02e7 integrates flexible compression, saved-copy actions, editable application packs and bounded session document reuse. All six relevant hosted workflows pass on feature sourceaf4f5a6, including full Windows/Linux/Android builds and the focused actual-output workflows. See PROJECT_STATUS.md and ADR022 for exact behavior and evidence. Presets contain requirements only; sources are supplied separately. No launch-completion, permanent signature storage, provider/device acceptance or production-signing claim follows.
+
+
+## Verified visual crop integration — 2026-10-21 (Asia/Dhaka)
+
+PR4 merged as fe9740d9be4dc728b19a63b25b2f0233dd7d9ce7 from tested feature source f13fb3dc0aee0513b9610f0ddf0764c96abda2a1. Windows 39646610524, Linux 39646610381, Android 39646610724, bridge 39646610682, notices 39646610530, custom-pack 39646610539 and crop 39646610541 all pass. Provisioned native suites pass 84 Linux/82 Windows checks; focused crop tests pass 2 native and 6 Flutter checks, with clean analysis and exact regenerated bindings. Full edge targets, diagonal dragging, keyboard adjustment, aspect selection, overflow-safe numeric recovery, cancellation and actual saved 8×8 output pass at 100%/200% text. Testing resolved gesture competition with page scrolling before integration. See ADR023.
+
+The code retains the verified custom packs, session-source lifetimes, flexible compression and saved-copy actions from PR1–3. Full launch remains incomplete. Continue from REMAINING-WORK: signature refinement/storage/placement, broader PDF operations, platform OCR/searchable geometry, persistent sources/selective retries, accessibility/localization/device/user acceptance and isolation/distribution/signing. Hosted checks do not establish real-device, printer, screen-reader, complete legal clearance or production acceptance.
+
+The local execution environment disconnected after the tested source was safely pushed and merged. These final records were completed through the GitHub connector. Git source and hosted artifacts are authoritative; no local installer delivery or changed private signing identity is claimed.

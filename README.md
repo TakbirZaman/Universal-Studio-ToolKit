@@ -86,10 +86,17 @@ The three platform CI workflows explicitly build and verify the pinned narrow Op
 
 For a Linux development build, install CMake3.28.4/Ninja1.13.2/NumPy2.3.5/Pillow12.3.0, then run `python3 scripts/verify_vision_candidate.py --platform linux-x64 --work /your/development/work`. Set `UST_VISION_LIBRARY` to its `build/adapter/libust_cv.so` and `UST_VISION_BUILD_REPORT` to its `pixel-verification.json` before `bash scripts/build_linux.sh`. Both paths must refer to the same verified build. Native Rust tests require this explicit library and `cargo test --locked --manifest-path rust/Cargo.toml -- --include-ignored`; otherwise they report themselves as ignored. See ADR017–019 and docs/CHECKPOINT.md for precise source/build evidence.
 
-### Custom application packs (development candidate)
+### Custom application packs
 
 Prepare Application includes a custom pack editor for required/optional image and PDF slots. Set each output filename, JPEG/PNG dimensions, optional strict KiB limit, and PDF page range. Review selected sources, prepare the ZIP, inspect measured results, and save a copy. Preset JSON contains settings only and can be exported/imported separately. The editor accepts one output format per slot and strict KiB limits; unsupported imported constraints are rejected. Image preparation uses fit/padding; signature cleanup remains a separate studio step.
 
 Use **Keep for application pack** on a prepared studio or photo-recipe result to reuse it directly. Session documents are held only in memory, capped at 16 items/64 MiB, and can be removed in Prepare Application. Close the app to end the session. These controls do not save signatures permanently.
 
-The CLI accepts `{"operation":"pack","preset":"preset.json","inputs":["photo.jpg",null],"directory":"output","filename":"application.zip"}`. Inputs follow preset slot order; `null` omits an optional slot. Every output must satisfy its constraints before the ZIP is written. This candidate still requires its hosted bridge/UI/platform checks; it is separate from previously built installers.
+The CLI accepts `{"operation":"pack","preset":"preset.json","inputs":["photo.jpg",null],"directory":"output","filename":"application.zip"}`. Inputs follow preset slot order; `null` omits an optional slot. Every output must satisfy its constraints before the ZIP is written. The integrated feature passes native, UI, bridge and Windows/Linux/Android build checks. Development builds remain separate from production device acceptance and signing.
+
+
+### Visual photo cropping
+
+Choose **Crop and resize** after selecting an image in Photo Studio, or open **Crop visually** in a photo recipe. Drag either corner, move the selection, choose an aspect ratio, or enter exact orientation-corrected pixel bounds. Focus a handle and use arrow keys; Shift changes ten pixels. Review and choose **Use crop**, then prepare the actual recipe output before saving. Cancelling leaves the recipe unchanged. Cropping uses the original image before resizing; display thumbnails are never exported.
+
+The editor supports free, 1:1, 3:4, 4:3 and 35:45 selection, bounded undo/reset and 48-pixel edge targets. Physical/rotation settings from another workspace are not inherited. Face assistance and manual signature masks remain unfinished. Source and actual-output workflows are checked at 100%/200% text; representative-user and real-device acceptance remains outstanding.

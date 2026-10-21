@@ -1,0 +1,55 @@
+{
+  "verified_date": "2026-10-21",
+  "timezone": "Asia/Dhaka",
+  "tested_source": "f13fb3dc0aee0513b9610f0ddf0764c96abda2a1",
+  "merged_source": "fe9740d9be4dc728b19a63b25b2f0233dd7d9ce7",
+  "pull_request": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/4",
+  "status": "verified development feature; full launch incomplete",
+  "native": {
+    "linux_passed": 84,
+    "windows_passed": 82,
+    "focused_crop_passed": 2
+  },
+  "flutter": {
+    "focused_crop_passed": 6,
+    "focused_pack_passed": 5,
+    "analysis": "clean",
+    "text_scales": [
+      1,
+      2
+    ]
+  },
+  "checks": [
+    "EXIF-corrected original dimensions",
+    "exact native crop pixels",
+    "48px edge targets outside image pixels",
+    "diagonal drag versus page scrolling",
+    "keyboard adjustment",
+    "aspect locks",
+    "overflow-safe coordinates",
+    "invalid-coordinate recovery",
+    "cancellation preserves recipe",
+    "actual saved dimensions 8x8",
+    "original preserved"
+  ],
+  "hosted_runs": {
+    "windows": 39646610524,
+    "linux": 39646610381,
+    "android": 39646610724,
+    "bridge": 39646610682,
+    "notices": 39646610530,
+    "custom_pack": 39646610539,
+    "crop": 39646610541
+  },
+  "generated_artifact": {
+    "id": 12366955066,
+    "sha256": "f52857895e1e1207715933598bc8bce8b3d4d239aabc22bf7c241da03b817297",
+    "independently_verified": [
+      "SHA256",
+      "ZIP CRC",
+      "single JSON entry",
+      "exact nine generated source paths"
+    ]
+  },
+  "external_acceptance": "not established; see remaining launch work"
+}
