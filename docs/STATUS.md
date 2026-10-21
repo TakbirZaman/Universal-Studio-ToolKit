@@ -89,3 +89,8 @@ Version3 photo recipes support explicit flexible minimum/maximum dimensions with
 ### Saved-copy action candidate —2026-10-20
 
 Native Windows and Android adapters plus Linux desktop handoff are implemented, with capability-based controls and no automatic opening/sharing. Primary exports, recipe/batch results, PDF PNG/text and OCR text reuse saved receipts. Process another retains saved files and clears source selections/one-off transforms.49 Flutter checks and clean analysis pass locally; Rust source remains the76-test flexible candidate. OS action adapters are substituted for UI tests; actual viewer/chooser/device acceptance and native compilation remain pending. These actions are not yet in the7750582 downloads.
+
+
+### Integrated custom packs and session sources — 2026-10-21
+
+Main80a02e7 integrates flexible compression, saved-copy actions, editable application packs and bounded session document reuse. All six relevant hosted workflows pass on feature sourceaf4f5a6, including full Windows/Linux/Android builds and the focused actual-output workflows. See PROJECT_STATUS.md and ADR022 for exact behavior and evidence. Presets contain requirements only; sources are supplied separately. No launch-completion, permanent signature storage, provider/device acceptance or production-signing claim follows.

@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-21",
+  "tested_source": "af4f5a67293437c47f9ca7e4deb691e07189be96",
+  "merged_source": "80a02e78e0d7f45fff5ad9c51bc769703ce24732",
+  "pull_request": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/3",
+  "status": "verified development feature; full launch remains incomplete",
+  "local_native": {
+    "passed": 79,
+    "ignored": 3,
+    "reason": "scanner adapter must be separately provisioned"
+  },
+  "provisioned_native": {
+    "linux_passed": 82,
+    "windows_passed": 80
+  },
+  "focused": {
+    "native_pack_and_cli_passed": 6,
+    "flutter_passed": 5,
+    "text_scales": [
+      1,
+      2
+    ],
+    "checks": [
+      "owned session bytes and quotas",
+      "preset JSON export/import",
+      "required-source recovery",
+      "wrong-extension save recovery",
+      "actual ZIP write and native validation"
+    ]
+  },
+  "independent_cli": [
+    "exact archive entries",
+    "image dimensions",
+    "strict byte limit",
+    "SHA256 manifest",
+    "no overwrite",
+    "original preserved"
+  ],
+  "hosted_runs": {
+    "windows": 39640061789,
+    "linux": 39640061791,
+    "android": 39640061755,
+    "bridge": 39640061787,
+    "notices": 39640061771,
+    "focused": 39640061813
+  },
+  "limitations": [
+    "development signing only",
+    "actual Android camera/provider and clean-device acceptance not established",
+    "OCR remains Linux-only",
+    "full remaining scope in REQUIREMENTS and REMAINING-WORK"
+  ]
+}
