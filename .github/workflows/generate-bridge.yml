@@ -1,8 +1,10 @@
 name: Generate typed Rust bridge
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main, work/offline-ocr, work/photo-density, work/safe-scan-session, work/print-layout, work/pdf-overlays, work/pdf-text, work/scan-perspective]
-    paths: ['rust/src/api.rs', '.github/workflows/generate-bridge.yml']
+    paths: ['rust/src/**', 'rust/Cargo.*', 'lib/src/rust/**', 'flutter_rust_bridge.yaml', 'pubspec*', 'scripts/collect_bridge.py', '.github/workflows/generate-bridge.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,6 +36,8 @@ jobs:
           cargo fmt --manifest-path rust/Cargo.toml --check
           flutter analyze --no-pub
           python3 scripts/collect_bridge.py
+      - name: Reject stale committed bindings
+        run: git diff --exit-code -- lib/src/rust rust/src/frb_generated.rs
       - name: Upload reviewable generated source
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

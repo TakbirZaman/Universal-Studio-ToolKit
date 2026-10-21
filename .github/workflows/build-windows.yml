@@ -1,5 +1,7 @@
 name: Verify and build Windows
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main, work/safe-scan-session, work/print-layout, work/image-encoding-limits, work/pdf-overlays, work/pdf-text, work/scan-perspective, work/scan-straighten]
     paths: ['windows/**', 'lib/**', 'rust/**', 'test/**', 'pubspec*', 'third_party/**', 'native/opencv/**', 'scripts/*vision*', 'scripts/*windows*', '.github/workflows/build-windows.yml']
