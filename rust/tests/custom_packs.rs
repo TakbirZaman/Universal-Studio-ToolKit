@@ -150,3 +150,44 @@ fn pdf_slot_enforces_actual_page_count() {
     let error = p.prepare(vec![pdf.data]).unwrap_err().to_string();
     assert!(error.starts_with("Portrait:"));
 }
+
+#[test]
+fn cli_custom_pack_writes_verified_zip_and_never_overwrites() {
+    let directory = tempfile::tempdir().unwrap();
+    let source = directory.path().join("source.png");
+    let definition = directory.path().join("preset.json");
+    let request = directory.path().join("request.json");
+    std::fs::write(&source, image()).unwrap();
+    std::fs::write(&definition, serde_json::to_vec(&preset()).unwrap()).unwrap();
+    std::fs::write(
+        &request,
+        serde_json::to_vec(&serde_json::json!({
+            "operation":"pack", "inputs":[source, null], "preset":definition,
+            "directory":directory.path(), "filename":"application.zip",
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let run = || {
+        std::process::Command::new(env!("CARGO_BIN_EXE_studio"))
+            .arg(&request)
+            .output()
+            .unwrap()
+    };
+    let first = run();
+    assert!(
+        first.status.success(),
+        "{}",
+        String::from_utf8_lossy(&first.stderr)
+    );
+    let path = directory.path().join("application.zip");
+    let saved = std::fs::read(&path).unwrap();
+    export::verify_output(&PreparedOutput {
+        data: saved.clone(),
+        info: serde_json::from_slice(&first.stdout).unwrap(),
+    })
+    .unwrap();
+    assert!(!run().status.success());
+    assert_eq!(std::fs::read(path).unwrap(), saved);
+    assert_eq!(std::fs::read(source).unwrap(), image());
+}

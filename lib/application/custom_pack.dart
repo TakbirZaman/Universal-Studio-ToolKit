@@ -110,6 +110,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
   final zipName = TextEditingController(text: 'application-pack.zip');
   List<_Slot> slots = [_Slot()];
   core.StudioOutput? output;
+  SavedCopyReceipt? presetReceipt;
   String? error, saved;
   bool busy = false;
   @override
@@ -128,6 +129,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
       output = null;
       saved = null;
       error = null;
+      presetReceipt = null;
     });
   }
 
@@ -217,6 +219,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
         slot.dispose();
       }
       slots = incoming;
+      presetReceipt = null;
       name.text = json['name'] as String;
       revision.text = json['revision_date'] as String;
       source.text = json['source'] as String? ?? '';
@@ -296,6 +299,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
             onChanged: busy
                 ? null
                 : (value) => setState(() {
+                    presetReceipt = null;
                     slot.format = value!;
                     slot.bytes = null;
                     slot.sourceName = null;
@@ -383,6 +387,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                       : () {
                           setState(() {
                             slots.removeAt(index);
+                            presetReceipt = null;
                             output = null;
                             saved = null;
                           });
@@ -397,6 +402,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                       : () => setState(() {
                           slots.removeAt(index);
                           slots.insert(index - 1, slot);
+                          presetReceipt = null;
                           output = null;
                           saved = null;
                         }),
@@ -483,25 +489,48 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                                   final result = await core.validatePackPreset(
                                     presetJson: preset(),
                                   );
-                                  await ExportService.saveCopy(
+                                  final location = await ExportService.saveCopy(
                                     result,
                                     'application-preset.json',
                                   );
+                                  if (mounted && location != null) {
+                                    setState(
+                                      () => presetReceipt = SavedCopyReceipt(
+                                        location,
+                                        'json',
+                                        result.bytes,
+                                      ),
+                                    );
+                                  }
                                 });
                               },
                         child: const Text('Export preset'),
                       ),
                     ],
                   ),
+                  if (presetReceipt != null) ...[
+                    SelectableText(
+                      'Preset saved and verified\n${presetReceipt!.location}',
+                    ),
+                    SavedCopyActions.receipt(presetReceipt!),
+                  ],
                   for (var i = 0; i < slots.length; i++) slotCard(slots[i], i),
                   OutlinedButton.icon(
                     onPressed: busy || slots.length >= 32
                         ? null
                         : () => setState(() {
                             final slot = _Slot();
-                            slot.filename.text =
-                                'document${slots.length + 1}.jpg';
+                            var number = slots.length + 1;
+                            while (slots.any(
+                              (s) =>
+                                  s.filename.text.toLowerCase() ==
+                                  'document$number.jpg',
+                            )) {
+                              number++;
+                            }
+                            slot.filename.text = 'document$number.jpg';
                             slots.add(slot);
+                            presetReceipt = null;
                             output = null;
                             saved = null;
                           }),

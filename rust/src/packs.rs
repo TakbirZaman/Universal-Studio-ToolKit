@@ -44,6 +44,7 @@ impl PackPreset {
             ));
         }
         let mut outputs = Vec::new();
+        let mut output_bytes = 0usize;
         for (slot, bytes) in self.slots.iter().zip(inputs) {
             if bytes.is_empty() {
                 if slot.required {
@@ -85,9 +86,11 @@ impl PackPreset {
                     )
                 }
             };
-            outputs.push(Some(
-                prepare().map_err(|error| invalid(&format!("{}: {error}", slot.label)))?,
-            ));
+            let output = prepare().map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
+            output_bytes = output_bytes.checked_add(output.data.len())
+                .filter(|total| *total <= MAX_INPUT_BYTES)
+                .ok_or_else(|| invalid(&format!("{}: prepared pack documents exceed 64 MiB combined. Reduce the output dimensions or limits.", slot.label)))?;
+            outputs.push(Some(output));
         }
         self.build(outputs)
     }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
@@ -11,6 +12,13 @@ import 'package:universal_studio_toolkit/src/rust/frb_generated.dart';
 
 class DestinationPicker extends FileSelectorPlatform {
   final String destination;
+  String? importPath;
+  @override
+  Future<XFile?> openFile({
+    List<XTypeGroup>? acceptedTypeGroups,
+    String? initialDirectory,
+    String? confirmButtonText,
+  }) async => importPath == null ? null : XFile(importPath!);
   DestinationPicker(this.destination);
   @override
   Future<String?> getDirectoryPath({
@@ -84,6 +92,31 @@ void main() {
             ),
           ),
         );
+        await press(tester, 'Export preset');
+        final presetFile = File('${dir.path}/application-preset.json');
+        await finish(tester, () => presetFile.existsSync());
+        final exported =
+            jsonDecode(presetFile.readAsStringSync()) as Map<String, dynamic>;
+        expect(exported['slots'], hasLength(1));
+        expect(presetFile.readAsStringSync().contains('sourceName'), isFalse);
+        await finish(
+          tester,
+          () => find
+              .textContaining('Preset saved and verified')
+              .evaluate()
+              .isNotEmpty,
+        );
+        final presetName = find.widgetWithText(TextFormField, 'Preset name');
+        await tester.ensureVisible(presetName);
+        await tester.enterText(presetName, 'Changed settings');
+        await tester.pump();
+        (FileSelectorPlatform.instance as DestinationPicker).importPath =
+            presetFile.path;
+        await press(tester, 'Import preset');
+        await finish(
+          tester,
+          () => find.text('My application').evaluate().isNotEmpty,
+        );
         await press(tester, 'Prepare and validate pack');
         await finish(
           tester,
@@ -100,6 +133,19 @@ void main() {
         );
         expect(tester.takeException(), isNull);
         final filename = find.widgetWithText(TextFormField, 'ZIP filename');
+        await tester.ensureVisible(filename);
+        await tester.enterText(filename, 'wrong.pdf');
+        await tester.pump();
+        await press(tester, 'Save application ZIP');
+        await finish(
+          tester,
+          () => find
+              .textContaining('Filename extension must match')
+              .evaluate()
+              .isNotEmpty,
+        );
+        expect(File('${dir.path}/wrong.pdf').existsSync(), isFalse);
+        expect(find.text('Save application ZIP'), findsOneWidget);
         await tester.ensureVisible(filename);
         await tester.enterText(filename, 'custom.zip');
         await tester.pump();
