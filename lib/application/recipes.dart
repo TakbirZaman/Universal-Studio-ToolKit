@@ -1,3 +1,4 @@
+import 'prepared_documents.dart';
 import 'safe_image_preview.dart';
 
 import 'dart:convert';
@@ -642,6 +643,28 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
               '${output!.width} × ${output!.height} • ${output!.format} • ${output!.bytes.length} bytes',
             ),
             Text(output!.validation),
+            OutlinedButton.icon(
+              onPressed: busy
+                  ? null
+                  : () {
+                      try {
+                        ref
+                            .read(preparedDocumentsProvider.notifier)
+                            .add(
+                              value('filename'),
+                              output!.format,
+                              output!.bytes,
+                            );
+                        setState(
+                          () => message = 'Kept for application packs in this session. Remove it in Prepare Application or close the app.',
+                        );
+                      } catch (e) {
+                        setState(() => message = e.toString());
+                      }
+                    },
+              icon: const Icon(Icons.folder_copy_outlined),
+              label: const Text('Keep for application pack'),
+            ),
             FilledButton(
               onPressed: busy
                   ? null

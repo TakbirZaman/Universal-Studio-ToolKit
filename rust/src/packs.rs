@@ -24,8 +24,86 @@ pub struct PackPreset {
     pub slots: Vec<PackSlot>,
 }
 impl PackPreset {
+    pub fn parse(bytes: &[u8]) -> Result<Self> {
+        if bytes.len() > 65536 {
+            return Err(invalid("Pack preset exceeds 64 KiB."));
+        }
+        let preset: Self = serde_json::from_slice(bytes)?;
+        preset.validate()?;
+        Ok(preset)
+    }
+    /// Process original sources with explicit slot settings, then reopen and validate outputs.
+    /// Empty bytes mean an intentionally omitted optional slot.
+    pub fn prepare(&self, inputs: Vec<Vec<u8>>) -> Result<PreparedOutput> {
+        self.validate()?;
+        if inputs.len() != self.slots.len()
+            || inputs.iter().map(Vec::len).sum::<usize>() > MAX_INPUT_BYTES
+        {
+            return Err(invalid(
+                "Supply one source per slot totalling at most 64 MiB.",
+            ));
+        }
+        let mut outputs = Vec::new();
+        let mut output_bytes = 0usize;
+        for (slot, bytes) in self.slots.iter().zip(inputs) {
+            if bytes.is_empty() {
+                if slot.required {
+                    return Err(invalid(&format!(
+                        "{}: choose a source for this required slot.",
+                        slot.label
+                    )));
+                }
+                outputs.push(None);
+                continue;
+            }
+            let prepare = || -> Result<PreparedOutput> {
+                if slot.formats.len() != 1 {
+                    return Err(invalid(
+                        "Choose one output format for automatic preparation.",
+                    ));
+                }
+                if slot.formats[0] == "pdf" {
+                    crate::pdf::arrange(&[bytes], None, 0)
+                } else {
+                    let (Some(width), Some(height)) = (slot.width, slot.height) else {
+                        return Err(invalid(
+                            "Set both output pixel dimensions for image preparation.",
+                        ));
+                    };
+                    crate::photo::process(
+                        &bytes,
+                        &PhotoOptions {
+                            width,
+                            height,
+                            format: if slot.formats[0] == "png" {
+                                OutputFormat::Png
+                            } else {
+                                OutputFormat::Jpeg
+                            },
+                            max_bytes: slot.max_bytes,
+                            ..Default::default()
+                        },
+                    )
+                }
+            };
+            let output = prepare().map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
+            output_bytes = output_bytes.checked_add(output.data.len())
+                .filter(|total| *total <= MAX_INPUT_BYTES)
+                .ok_or_else(|| invalid(&format!("{}: prepared pack documents exceed 64 MiB combined. Reduce the output dimensions or limits.", slot.label)))?;
+            outputs.push(Some(output));
+        }
+        self.build(outputs)
+    }
+
     pub fn validate(&self) -> Result<()> {
-        if self.schema_version != 1 || self.slots.is_empty() || self.slots.len() > 32 {
+        if self.schema_version != 1
+            || self.slots.is_empty()
+            || self.slots.len() > 32
+            || self.name.trim().is_empty()
+            || self.name.len() > 128
+            || self.revision_date.len() > 32
+            || self.source.as_ref().is_some_and(|s| s.len() > 2048)
+        {
             return Err(invalid("Unsupported pack preset."));
         }
         if self.verified {
@@ -35,8 +113,14 @@ impl PackPreset {
         }
         let mut seen = std::collections::HashSet::new();
         for slot in &self.slots {
-            crate::export::safe_name(&slot.filename)?;
-            if !seen.insert(slot.filename.to_lowercase()) || slot.label.is_empty() {
+            crate::export::safe_name(&slot.filename)
+                .map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
+            if !seen.insert(slot.filename.to_lowercase())
+                || slot.label.trim().is_empty()
+                || slot.label.len() > 128
+                || ["manifest.json", "validation.txt"]
+                    .contains(&slot.filename.to_lowercase().as_str())
+            {
                 return Err(invalid("Pack slots need labels and unique filenames."));
             }
             if slot.formats.is_empty()
@@ -46,6 +130,35 @@ impl PackPreset {
                     .any(|f| !["jpeg", "png", "pdf"].contains(&f.as_str()))
             {
                 return Err(invalid("Pack contains an unsupported output format."));
+            }
+            let extension = std::path::Path::new(&slot.filename)
+                .extension()
+                .and_then(|value| value.to_str())
+                .unwrap_or("")
+                .to_lowercase();
+            let filename_format = if extension == "jpg" {
+                "jpeg"
+            } else {
+                &extension
+            };
+            if !slot.formats.iter().any(|format| format == filename_format) {
+                return Err(invalid(&format!(
+                    "{}: filename extension must match an accepted output format.",
+                    slot.label
+                )));
+            }
+            if slot.width.is_some_and(|n| n == 0 || n > 12000)
+                || slot.height.is_some_and(|n| n == 0 || n > 12000)
+                || slot
+                    .width
+                    .zip(slot.height)
+                    .is_some_and(|(w, h)| u64::from(w) * u64::from(h) > MAX_PIXELS)
+                || slot.min_pages.is_some_and(|n| n == 0 || n > 200)
+                || slot.max_pages.is_some_and(|n| n == 0 || n > 200)
+            {
+                return Err(invalid(
+                    "Invalid pixel dimensions or page limits in pack slot.",
+                ));
             }
             if let Some(limit) = slot.max_bytes {
                 limit.bytes()?;
@@ -90,9 +203,10 @@ impl PackPreset {
                     .transpose()?
                     .unwrap_or(true);
             if !matches {
-                return Err(invalid(
-                    "An application document does not meet its slot requirements. Adjust it before exporting.",
-                ));
+                return Err(invalid(&format!(
+                    "{}: the prepared document does not meet its format, pixel, byte or page requirements. Adjust this slot before exporting.",
+                    slot.label
+                )));
             }
             let extension = std::path::Path::new(&slot.filename)
                 .extension()
