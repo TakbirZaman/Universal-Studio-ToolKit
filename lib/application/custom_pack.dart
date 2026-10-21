@@ -168,10 +168,17 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
     final total = slots
         .where((s) => !identical(s, slot))
         .fold<int>(0, (n, s) => n + (s.bytes?.length ?? 0));
-    if (await file.length() + total > PreparedDocuments.maximumBytes) {
+    final length = await file.length();
+    if (length == 0) {
+      throw const FormatException('Choose a non-empty image or PDF.');
+    }
+    if (length + total > PreparedDocuments.maximumBytes) {
       throw const FormatException('Pack sources must total at most 64 MiB.');
     }
     final bytes = await file.readAsBytes();
+    if (bytes.isEmpty) {
+      throw const FormatException('Choose a non-empty image or PDF.');
+    }
     if (bytes.length + total > PreparedDocuments.maximumBytes) {
       throw const FormatException('Pack sources must total at most 64 MiB.');
     }
@@ -290,11 +297,13 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
           field(slot.filename, 'Output filename (include extension)'),
           DropdownButtonFormField<String>(
             initialValue: slot.format,
+            isExpanded: true,
+            itemHeight: null,
             decoration: const InputDecoration(labelText: 'Output format'),
             items: const [
-              DropdownMenuItem(value: 'jpeg', child: Text('JPEG image')),
-              DropdownMenuItem(value: 'png', child: Text('PNG image')),
-              DropdownMenuItem(value: 'pdf', child: Text('PDF document')),
+              DropdownMenuItem(value: 'jpeg', child: Text('JPEG')),
+              DropdownMenuItem(value: 'png', child: Text('PNG')),
+              DropdownMenuItem(value: 'pdf', child: Text('PDF')),
             ],
             onChanged: busy
                 ? null
@@ -324,7 +333,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
             field(slot.width, 'Output width (pixels)', number: true),
             field(slot.height, 'Output height (pixels)', number: true),
             const Text(
-              'Images fit inside these dimensions with padding. JPEG uses a white background. PNG retains transparency.',
+              'Images fit inside these dimensions with padding. JPEG needs an opaque source and uses white padding. Prepare transparency handling in Photo Studio first. PNG retains transparency.',
             ),
           ] else ...[
             field(slot.minimumPages, 'Minimum pages', number: true),
