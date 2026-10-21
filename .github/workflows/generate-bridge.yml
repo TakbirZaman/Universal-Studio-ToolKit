@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, work/offline-ocr, work/photo-density, work/safe-scan-session, work/print-layout, work/pdf-overlays, work/pdf-text, work/scan-perspective]
+    branches: [main, work/custom-packs, work/offline-ocr, work/photo-density, work/safe-scan-session, work/print-layout, work/pdf-overlays, work/pdf-text, work/scan-perspective]
     paths: ['rust/src/**', 'rust/Cargo.*', 'lib/src/rust/**', 'flutter_rust_bridge.yaml', 'pubspec*', 'scripts/collect_bridge.py', '.github/workflows/generate-bridge.yml']
   workflow_dispatch:
 permissions:
@@ -34,10 +34,7 @@ jobs:
           flutter_rust_bridge_codegen generate --rust-input crate::api --rust-root rust/ --dart-output lib/src/rust --no-web --no-deps-check --no-dart-fix --no-auto-upgrade-dependency
           cargo fmt --manifest-path rust/Cargo.toml
           cargo fmt --manifest-path rust/Cargo.toml --check
-          flutter analyze --no-pub
           python3 scripts/collect_bridge.py
-      - name: Reject stale committed bindings
-        run: git diff --exit-code -- lib/src/rust rust/src/frb_generated.rs
       - name: Upload reviewable generated source
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -45,3 +42,7 @@ jobs:
           path: dist/generated-bridge.json
           retention-days: 3
           if-no-files-found: error
+      - name: Analyze generated integration
+        run: flutter analyze --no-pub
+      - name: Reject stale committed bindings
+        run: git diff --exit-code -- lib/src/rust rust/src/frb_generated.rs

@@ -608,3 +608,35 @@ pub fn prepare_plain_text(data: Vec<u8>) -> std::result::Result<StudioOutput, St
     .map(Into::into)
     .map_err(|e| e.to_string())
 }
+
+/// Custom pack definitions contain requirements only; sources are passed separately.
+pub fn create_custom_application_pack(
+    inputs: Vec<Vec<u8>>,
+    preset_json: String,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| crate::packs::PackPreset::parse(preset_json.as_bytes())?.prepare(inputs))
+        .map(Into::into)
+        .map_err(|error| error.to_string())
+}
+
+pub fn validate_pack_preset(preset_json: String) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        let preset = crate::packs::PackPreset::parse(preset_json.as_bytes())?;
+        let data = serde_json::to_vec_pretty(&preset)?;
+        Ok(PreparedOutput {
+            info: OutputInfo {
+                format: "json".into(),
+                bytes: data.len() as u64,
+                width: None,
+                height: None,
+                pages: None,
+                quality: None,
+                print_density: None,
+                findings: vec![],
+            },
+            data,
+        })
+    })
+    .map(Into::into)
+    .map_err(|error| error.to_string())
+}

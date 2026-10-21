@@ -80,7 +80,9 @@ pub fn verify_output(out: &PreparedOutput) -> Result<()> {
             crate::text::output(out.data.clone())?;
         }
         "json" => {
-            crate::recipe::Recipe::parse(&out.data)?;
+            if crate::recipe::Recipe::parse(&out.data).is_err() {
+                crate::packs::PackPreset::parse(&out.data)?;
+            }
         }
         "pdf" => {
             if Some(crate::pdf::page_count(&out.data)?) != out.info.pages {

@@ -1,3 +1,5 @@
+import 'application/custom_pack.dart';
+import 'application/prepared_documents.dart';
 import 'application/scan_corner_editor.dart';
 import 'src/rust/vision.dart';
 import 'application/print_layout_controls.dart';
@@ -72,18 +74,15 @@ Future<void> main() async {
           await check.writeAsString('');
           await check.delete();
           storage = portable.path;
-          storageNotice =
-              'Portable mode: settings are saved in studio-data beside the application.';
+          storageNotice = 'Portable mode: settings are saved in studio-data beside the application.';
         } catch (_) {
-          storageNotice =
-              'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
+          storageNotice = 'Portable storage is not writable. Settings are saved in your local application-support folder instead.';
         }
       }
       initialTheme = (await loadPreferences(directory: storage!)).theme;
     } catch (_) {
       storage = null;
-      storageNotice =
-          'Settings could not be saved on this device. Changes apply only to this session.';
+      storageNotice = 'Settings could not be saved on this device. Changes apply only to this session.';
     }
     runApp(
       ProviderScope(
@@ -204,12 +203,9 @@ extension ToolLabel on Tool {
           _ => StudioTokens.darkPhoto,
         };
   String get synonyms => switch (this) {
-    Tool.photo =>
-      'smaller compress image picture passport resize crop flexible dimensions recipe batch',
-    Tool.merge =>
-      'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
-    Tool.scan =>
-      'scan certificate pages document camera corners perspective straighten tilted deskew ocr text recognize printed english bangla',
+    Tool.photo => 'smaller compress image picture passport resize crop flexible dimensions recipe batch',
+    Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
+    Tool.scan => 'scan certificate pages document camera corners perspective straighten tilted deskew ocr text recognize printed english bangla',
     Tool.signature => 'signature transparent background png',
     Tool.pack => 'application job documents bundle zip',
     Tool.print => 'print sheet printing copies paper a4 letter dpi',
@@ -400,9 +396,9 @@ class _StudioHomeState extends State<StudioHome> {
                                       const SizedBox(height: 20),
                                       Text(
                                         t.label,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
                                       ),
                                       const SizedBox(height: 8),
                                       Text(t.description),
@@ -626,6 +622,80 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     } catch (e) {
       if (mounted) setState(() => error = clean(e));
     }
+  }
+
+  Future<void> selectPrepared(int slot) async {
+    final documents = ref.read(preparedDocumentsProvider);
+    final pdf = slot == 2;
+    final candidates = documents
+        .where(
+          (item) => pdf
+              ? item.format == 'pdf'
+              : ['jpeg', 'png'].contains(item.format),
+        )
+        .toList();
+    final selected = await showDialog<PreparedDocument>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Use a session document'),
+        content: SizedBox(
+          width: 420,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'These copies stay in memory until removed or the app closes.',
+                ),
+                if (candidates.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Prepare an image or PDF in another studio, then choose Keep for application pack.',
+                    ),
+                  ),
+                for (final item in candidates)
+                  ListTile(
+                    title: Text(item.name),
+                    subtitle: Text(
+                      '${item.format.toUpperCase()} · ${item.byteCount} bytes',
+                    ),
+                    onTap: () => Navigator.pop(context, item),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || selected == null) return;
+    final total = sources.asMap().entries.fold<int>(
+      0,
+      (n, entry) => n + (entry.key == slot ? 0 : entry.value.bytes.length),
+    );
+    if (total + selected.byteCount > PreparedDocuments.maximumBytes) {
+      setState(() => error = 'Select files totalling less than 64 MiB.');
+      return;
+    }
+    setState(() {
+      final source = SelectedSource(selected.name, selected.bytes);
+      if (slot == sources.length) {
+        sources.add(source);
+      } else {
+        sources[slot] = source;
+      }
+      output = null;
+      saved = null;
+      saveError = null;
+      error = null;
+      previewIndex = slot;
+    });
   }
 
   late final Future<bool> cameraAvailable = CameraCapture().available();
@@ -869,9 +939,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         children: [
           Text(
             widget.tool.label,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(context).textTheme.headlineLarge
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
@@ -929,6 +998,17 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ),
           const SizedBox(height: 12),
           if (widget.tool == Tool.pack) ...[
+            OutlinedButton.icon(
+              onPressed: busy
+                  ? null
+                  : () => Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (_) => const CustomPackScreen(),
+                      ),
+                    ),
+              icon: const Icon(Icons.tune),
+              label: const Text('Create a custom application pack'),
+            ),
             const Text(
               'Example requirements, not official rules: photo 300 × 300; signature 300 × 100; certificate 1–200 pages.',
             ),
@@ -960,6 +1040,52 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                 ),
               ),
             ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (var i = 0; i < 3; i++)
+                  TextButton.icon(
+                    onPressed: busy || sources.length < i
+                        ? null
+                        : () => selectPrepared(i),
+                    icon: const Icon(Icons.folder_copy_outlined),
+                    label: Text(
+                      'Use prepared ${['photo', 'signature', 'PDF'][i]}',
+                    ),
+                  ),
+              ],
+            ),
+            if (ref.watch(preparedDocumentsProvider).isNotEmpty)
+              ExpansionTile(
+                title: Text(
+                  'Session documents (${ref.watch(preparedDocumentsProvider).length})',
+                ),
+                children: [
+                  for (final item in ref.watch(preparedDocumentsProvider))
+                    ListTile(
+                      title: Text(item.name),
+                      subtitle: Text('${item.byteCount} bytes'),
+                      trailing: IconButton(
+                        tooltip: 'Remove ${item.name} from session',
+                        onPressed: busy
+                            ? null
+                            : () => ref
+                                  .read(preparedDocumentsProvider.notifier)
+                                  .remove(item.id),
+                        icon: const Icon(Icons.delete_outline),
+                      ),
+                    ),
+                  TextButton(
+                    onPressed: busy
+                        ? null
+                        : () => ref
+                              .read(preparedDocumentsProvider.notifier)
+                              .clear(),
+                    child: const Text('Clear all session documents'),
+                  ),
+                ],
+              ),
           ] else
             OutlinedButton.icon(
               onPressed: busy ? null : select,
@@ -1160,8 +1286,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               onChanged: (_) => changed(),
               decoration: const InputDecoration(
                 labelText: 'Print resolution (DPI)',
-                helperText:
-                    'Dots per inch. Saved dimensions are rounded to whole pixels.',
+                helperText: 'Dots per inch. Saved dimensions are rounded to whole pixels.',
                 helperMaxLines: 3,
               ),
             ),
@@ -1600,6 +1725,35 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                   ),
                 ],
               ),
+            if (['jpeg', 'png', 'pdf'].contains(output!.format)) ...[
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: busy
+                    ? null
+                    : () {
+                        try {
+                          ref
+                              .read(preparedDocumentsProvider.notifier)
+                              .add(
+                                filename.text,
+                                output!.format,
+                                output!.bytes,
+                              );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Kept for application packs in this session. Remove it in Prepare Application or close the app.',
+                              ),
+                            ),
+                          );
+                        } catch (e) {
+                          setState(() => saveError = clean(e));
+                        }
+                      },
+                icon: const Icon(Icons.folder_copy_outlined),
+                label: const Text('Keep for application pack'),
+              ),
+            ],
             const Divider(height: 32),
             const Text(
               '4  Save a copy',
@@ -1782,8 +1936,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     } catch (_) {
       if (mounted) {
         setState(
-          () => draftMessage =
-              'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
+          () => draftMessage = 'Could not restore this draft. It may be expired, damaged or unavailable. Your current scan is unchanged.',
         );
       }
     } finally {
