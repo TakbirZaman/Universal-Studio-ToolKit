@@ -32,7 +32,7 @@ Future<void> finish(WidgetTester tester, bool Function() done) async {
     await tester.runAsync(
       () => Future<void>.delayed(const Duration(milliseconds: 25)),
     );
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
     if (done()) return;
   }
   expect(done(), isTrue, reason: 'Native crop and preview must finish');
@@ -99,8 +99,10 @@ void main() {
               use.evaluate().isNotEmpty &&
               tester.widget<FilledButton>(use).onPressed != null,
         );
+        await tester.pumpAndSettle();
         expect(find.text('Original: 20 × 40 pixels'), findsOneWidget);
         final handle = find.bySemanticsLabel('Top left crop handle');
+        await tester.ensureVisible(handle);
         await tester.drag(handle, const Offset(55, 55));
         await tester.pump();
         final left = field('Left edge (pixels)');
@@ -108,6 +110,7 @@ void main() {
           tester.widget<TextField>(left).controller!.text,
         );
         expect(before, greaterThan(0));
+        await tester.ensureVisible(handle);
         await tester.tap(handle);
         await tester.pump();
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
