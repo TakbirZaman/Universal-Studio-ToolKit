@@ -168,6 +168,51 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
     return KeyEventResult.handled;
   }
 
+  void beginDrag(DragStartDetails details, [int? index]) {
+    remember();
+    dragOrigin = details.globalPosition;
+    dragSelection = selection;
+    if (index != null) handles[index].requestFocus();
+  }
+
+  void dragCorner(
+    int index,
+    DragUpdateDetails details,
+    double width,
+    double height,
+  ) {
+    final crop = dragSelection ?? selection!;
+    final delta =
+        details.globalPosition - (dragOrigin ?? details.globalPosition);
+    final px = index == 0 ? crop.x : crop.x + crop.width;
+    final py = index == 0 ? crop.y : crop.y + crop.height;
+    update(
+      crop.moveCorner(
+        index == 0,
+        px + (delta.dx / width * imageWidth).round(),
+        py + (delta.dy / height * imageHeight).round(),
+        imageWidth,
+        imageHeight,
+        ratios[aspect],
+      ),
+      record: false,
+    );
+  }
+
+  void dragRectangle(DragUpdateDetails details, Size size) {
+    final delta =
+        details.globalPosition - (dragOrigin ?? details.globalPosition);
+    update(
+      (dragSelection ?? selection!).translate(
+        (delta.dx / size.width * imageWidth).round(),
+        (delta.dy / size.height * imageHeight).round(),
+        imageWidth,
+        imageHeight,
+      ),
+      record: false,
+    );
+  }
+
   Widget handle(
     int index,
     double x,
@@ -190,33 +235,16 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
         label: index == 0 ? 'Top left crop handle' : 'Bottom right crop handle',
         hint: 'Drag, or focus and use arrow keys. Shift changes ten pixels.',
         child: GestureDetector(
+          key: ValueKey('photo-crop-handle-$index'),
           dragStartBehavior: DragStartBehavior.down,
           behavior: HitTestBehavior.opaque,
           onTap: () => handles[index].requestFocus(),
-          onPanStart: (details) {
-            remember();
-            dragOrigin = details.globalPosition;
-            dragSelection = selection;
-            handles[index].requestFocus();
-          },
-          onPanUpdate: (details) {
-            final crop = dragSelection ?? selection!;
-            final delta =
-                details.globalPosition - (dragOrigin ?? details.globalPosition);
-            final px = index == 0 ? crop.x : crop.x + crop.width;
-            final py = index == 0 ? crop.y : crop.y + crop.height;
-            update(
-              crop.moveCorner(
-                index == 0,
-                px + (delta.dx / width * imageWidth).round(),
-                py + (delta.dy / height * imageHeight).round(),
-                imageWidth,
-                imageHeight,
-                ratios[aspect],
-              ),
-              record: false,
-            );
-          },
+          onHorizontalDragStart: (details) => beginDrag(details, index),
+          onVerticalDragStart: (details) => beginDrag(details, index),
+          onHorizontalDragUpdate: (details) =>
+              dragCorner(index, details, width, height),
+          onVerticalDragUpdate: (details) =>
+              dragCorner(index, details, width, height),
           child: Center(
             child: Container(
               width: 28,
@@ -306,30 +334,12 @@ class _PhotoCropEditorState extends State<PhotoCropEditor> {
                 child: GestureDetector(
                   dragStartBehavior: DragStartBehavior.down,
                   behavior: HitTestBehavior.translucent,
-                  onPanStart: (details) {
-                    remember();
-                    dragOrigin = details.globalPosition;
-                    dragSelection = selection;
-                  },
-                  onPanUpdate: (details) => update(
-                    (dragSelection ?? selection!).translate(
-                      ((details.globalPosition.dx -
-                                  (dragOrigin?.dx ??
-                                      details.globalPosition.dx)) /
-                              size.width *
-                              imageWidth)
-                          .round(),
-                      ((details.globalPosition.dy -
-                                  (dragOrigin?.dy ??
-                                      details.globalPosition.dy)) /
-                              size.height *
-                              imageHeight)
-                          .round(),
-                      imageWidth,
-                      imageHeight,
-                    ),
-                    record: false,
-                  ),
+                  onHorizontalDragStart: (details) => beginDrag(details),
+                  onVerticalDragStart: (details) => beginDrag(details),
+                  onHorizontalDragUpdate: (details) =>
+                      dragRectangle(details, size),
+                  onVerticalDragUpdate: (details) =>
+                      dragRectangle(details, size),
                 ),
               ),
               handle(0, rect.left, rect.top, size.width, size.height),

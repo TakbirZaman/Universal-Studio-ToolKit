@@ -101,7 +101,8 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.text('Original: 20 × 40 pixels'), findsOneWidget);
-        final handle = find.bySemanticsLabel('Top left crop handle');
+        expect(find.bySemanticsLabel('Top left crop handle'), findsOneWidget);
+        final handle = find.byKey(const ValueKey('photo-crop-handle-0'));
         await tester.ensureVisible(handle);
         await tester.dragFrom(
           tester.getCenter(handle) - const Offset(16, 16),
