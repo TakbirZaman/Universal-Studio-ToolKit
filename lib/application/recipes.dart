@@ -1,3 +1,5 @@
+import 'photo_crop_editor.dart';
+import 'photo_crop_geometry.dart';
 import 'prepared_documents.dart';
 import 'safe_image_preview.dart';
 
@@ -15,7 +17,15 @@ import 'saved_copy_actions.dart';
 import 'recipe_batch.dart';
 
 class RecipesScreen extends ConsumerStatefulWidget {
-  const RecipesScreen({super.key});
+  final Uint8List? initialSource;
+  final String? initialSourceName;
+  final bool openCrop;
+  const RecipesScreen({
+    super.key,
+    this.initialSource,
+    this.initialSourceName,
+    this.openCrop = false,
+  });
   @override
   ConsumerState<RecipesScreen> createState() => _RecipesState();
 }
@@ -57,7 +67,16 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialSource != null) {
+      source = Uint8List.fromList(widget.initialSource!);
+      sourceName = widget.initialSourceName ?? 'Studio source';
+    }
     load();
+    if (widget.openCrop && source != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) editCrop();
+      });
+    }
   }
 
   @override
@@ -286,6 +305,38 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       });
     }
   });
+  Future<void> editCrop() async {
+    if (source == null || busy) return;
+    PixelCrop? initial;
+    if (crop) {
+      final values = [
+        'x',
+        'y',
+        'cropWidth',
+        'cropHeight',
+      ].map((key) => int.tryParse(value(key))).toList();
+      if (values.every((v) => v != null)) {
+        initial = PixelCrop(values[0]!, values[1]!, values[2]!, values[3]!);
+      }
+    }
+    final result = await Navigator.of(context).push<PixelCrop>(
+      MaterialPageRoute(
+        builder: (_) => PhotoCropEditor(source: source!, initial: initial),
+      ),
+    );
+    if (!mounted || result == null) return;
+    setState(() {
+      crop = true;
+      fields['x']!.text = '${result.x}';
+      fields['y']!.text = '${result.y}';
+      fields['cropWidth']!.text = '${result.width}';
+      fields['cropHeight']!.text = '${result.height}';
+      output = null;
+      savedCopy = null;
+      message = 'Crop selected. Prepare preview to inspect the actual exported pixels.';
+    });
+  }
+
   Future<void> chooseBatch() async {
     if (!form.currentState!.validate()) return;
     await action(() async {
@@ -460,6 +511,11 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                       'Coordinates use the orientation-corrected original photo. Crops outside it are rejected.',
                     ),
                     toggle('Apply crop', crop, (v) => crop = v),
+                    OutlinedButton.icon(
+                      onPressed: busy || source == null ? null : editCrop,
+                      icon: const Icon(Icons.crop),
+                      label: const Text('Crop visually'),
+                    ),
                     if (crop) ...[
                       field(
                         'x',

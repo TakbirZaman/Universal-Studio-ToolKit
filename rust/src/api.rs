@@ -640,3 +640,12 @@ pub fn validate_pack_preset(preset_json: String) -> std::result::Result<StudioOu
     .map(Into::into)
     .map_err(|error| error.to_string())
 }
+
+/// Orientation-corrected dimensions after the same guarded decode used for export.
+pub fn photo_source_dimensions(data: Vec<u8>) -> std::result::Result<Vec<u32>, String> {
+    jobs::serial(|| {
+        let image = crate::photo::decode(&data)?;
+        Ok(vec![image.width(), image.height()])
+    })
+    .map_err(|error| error.to_string())
+}

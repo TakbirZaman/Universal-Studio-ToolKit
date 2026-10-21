@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, work/custom-packs, work/offline-ocr, work/photo-density, work/safe-scan-session, work/print-layout, work/pdf-overlays, work/pdf-text, work/scan-perspective]
+    branches: [main, work/direct-photo-crop, work/custom-packs, work/offline-ocr, work/photo-density, work/safe-scan-session, work/print-layout, work/pdf-overlays, work/pdf-text, work/scan-perspective]
     paths: ['rust/src/**', 'rust/Cargo.*', 'lib/src/rust/**', 'flutter_rust_bridge.yaml', 'pubspec*', 'scripts/collect_bridge.py', '.github/workflows/generate-bridge.yml']
   workflow_dispatch:
 permissions:
