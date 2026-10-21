@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-20",
+  "scope": "Local candidate checks; platform packaging pending",
+  "rust_tests_passed": 76,
+  "flutter_tests_passed": 43,
+  "analysis": "No issues found",
+  "recipe_schema_version": 3,
+  "fixed_dimensions_default_preserved": true,
+  "maximum_sampled_dimension_pairs": 9,
+  "jpeg_source_recompression_detected_by_direct_original_encoding_comparison": true,
+  "png_alpha_preserved": true,
+  "minimum_quality_enforced": true,
+  "invalid_and_impossible_constraints_return_no_output": true,
+  "cancellation_callback_checked": true,
+  "desktop_and_narrow_dark_text_scale_2_actual_saves": true,
+  "independent_saved_jpeg": {
+    "pixels": [
+      136,
+      102
+    ],
+    "bytes": 8029,
+    "strict_limit_bytes": 8192,
+    "approved_width_range": [
+      96,
+      256
+    ],
+    "approved_height_range": [
+      72,
+      192
+    ],
+    "exif_present": false,
+    "icc_present": false
+  },
+  "global_maximum_dimensions_guaranteed": false,
+  "candidate_platform_packages_verified": false,
+  "android_device_verified": false
+}

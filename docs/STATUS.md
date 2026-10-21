@@ -85,3 +85,7 @@ The fixed example pack now supports replacing a selected document without cleari
 ### Approved flexible compression candidate —2026-10-20
 
 Version3 photo recipes support explicit flexible minimum/maximum dimensions with required limits. Core JPEG/PNG/quality/bounds/cancellation/recipe checks pass; actual desktop and narrow-dark200% recipe/export workflows produce independently verified136×102 JPEGs at8029 bytes below8KiB. Fixed dimensions remain default; unsampled larger sizes may also fit. Full local checks pass76 Rust/43 Flutter tests and clean analysis. This is a candidate, separate from integrated main7750582 packages (73 Rust/41 Flutter). No extra API dependency, asset or generated binding change is introduced. Platform packaging remains pending; direct crop/face assistance and remaining scope are unchanged.
+
+### Saved-copy action candidate —2026-10-20
+
+Native Windows and Android adapters plus Linux desktop handoff are implemented, with capability-based controls and no automatic opening/sharing. Primary exports, recipe/batch results, PDF PNG/text and OCR text reuse saved receipts. Process another retains saved files and clears source selections/one-off transforms.49 Flutter checks and clean analysis pass locally; Rust source remains the76-test flexible candidate. OS action adapters are substituted for UI tests; actual viewer/chooser/device acceptance and native compilation remain pending. These actions are not yet in the7750582 downloads.

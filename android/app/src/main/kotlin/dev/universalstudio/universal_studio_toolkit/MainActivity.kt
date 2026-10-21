@@ -20,6 +20,8 @@ class MainActivity : FlutterActivity() {
     private val writer = Executors.newSingleThreadExecutor()
     private var pending: MethodChannel.Result? = null
     private var pendingBytes: ByteArray? = null
+    private var pendingMime: String? = null
+    private val savedDocuments by lazy { SavedDocumentsAdapter(this, writer) }
     private val requestSave = 7102
     private val requestCapture = 7103
     private var captureResult: MethodChannel.Result? = null
@@ -36,6 +38,8 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "dev.universalstudio/saved")
+            .setMethodCallHandler { call, result -> savedDocuments.handle(call, result) }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "dev.universalstudio/documents")
             .setMethodCallHandler { call, result ->
                 if (call.method != "saveCopy") { result.notImplemented(); return@setMethodCallHandler }
@@ -48,6 +52,7 @@ class MainActivity : FlutterActivity() {
                 }
                 pending = result
                 pendingBytes = bytes
+                pendingMime = mime
                 try {
                     val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
                         .addCategory(Intent.CATEGORY_OPENABLE)
@@ -55,10 +60,17 @@ class MainActivity : FlutterActivity() {
                         .putExtra(Intent.EXTRA_TITLE, name)
                     startActivityForResult(intent, requestSave)
                 } catch (_: Exception) {
-                    pending = null; pendingBytes = null
+                    pending = null; pendingBytes = null; pendingMime = null
                     result.error("provider", "No document provider is available for saving.", null)
                 }
             }
+    }
+
+    override fun onDestroy() {
+        // Finish already queued writes; release the worker once they complete.
+        // Do not interrupt a provider write or delete a user's saved destination.
+        writer.shutdown()
+        super.onDestroy()
     }
 
     @Deprecated("SAF activity result adapter; migrate with the embedding's ActivityResult support")
@@ -71,9 +83,10 @@ class MainActivity : FlutterActivity() {
         if (requestCode != requestSave) return
         val result = pending ?: return
         val bytes = pendingBytes
+        val mime = pendingMime
         val uri = data?.data
-        if (resultCode != Activity.RESULT_OK || uri == null || bytes == null) {
-            pending = null; pendingBytes = null; result.success(null); return
+        if (resultCode != Activity.RESULT_OK || uri == null || bytes == null || mime == null) {
+            pending = null; pendingBytes = null; pendingMime = null; result.success(null); return
         }
         writer.execute {
             try {
@@ -92,11 +105,11 @@ class MainActivity : FlutterActivity() {
                     }
                 } ?: throw IllegalStateException("Provider did not reopen the saved document")
                 if (length != bytes.size.toLong() || !MessageDigest.isEqual(expected, digest.digest())) throw IllegalStateException("Provider verification failed")
-                runOnUiThread { pending = null; pendingBytes = null; result.success(uri.toString()) }
+                runOnUiThread { savedDocuments.register(uri, mime, expected, bytes.size.toLong()); pending = null; pendingBytes = null; pendingMime = null; result.success(uri.toString()) }
             } catch (_: Exception) {
                 // A provider may not allow deletion or atomic replacement. Do not silently delete it.
                 runOnUiThread {
-                    pending = null; pendingBytes = null
+                    pending = null; pendingBytes = null; pendingMime = null
                     result.error("save_unverified", "The saved copy could not be verified. A partial file may remain in the chosen location; inspect or delete that copy. Your source file is unchanged.", null)
                 }
             }

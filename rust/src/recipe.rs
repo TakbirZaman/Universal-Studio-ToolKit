@@ -14,6 +14,13 @@ pub enum Step {
         height: u32,
         fit: Fit,
     },
+    FlexibleResize {
+        width: u32,
+        height: u32,
+        minimum_width: u32,
+        minimum_height: u32,
+        fit: Fit,
+    },
     Compress {
         limit: ByteLimit,
         min_quality: u8,
@@ -44,7 +51,7 @@ impl Recipe {
         Ok(r)
     }
     pub fn validate(&self) -> Result<()> {
-        if ![1, 2].contains(&self.schema_version)
+        if ![1, 2, 3].contains(&self.schema_version)
             || self.name.trim().is_empty()
             || self.name.len() > 128
             || self.steps.is_empty()
@@ -61,7 +68,7 @@ impl Recipe {
                     width,
                     height,
                 } => {
-                    if self.schema_version != 2
+                    if self.schema_version < 2
                         || *width == 0
                         || *height == 0
                         || *width as u64 * *height as u64 > MAX_PIXELS
@@ -69,7 +76,7 @@ impl Recipe {
                         || y.checked_add(*height).is_none_or(|v| v > 12000)
                     {
                         return Err(invalid(
-                            "Crop needs recipe version 2 and valid pixel coordinates.",
+                            "Crop needs recipe version 2 or 3 and valid pixel coordinates.",
                         ));
                     }
                     0
@@ -82,6 +89,28 @@ impl Recipe {
                         || *width as u64 * *height as u64 > MAX_PIXELS
                     {
                         return Err(invalid("Invalid resize dimensions."));
+                    }
+                    1
+                }
+                Step::FlexibleResize {
+                    width,
+                    height,
+                    minimum_width,
+                    minimum_height,
+                    ..
+                } => {
+                    if self.schema_version != 3
+                        || *minimum_width == 0
+                        || *minimum_height == 0
+                        || minimum_width > width
+                        || minimum_height > height
+                        || *width > 12000
+                        || *height > 12000
+                        || u64::from(*width) * u64::from(*height) > MAX_PIXELS
+                    {
+                        return Err(invalid(
+                            "Flexible resizing needs recipe version 3 and valid minimum/maximum pixels.",
+                        ));
                     }
                     1
                 }
@@ -103,6 +132,17 @@ impl Recipe {
                 return Err(invalid("Recipe steps repeat or are out of order."));
             }
             previous = rank;
+        }
+        if self
+            .steps
+            .iter()
+            .any(|s| matches!(s, Step::FlexibleResize { .. }))
+            && !self
+                .steps
+                .iter()
+                .any(|s| matches!(s, Step::Compress { .. }))
+        {
+            return Err(invalid("Flexible resizing needs a maximum file size."));
         }
         if previous != 5 {
             return Err(invalid("A recipe must end with export."));
@@ -136,6 +176,7 @@ impl Recipe {
             height: original.height(),
             ..Default::default()
         };
+        let mut flexible_minimum = None;
         for s in &self.steps {
             match s {
                 Step::Crop {
@@ -158,6 +199,18 @@ impl Recipe {
                     o.height = *height;
                     o.fit = *fit;
                 }
+                Step::FlexibleResize {
+                    width,
+                    height,
+                    minimum_width,
+                    minimum_height,
+                    fit,
+                } => {
+                    o.width = *width;
+                    o.height = *height;
+                    o.fit = *fit;
+                    flexible_minimum = Some((*minimum_width, *minimum_height));
+                }
                 Step::Compress { limit, min_quality } => {
                     o.max_bytes = Some(*limit);
                     o.min_quality = *min_quality;
@@ -166,6 +219,10 @@ impl Recipe {
                 _ => {}
             }
         }
-        crate::photo::process(bytes, &o)
+        if let Some((width, height)) = flexible_minimum {
+            crate::photo::process_flexible(bytes, &o, width, height, &|| false)
+        } else {
+            crate::photo::process(bytes, &o)
+        }
     }
 }

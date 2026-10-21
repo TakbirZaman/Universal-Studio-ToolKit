@@ -313,6 +313,74 @@ pub fn process_cancellable(
     }
     Ok(PreparedOutput { data: bytes, info })
 }
+/// Bounded dimension search. Every trial starts from the unchanged source;
+/// JPEG quality candidates within each trial share its prepared pixels.
+/// Dimensions are never relaxed unless this workflow is explicitly requested.
+pub fn process_flexible(
+    data: &[u8],
+    options: &PhotoOptions,
+    minimum_width: u32,
+    minimum_height: u32,
+    cancel: &dyn Fn() -> bool,
+) -> Result<PreparedOutput> {
+    if minimum_width == 0
+        || minimum_height == 0
+        || minimum_width > options.width
+        || minimum_height > options.height
+        || options.width > 12000
+        || options.height > 12000
+        || u64::from(options.width) * u64::from(options.height) > MAX_PIXELS
+        || options.max_bytes.is_none()
+    {
+        return Err(invalid(
+            "Flexible dimensions need valid minimum/maximum pixels and a file-size limit.",
+        ));
+    }
+    let minimum_scale = (f64::from(minimum_width) / f64::from(options.width))
+        .max(f64::from(minimum_height) / f64::from(options.height));
+    let mut seen = std::collections::HashSet::new();
+    let mut attempted = 0;
+    // At most nine descending sizes, including both ends of the approved scale.
+    // No monotonicity assumption is made about encoded JPEG sizes.
+    for index in 0..=8 {
+        if cancel() {
+            return Err(StudioError::Cancelled);
+        }
+        let scale = 1. - (1. - minimum_scale) * f64::from(index) / 8.;
+        let width = (f64::from(options.width) * scale).round() as u32;
+        let height = (f64::from(options.height) * scale).round() as u32;
+        let width = width.clamp(minimum_width, options.width);
+        let height = height.clamp(minimum_height, options.height);
+        if !seen.insert((width, height)) {
+            continue;
+        }
+        attempted += 1;
+        let mut candidate = options.clone();
+        candidate.width = width;
+        candidate.height = height;
+        match process_cancellable(data, &candidate, cancel) {
+            Ok(mut output) => {
+                if output.info.width != Some(width)
+                    || output.info.height != Some(height)
+                    || !options.max_bytes.unwrap().accepts(output.data.len())?
+                {
+                    return Err(invalid(
+                        "Flexible output did not meet its verified constraints.",
+                    ));
+                }
+                output.info.findings.push(ValidationFinding {
+                    advisory: false, code: "flexible_dimensions_verified".into(), passed: true,
+                    message: format!("Approved dimensions verified: {minimum_width}–{} × {minimum_height}–{} pixels. Selected {width} × {height} after {attempted} sampled sizes. Larger unsampled sizes may also fit; no maximum-size guarantee. Original unchanged.", options.width, options.height),
+                });
+                return Ok(output);
+            }
+            Err(StudioError::Impossible) => continue,
+            Err(error) => return Err(error),
+        }
+    }
+    Err(StudioError::Impossible)
+}
+
 pub fn physical_pixels(mm: f64, dpi: f64) -> Result<u32> {
     if !mm.is_finite() || !dpi.is_finite() || mm <= 0.0 || dpi <= 0.0 || mm * dpi / 25.4 > 12000.0 {
         return Err(invalid(

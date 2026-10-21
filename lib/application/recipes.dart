@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../src/rust/api.dart' as core;
 import 'preferences.dart';
 import 'export_service.dart';
+import 'saved_copy_actions.dart';
 import 'recipe_batch.dart';
 
 class RecipesScreen extends ConsumerStatefulWidget {
@@ -25,6 +26,8 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       'name': 'Application photo',
       'width': '300',
       'height': '300',
+      'minimumWidth': '150',
+      'minimumHeight': '150',
       'limit': '100',
       'filename': 'photo.jpg',
       'x': '0',
@@ -37,6 +40,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   bool busy = false,
       crop = false,
       original = false,
+      flexible = false,
       cover = false,
       strict = true;
   int quality = 60;
@@ -44,6 +48,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   String? message, sourceName;
   Uint8List? source;
   core.StudioOutput? output;
+  SavedCopyReceipt? savedCopy;
   RecipeBatch? batch;
   List<String> saved = [];
   String value(String key) => fields[key]!.text.trim();
@@ -66,6 +71,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   void changed() {
     setState(() {
       output = null;
+      savedCopy = null;
       message = null;
     });
   }
@@ -96,7 +102,11 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   }
 
   String document() => jsonEncode({
-    'schema_version': crop ? 2 : 1,
+    'schema_version': flexible && !original
+        ? 3
+        : crop
+        ? 2
+        : 1,
     'name': value('name'),
     'revision_date': DateTime.now().toUtc().toIso8601String().split('T').first,
     'steps': [
@@ -110,10 +120,12 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         },
       if (!original)
         {
-          'type': 'resize',
+          'type': flexible ? 'flexible_resize' : 'resize',
           'width': number('width'),
           'height': number('height'),
           'fit': cover ? 'cover' : 'contain',
+          if (flexible) 'minimum_width': number('minimumWidth'),
+          if (flexible) 'minimum_height': number('minimumHeight'),
         },
       if (value('limit').isNotEmpty)
         {
@@ -141,6 +153,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
       fields['name']!.text = r['name'];
       crop = false;
       original = true;
+      flexible = false;
       fields['limit']!.clear();
       quality = 60;
       cover = false;
@@ -158,6 +171,14 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
             fields['width']!.text = '${step['width']}';
             fields['height']!.text = '${step['height']}';
             cover = step['fit'] == 'cover';
+          case 'flexible_resize':
+            original = false;
+            flexible = true;
+            fields['width']!.text = '${step['width']}';
+            fields['height']!.text = '${step['height']}';
+            fields['minimumWidth']!.text = '${step['minimum_width']}';
+            fields['minimumHeight']!.text = '${step['minimum_height']}';
+            cover = step['fit'] == 'cover';
           case 'compress':
             fields['limit']!.text = '${step['limit']['value']}';
             unit = step['limit']['unit'];
@@ -172,6 +193,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         if (s['type'] == 'rename') fields['filename']!.text = s['filename'];
       }
       output = null;
+      savedCopy = null;
       message = 'Recipe loaded. Review settings before processing.';
     });
   }
@@ -259,6 +281,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         source = bytes;
         sourceName = f.name;
         output = null;
+        savedCopy = null;
       });
     }
   });
@@ -320,6 +343,14 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
         if (optional && (s ?? '').isEmpty) return null;
         if (numeric) {
           final n = int.tryParse(s ?? '');
+          if (n != null && (key == 'minimumWidth' || key == 'minimumHeight')) {
+            final maximum = int.tryParse(
+              value(key == 'minimumWidth' ? 'width' : 'height'),
+            );
+            if (maximum != null && n > maximum) {
+              return 'Must not exceed the maximum dimension.';
+            }
+          }
           return n != null && n >= (zero ? 0 : 1)
               ? null
               : 'Enter a valid whole number.';
@@ -456,8 +487,36 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                   (v) => original = v,
                 ),
                 if (!original) ...[
-                  field('width', 'Width (pixels)', numeric: true),
-                  field('height', 'Height (pixels)', numeric: true),
+                  toggle(
+                    'Allow smaller dimensions to meet the file-size limit',
+                    flexible,
+                    (v) => flexible = v,
+                  ),
+                  field(
+                    'width',
+                    flexible ? 'Maximum width (pixels)' : 'Width (pixels)',
+                    numeric: true,
+                  ),
+                  field(
+                    'height',
+                    flexible ? 'Maximum height (pixels)' : 'Height (pixels)',
+                    numeric: true,
+                  ),
+                  if (flexible) ...[
+                    const Text(
+                      'Only sizes inside your approved range are tried. Up to nine sizes are sampled; review the actual output dimensions. A maximum file size is required.',
+                    ),
+                    field(
+                      'minimumWidth',
+                      'Minimum width (pixels)',
+                      numeric: true,
+                    ),
+                    field(
+                      'minimumHeight',
+                      'Minimum height (pixels)',
+                      numeric: true,
+                    ),
+                  ],
                   toggle(
                     'Fill and crop edges instead of fitting with padding',
                     cover,
@@ -466,9 +525,11 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                 ],
                 field(
                   'limit',
-                  'Maximum file size (optional)',
+                  flexible && !original
+                      ? 'Maximum file size'
+                      : 'Maximum file size (optional)',
                   numeric: true,
-                  optional: true,
+                  optional: !flexible || original,
                 ),
                 choice('Size unit', unit, {
                   'kb': 'KB — 1,000 bytes',
@@ -502,7 +563,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                             },
                     ),
                     const Text(
-                      'Metadata is removed. PNG stays lossless. Transparent input is never silently flattened to JPEG. Rotation and edits from other tools are not inherited.',
+                      'Metadata is removed. PNG encoding is lossless; resizing changes pixels. Transparent input is never silently flattened to JPEG. Rotation and edits from other tools are not inherited.',
                     ),
                   ],
                 ),
@@ -529,7 +590,14 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                             'recipe.json',
                           );
                           if (mounted && path != null) {
-                            setState(() => message = 'Saved: $path');
+                            setState(() {
+                              message = 'Saved: $path';
+                              savedCopy = SavedCopyReceipt(
+                                path,
+                                'json',
+                                jsonOutput(json).bytes,
+                              );
+                            });
                           }
                         });
                       },
@@ -563,6 +631,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
           if (busy) const LinearProgressIndicator(),
           if (message != null)
             Semantics(liveRegion: true, child: Text(message!)),
+          if (savedCopy != null) SavedCopyActions.receipt(savedCopy!),
           if (output != null) ...[
             SafeImagePreview(
               bytes: output!.bytes,
@@ -582,10 +651,15 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                         value('filename'),
                       );
                       if (mounted && path != null) {
-                        setState(
-                          () => message =
-                              'Saved: $path. Your original file is unchanged.',
-                        );
+                        setState(() {
+                          message =
+                              'Saved: $path. Your original file is unchanged.';
+                          savedCopy = SavedCopyReceipt(
+                            path,
+                            output!.format,
+                            output!.bytes,
+                          );
+                        });
                       }
                     }),
               child: const Text('Save a copy'),
@@ -604,7 +678,7 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
             child: const Text('Choose batch photos'),
           ),
           if (batch != null) ...[
-            for (final item in batch!.items)
+            for (final item in batch!.items) ...[
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text('${item.sourceName} → ${item.outputName}'),
@@ -629,6 +703,13 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                               }),
                       ),
               ),
+              if (item.savedLocation != null && item.output != null)
+                SavedCopyActions(
+                  location: item.savedLocation!,
+                  format: item.output!.format,
+                  bytes: item.output!.bytes,
+                ),
+            ],
             FilledButton(
               onPressed: busy
                   ? null

@@ -233,6 +233,10 @@ void main() {
           File('rust/tests/fixtures/orientation-6.jpg').readAsBytesSync(),
         );
         expect(tester.takeException(), isNull);
+        await click(tester, 'Process another');
+        expect(find.text('Saved and verified'), findsNothing);
+        expect(find.text('Choose photo'), findsOneWidget);
+        expect(saved.existsSync(), isTrue);
         await tester.pumpWidget(const SizedBox());
       },
     );
@@ -286,6 +290,12 @@ void main() {
           File('$outputs/signature-${variant.$1}.png').writeAsBytesSync(saved);
         }
         expect(tester.takeException(), isNull);
+        await click(tester, 'Process another');
+        expect(find.text('Choose image'), findsOneWidget);
+        expect(
+          File('${directory.path}/signature.png').readAsBytesSync(),
+          saved,
+        );
         await tester.pumpWidget(const SizedBox());
       },
     );

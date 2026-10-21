@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../src/rust/api.dart' as core;
 import 'export_service.dart';
+import 'saved_copy_actions.dart';
 import 'pdf_preview.dart';
 
 String _decode(Uint8List bytes) => utf8.decode(bytes);
@@ -30,6 +31,7 @@ class _PdfTextState extends State<PdfTextScreen> {
   final form = GlobalKey<FormState>();
   bool reading = true, saving = false;
   String? error, findings, saved;
+  SavedCopyReceipt? savedCopy;
   @override
   void initState() {
     super.initState();
@@ -70,16 +72,18 @@ class _PdfTextState extends State<PdfTextScreen> {
       saving = true;
       error = null;
       saved = null;
+      savedCopy = null;
     });
     try {
       final encoded = await compute(_encode, text.text);
       final output = await core.preparePlainText(data: encoded);
       final location = await ExportService.saveCopy(output, filename.text);
       if (mounted && location != null) {
-        setState(
-          () => saved =
-              'Saved and verified ${filename.text}\n$location\n${output.bytes.length} bytes · UTF-8 text\nYour original PDF is unchanged.',
-        );
+        setState(() {
+          saved =
+              'Saved and verified ${filename.text}\n$location\n${output.bytes.length} bytes · UTF-8 text\nYour original PDF is unchanged.';
+          savedCopy = SavedCopyReceipt(location, output.format, output.bytes);
+        });
       }
     } catch (e) {
       if (mounted) setState(() => error = e.toString());
@@ -158,7 +162,12 @@ class _PdfTextState extends State<PdfTextScreen> {
                             ? 'Enter some text before saving.'
                             : null,
                         onChanged: (_) {
-                          if (saved != null) setState(() => saved = null);
+                          if (saved != null || savedCopy != null) {
+                            setState(() {
+                              saved = null;
+                              savedCopy = null;
+                            });
+                          }
                         },
                       ),
                       const SizedBox(height: 12),
@@ -192,6 +201,10 @@ class _PdfTextState extends State<PdfTextScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: filename,
+                onChanged: (_) => setState(() {
+                  saved = null;
+                  savedCopy = null;
+                }),
                 enabled: !saving,
                 decoration: const InputDecoration(
                   labelText: 'Text filename',
@@ -219,6 +232,7 @@ class _PdfTextState extends State<PdfTextScreen> {
                     child: SelectableText(saved!),
                   ),
                 ),
+              if (savedCopy != null) SavedCopyActions.receipt(savedCopy!),
             ],
           ),
         ),
