@@ -12,6 +12,8 @@ import '../src/rust/api.dart' as core;
 import 'export_service.dart';
 import 'prepared_documents.dart';
 import 'saved_copy_actions.dart';
+import 'preferences.dart';
+import 'pack_preset_catalogue.dart';
 
 class CustomPackScreen extends ConsumerStatefulWidget {
   const CustomPackScreen({super.key});
@@ -111,7 +113,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
   List<_Slot> slots = [_Slot()];
   core.StudioOutput? output;
   SavedCopyReceipt? presetReceipt;
-  String? error, saved;
+  String? error, saved, catalogueNotice;
   bool busy = false;
   @override
   void dispose() {
@@ -130,6 +132,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
       saved = null;
       error = null;
       presetReceipt = null;
+      catalogueNotice = null;
     });
   }
 
@@ -202,6 +205,10 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
       throw const FormatException('Preset exceeds 64 KiB.');
     }
     final text = utf8.decode(await file.readAsBytes());
+    await applyPreset(text);
+  }
+
+  Future<void> applyPreset(String text) async {
     await core.validatePackPreset(presetJson: text);
     final json = jsonDecode(text) as Map<String, dynamic>;
     final incoming = <_Slot>[];
@@ -232,7 +239,39 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
       source.text = json['source'] as String? ?? '';
       output = null;
       saved = null;
+      catalogueNotice = null;
     });
+  }
+
+  Future<void> savePresetLocally() async {
+    if (!form.currentState!.validate()) return;
+    final directory = ref.read(dataDirectoryProvider);
+    if (directory == null) {
+      throw const FormatException(
+        'Local preset storage is unavailable in this session. You can still export preset JSON.',
+      );
+    }
+    await core.savePackPreset(directory: directory, presetJson: preset());
+    if (mounted)
+      setState(
+        () => catalogueNotice =
+            'Preset saved on this device. No source documents were stored.',
+      );
+  }
+
+  Future<void> openCatalogue() async {
+    final directory = ref.read(dataDirectoryProvider);
+    if (directory == null) {
+      throw const FormatException(
+        'Local preset storage is unavailable in this session. You can still import preset JSON.',
+      );
+    }
+    final selected = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => PackPresetCatalogue(directory: directory),
+      ),
+    );
+    if (selected != null && mounted) await applyPreset(selected);
   }
 
   Future<void> prepare() async {
@@ -490,6 +529,14 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                         child: const Text('Import preset'),
                       ),
                       OutlinedButton(
+                        onPressed: busy ? null : () => task(savePresetLocally),
+                        child: const Text('Save preset on this device'),
+                      ),
+                      OutlinedButton(
+                        onPressed: busy ? null : () => task(openCatalogue),
+                        child: const Text('Load saved preset'),
+                      ),
+                      OutlinedButton(
                         onPressed: busy
                             ? null
                             : () {
@@ -523,6 +570,11 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
                     ),
                     SavedCopyActions.receipt(presetReceipt!),
                   ],
+                  const Text(
+                    'Device presets are kept until you delete them. Up to 64 presets, each at most 64 KiB. Existing names are never replaced automatically; rename a changed preset or delete its saved copy first.',
+                  ),
+                  if (catalogueNotice != null)
+                    Semantics(liveRegion: true, child: Text(catalogueNotice!)),
                   for (var i = 0; i < slots.length; i++) slotCard(slots[i], i),
                   OutlinedButton.icon(
                     onPressed: busy || slots.length >= 32

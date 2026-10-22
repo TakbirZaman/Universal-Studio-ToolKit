@@ -287,6 +287,29 @@ pub fn list_recipes(directory: String) -> std::result::Result<Vec<String>, Strin
     })
     .map_err(|e| e.to_string())
 }
+pub fn save_pack_preset(directory: String, preset_json: String) -> std::result::Result<(), String> {
+    jobs::serial(|| {
+        let preset = crate::packs::PackPreset::parse(preset_json.as_bytes())?;
+        crate::storage::Store::open(std::path::Path::new(&directory))?.save_preset(&preset)
+    })
+    .map_err(|e| e.to_string())
+}
+pub fn list_pack_presets(directory: String) -> std::result::Result<Vec<String>, String> {
+    jobs::serial(|| {
+        crate::storage::Store::open(std::path::Path::new(&directory))?
+            .presets()?
+            .iter()
+            .map(|p| serde_json::to_string(p).map_err(Into::into))
+            .collect()
+    })
+    .map_err(|e| e.to_string())
+}
+pub fn delete_pack_preset(directory: String, name: String) -> std::result::Result<(), String> {
+    jobs::serial(|| {
+        crate::storage::Store::open(std::path::Path::new(&directory))?.delete_preset(&name)
+    })
+    .map_err(|e| e.to_string())
+}
 pub fn run_recipe(data: Vec<u8>, recipe_json: String) -> std::result::Result<StudioOutput, String> {
     jobs::serial(|| crate::recipe::Recipe::parse(recipe_json.as_bytes())?.run(&data))
         .map(Into::into)
