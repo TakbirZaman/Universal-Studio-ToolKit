@@ -1,6 +1,6 @@
 //! Local-only settings, recipes and example pack presets. No document contents or paths.
 use crate::{model::*, packs::PackPreset, recipe::Recipe};
-use rusqlite::{Connection, params};
+use rusqlite::{Connection, OptionalExtension, TransactionBehavior, params};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
@@ -129,10 +129,87 @@ impl Store {
     }
     pub fn save_preset(&self, p: &PackPreset) -> Result<()> {
         p.validate()?;
-        if p.name.is_empty() || p.name.len() > 128 {
-            return Err(invalid("Preset needs a short name."));
+        let value = serde_json::to_string(p)?;
+        if value.len() > 65536 {
+            return Err(invalid("Preset exceeds 64 KiB."));
         }
-        self.db.execute("INSERT INTO presets(name,value) VALUES(?1,?2) ON CONFLICT(name) DO UPDATE SET value=excluded.value",params![p.name,serde_json::to_string(p)?]).map_err(db_error)?;
+        let tx = rusqlite::Transaction::new_unchecked(&self.db, TransactionBehavior::Immediate)
+            .map_err(db_error)?;
+        let existing: Option<String> = tx
+            .query_row("SELECT value FROM presets WHERE name=?1", [&p.name], |r| {
+                r.get(0)
+            })
+            .optional()
+            .map_err(db_error)?;
+        if let Some(existing) = existing {
+            if existing == value {
+                return Ok(());
+            }
+            return Err(invalid(
+                "A preset with this name already exists. Rename this preset, or delete the saved preset first.",
+            ));
+        }
+        let (count, bytes): (i64, i64) = tx
+            .query_row(
+                "SELECT count(*),coalesce(sum(length(CAST(value AS BLOB))),0) FROM presets",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .map_err(db_error)?;
+        if count >= 64 || bytes + value.len() as i64 > 4 * 1024 * 1024 {
+            return Err(invalid(
+                "Saved presets support 64 entries totalling 4 MiB. Delete a saved preset first.",
+            ));
+        }
+        tx.execute(
+            "INSERT INTO presets(name,value) VALUES(?1,?2)",
+            params![p.name, value],
+        )
+        .map_err(db_error)?;
+        tx.commit().map_err(db_error)?;
+        Ok(())
+    }
+    pub fn presets(&self) -> Result<Vec<PackPreset>> {
+        let (count, bytes): (i64, i64) = self
+            .db
+            .query_row(
+                "SELECT count(*),coalesce(sum(length(CAST(value AS BLOB))),0) FROM presets",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .map_err(db_error)?;
+        if count > 64 || bytes > 4 * 1024 * 1024 {
+            return Err(invalid(
+                "Saved preset catalogue exceeds the supported limits.",
+            ));
+        }
+        let mut query = self
+            .db
+            .prepare("SELECT name,value FROM presets ORDER BY name COLLATE NOCASE,name LIMIT 64")
+            .map_err(db_error)?;
+        let values = query
+            .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+            .map_err(db_error)?;
+        values
+            .map(|row| {
+                let (name, value) = row.map_err(db_error)?;
+                let preset = PackPreset::parse(value.as_bytes())?;
+                if preset.name != name {
+                    return Err(invalid(
+                        "Saved preset identity does not match its settings.",
+                    ));
+                }
+                Ok(preset)
+            })
+            .collect()
+    }
+    pub fn delete_preset(&self, name: &str) -> Result<()> {
+        if name.is_empty() || name.len() > 128 {
+            return Err(invalid("Choose a saved preset name."));
+        }
+        self.db
+            .execute("DELETE FROM presets WHERE name=?1", [name])
+            .map_err(db_error)?;
         Ok(())
     }
     pub fn record(&self, operation: &str, info: &OutputInfo) -> Result<()> {

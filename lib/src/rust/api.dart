@@ -132,6 +132,25 @@ Future<void> saveRecipe({
 Future<List<String>> listRecipes({required String directory}) =>
     RustLib.instance.api.crateApiListRecipes(directory: directory);
 
+Future<void> savePackPreset({
+  required String directory,
+  required String presetJson,
+}) => RustLib.instance.api.crateApiSavePackPreset(
+  directory: directory,
+  presetJson: presetJson,
+);
+
+Future<List<String>> listPackPresets({required String directory}) =>
+    RustLib.instance.api.crateApiListPackPresets(directory: directory);
+
+Future<void> deletePackPreset({
+  required String directory,
+  required String name,
+}) => RustLib.instance.api.crateApiDeletePackPreset(
+  directory: directory,
+  name: name,
+);
+
 Future<StudioOutput> runRecipe({
   required List<int> data,
   required String recipeJson,
