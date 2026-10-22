@@ -45,6 +45,7 @@ void main() {
       expect(find.textContaining('Ready: 2 pages'), findsOneWidget);
       await tester.ensureVisible(fields('Pages in this part').last);
       await tester.enterText(fields('Pages in this part').last, '2');
+      await tester.pump();
       await tester.ensureVisible(find.text('Prepare part').last);
       await tester.tap(find.text('Prepare part').last);
       await waitFor(tester, () => find.textContaining('Ready: 1 pages').evaluate().isNotEmpty);
