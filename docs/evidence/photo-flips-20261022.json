@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-22",
+  "pull_request": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/7",
+  "tested_source": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+  "merge_commit": "4719011e6553273c65c8431e73725b77cdda7fe8",
+  "checks": [
+    {
+      "id": 39756111689,
+      "name": "Build Android development APK",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111804,
+      "name": "Verify and build Linux",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111737,
+      "name": "Verify and build Windows",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111690,
+      "name": "Verify saved pack preset catalogue",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111723,
+      "name": "Verify photo crop workflows",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111806,
+      "name": "Verify photo flip workflows",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111849,
+      "name": "Verify PDF split workflows",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111730,
+      "name": "Generate typed Rust bridge",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111709,
+      "name": "Verify custom pack workflows",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39756111664,
+      "name": "Verify dependency notice provenance",
+      "sha": "87aa0a90823bf1ae4cc1304e6809567c90c9de98",
+      "status": "completed",
+      "result": "success"
+    }
+  ],
+  "native_tests": {
+    "linux": 91,
+    "windows": 89
+  },
+  "focused_flip_tests": {
+    "native": 3,
+    "flutter": 2
+  },
+  "included_catalogue": {
+    "pull_request": 6,
+    "tested_source": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+    "merge_commit": "7a4666915c3451d762b5a731bf292be640e3d772",
+    "focused_native": 4,
+    "focused_flutter": 3
+  },
+  "packages": [
+    {
+      "filename": "Universal-Studio-Toolkit-87aa0a90-Windows.zip",
+      "bytes": 22486159,
+      "sha256": "742b1be8ef8e12bc77e7e379a687ebfe01fa90de93a177a867dc1fb0020a2bab"
+    },
+    {
+      "filename": "Universal-Studio-Toolkit-87aa0a90-Linux.tar.gz",
+      "bytes": 21820283,
+      "sha256": "afda55ec5d49f4dc768a78a0ec84c628c08a88e373f031b83ef39033e2213d9d"
+    },
+    {
+      "filename": "Universal-Studio-Toolkit-87aa0a90-Android.apk",
+      "bytes": 35713117,
+      "sha256": "516f6950b80b58e0e7482b563ce3e5efc4579465dba79b2a19f38f64fb9136ce"
+    }
+  ],
+  "artifacts": [
+    {
+      "platform": "linux",
+      "id": 12416039095,
+      "name": "universal-studio-linux-x64-development",
+      "digest": "sha256:b4e4aff9ecda1852cddd608a79fda567424c5483afe91a382733d28fb7dcaa00",
+      "size": 21758088,
+      "expires_at": "2026-10-25T09:41:57Z"
+    },
+    {
+      "platform": "windows",
+      "id": 12415684666,
+      "name": "universal-studio-windows-x64-development",
+      "digest": "sha256:ab9368d511830e28008e77381771ae9f91b10d5bc0f233f50441219594f8d017",
+      "size": 21896839,
+      "expires_at": "2026-10-25T09:42:39Z"
+    },
+    {
+      "platform": "android",
+      "id": 12416456261,
+      "name": "universal-studio-android-arm64-development",
+      "digest": "sha256:0795299b031dfc5584f5bf04a0232deb74f751326e503e11d17f5b4b916c0456",
+      "size": 90755139,
+      "expires_at": "2026-10-25T09:40:59Z"
+    }
+  ],
+  "delivery": {
+    "development_builds_supplied": true,
+    "installation_guide": "Universal-Studio-Toolkit-87aa0a90-Install.txt",
+    "production_signing": false
+  },
+  "limitations": [
+    "Full launch scope remains unfinished",
+    "Development APK uses a disposable signing identity",
+    "Real devices, external viewers, providers, printers and screen readers still require acceptance",
+    "Advanced PDF/signature/OCR, localization, isolation and distribution obligations remain in REMAINING-WORK"
+  ]
+}

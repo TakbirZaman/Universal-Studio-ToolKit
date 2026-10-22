@@ -108,3 +108,7 @@ In Combine PDFs, select a source (or prepare the combined result first), then ch
 ### Reuse application presets on this device
 
 In Custom application pack, choose **Save preset on this device** to keep the requirement settings, including the preset name and requirements-source text. Selected photos, signatures, PDFs and their locations are excluded. **Load saved preset** opens the catalogue and clears selected sources when you use a preset. Delete a saved preset from that catalogue when it is no longer needed; current editor settings and exported files stay unchanged. Existing names are never silently replaced: rename a changed preset or explicitly delete the saved version first. Up to 64 presets of at most 64 KiB each are retained until deletion. JSON import/export still works when local storage is unavailable.
+
+### Mirror or flip a photo
+
+Open **Photo recipes**, select a JPEG/PNG, and enable **Mirror left to right**, **Flip top to bottom**, or both. Flips apply after orientation correction and optional cropping, before resizing and compression. Choose **Keep original dimensions** when you want no resize, prepare the preview, inspect text/signatures and save a copy. Exported, saved and batch recipes capture these settings as version4; recipes without flips retain their previous schema versions. Changing a flip invalidates the old prepared result.
