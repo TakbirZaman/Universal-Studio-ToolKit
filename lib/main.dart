@@ -22,6 +22,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'application/pdf_preview.dart';
 import 'application/pdf_text.dart';
+import 'application/pdf_split.dart';
 import 'application/pdf_overlay_controls.dart';
 import 'application/preferences.dart';
 import 'application/export_service.dart';
@@ -1483,6 +1484,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     },
               icon: const Icon(Icons.text_snippet_outlined),
               label: const Text('Read selectable text'),
+            ),
+            OutlinedButton.icon(
+              onPressed: busy || sources.isEmpty ? null : () {
+                final data = output?.format == 'pdf' ? output!.bytes : sources[previewIndex.clamp(0, sources.length - 1)].bytes;
+                Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => PdfSplitScreen(source: data)));
+              },
+              icon: const Icon(Icons.call_split),
+              label: const Text('Split into separate PDFs'),
             ),
             const Text(
               'Reads the prepared PDF when available; otherwise reads the selected source PDF. Scans may have no selectable text.',
