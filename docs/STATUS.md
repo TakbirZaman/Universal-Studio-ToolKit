@@ -103,3 +103,10 @@ PR4 merged as fe9740d9be4dc728b19a63b25b2f0233dd7d9ce7 from tested feature sourc
 The code retains the verified custom packs, session-source lifetimes, flexible compression and saved-copy actions from PR1–3. Full launch remains incomplete. Continue from REMAINING-WORK: signature refinement/storage/placement, broader PDF operations, platform OCR/searchable geometry, persistent sources/selective retries, accessibility/localization/device/user acceptance and isolation/distribution/signing. Hosted checks do not establish real-device, printer, screen-reader, complete legal clearance or production acceptance.
 
 The local execution environment disconnected after the tested source was safely pushed and merged. These final records were completed through the GitHub connector. Git source and hosted artifacts are authoritative; no local installer delivery or changed private signing identity is claimed.
+
+
+## Verified PDF split integration — 2026-10-22
+
+PR5 merged as 6c997730e9e72641dc1538eef364e57367253d37 from tested source 0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b. All eight checks pass: Windows39740722417, Linux39740722398, Android39740722406, bridge39740722404, notices39740722407, custom-pack39740722511, crop39740722443 and split39740722427. Native suites pass84 Linux/82 Windows tests; full Flutter integration/analysis and desktop packaged startup pass. Four focused split tests validate ordered range parsing and real saved page groups, selective invalid-group recovery and no-clobber collision handling at100%/200% text. See ADR024 and evidence/pdf-split-20261022.json for digests and limits.
+
+The dedicated split screen is integrated; thumbnail dragging, broader PDF/form/signature/OCR tools and the remaining launch scope are still open. Preset persistence review found existing SQLite storage scaffolding, but no catalogue API or user-facing persistent preset controls were added in this slice. Device/provider/viewer/printer/screen-reader acceptance and private production signing remain outstanding. Updated LIMITATIONS separates current source capabilities from older delivered installers.

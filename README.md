@@ -6,7 +6,7 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 
 - Resize JPEG/PNG images to exact pixels or physical mm/DPI dimensions with fit or crop, EXIF normalization, explicit transparency handling and measured size constraints.
 - Clean a plain signature background and export transparent PNG, with light/dark/checkerboard previews.
-- Combine, select, reorder and rotate supported PDF pages; render previews and export page PNGs using bundled PDFium.
+- Combine, select, reorder and rotate supported PDF pages; render previews and export page PNGs using bundled PDFium. Split a selected or prepared PDF into named page groups, preview each part, retry unfinished parts and save separate verified copies.
 - Add visible page numbers in saved order and optional ASCII text watermarks, with actual PDF previews.
 - Read an existing PDF text layer, review/edit it and save a UTF-8 text copy. Reading order can differ; scans without text need separately available OCR.
 - Import scan images, review boundary suggestions, set page corners, manually straighten tilted text, adjust appearance and reorder pages before PDF export. Geometry uses the explicitly bundled OpenCV adapter; original bytes are retained. Cropping and quality warnings are advisory.
@@ -16,7 +16,7 @@ Prepare photos, signatures, scans and PDFs locally. This is a working developmen
 
 No account, service endpoint, telemetry or document upload is implemented. Processing uses the native Rust engine through typed asynchronous Flutter bindings. Original inputs are not modified.
 
-Android delegated camera capture is compiled but still needs device validation. Platform-complete OCR, face assistance, advanced PDF tools and editable pack presets remain unfinished. Scanner geometry is available only when its verified native engine is bundled; baseline builds without it hide those controls. Saved photo recipes, batch retry and scan draft recovery are implemented. Existing forms, annotations, signatures and other unsupported PDF structures are rejected rather than silently discarded. ICC-profiled images are rejected pending validated colour management.
+Android delegated camera capture is compiled but still needs device validation. Platform-complete OCR, face assistance, advanced PDF tools remain unfinished. Scanner geometry is available only when its verified native engine is bundled; baseline builds without it hide those controls. Saved photo recipes, batch retry and scan draft recovery are implemented. Existing forms, annotations, signatures and other unsupported PDF structures are rejected rather than silently discarded. ICC-profiled images are rejected pending validated colour management.
 
 ## Linux development bundle
 
@@ -100,3 +100,7 @@ The CLI accepts `{"operation":"pack","preset":"preset.json","inputs":["photo.jpg
 Choose **Crop and resize** after selecting an image in Photo Studio, or open **Crop visually** in a photo recipe. Drag either corner, move the selection, choose an aspect ratio, or enter exact orientation-corrected pixel bounds. Focus a handle and use arrow keys; Shift changes ten pixels. Review and choose **Use crop**, then prepare the actual recipe output before saving. Cancelling leaves the recipe unchanged. Cropping uses the original image before resizing; display thumbnails are never exported.
 
 The editor supports free, 1:1, 3:4, 4:3 and 35:45 selection, bounded undo/reset and 48-pixel edge targets. Physical/rotation settings from another workspace are not inherited. Face assistance and manual signature masks remain unfinished. Source and actual-output workflows are checked at 100%/200% text; representative-user and real-device acceptance remains outstanding.
+
+### Split a PDF
+
+In Combine PDFs, select a source (or prepare the combined result first), then choose **Split into separate PDFs**. Add a named part for each output and enter pages such as `1-3,5` or `3,1`. Preview the original and each prepared part before saving. **Prepare unfinished parts** preserves successful results while you correct other groups; each part has its own save and retry controls. Leaving the screen releases the session-only results. The original stays unchanged, and existing files are never overwritten.

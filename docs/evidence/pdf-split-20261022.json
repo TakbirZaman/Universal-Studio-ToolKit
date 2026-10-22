@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-22",
+  "pull_request": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/5",
+  "tested_source": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b",
+  "merge_commit": "6c997730e9e72641dc1538eef364e57367253d37",
+  "checks": [
+    {
+      "id": 39740722511,
+      "name": "Verify custom pack workflows",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722406,
+      "name": "Build Android development APK",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722398,
+      "name": "Verify and build Linux",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722427,
+      "name": "Verify PDF split workflows",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722404,
+      "name": "Generate typed Rust bridge",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722443,
+      "name": "Verify photo crop workflows",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722417,
+      "name": "Verify and build Windows",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    },
+    {
+      "id": 39740722407,
+      "name": "Verify dependency notice provenance",
+      "status": "completed",
+      "result": "success",
+      "sha": "0a7cbe665b1f79049dd2f9ac381a8aee402c0b7b"
+    }
+  ],
+  "native_tests": {
+    "linux": 84,
+    "windows": 82
+  },
+  "focused_flutter_tests": 4,
+  "behaviors": [
+    "Ordered page/range expansion and rejection of malformed/repeated/out-of-bounds pages",
+    "Native PDF split and saved text order 3,1 and 2",
+    "Failed group correction retains successful peer",
+    "Verified independent saves and existing-file collision preservation",
+    "100% desktop and 200% narrow text-scale journeys"
+  ],
+  "artifacts": [
+    {
+      "id": 12409089498,
+      "name": "universal-studio-linux-x64-development",
+      "sha256": "sha256:ca5f339658a7dbe3438c451825b7f9c6bd941fbd1b5a1f5ebb08f5f670d98a5f",
+      "size": 21732363,
+      "expires_at": "2026-10-25T07:38:01Z"
+    },
+    {
+      "id": 12409272573,
+      "name": "universal-studio-windows-x64-development",
+      "sha256": "sha256:df88ceafc3fe2dd25ec8b2ed30c246eca4e92a63321140b5439d9a110565a958",
+      "size": 21870449,
+      "expires_at": "2026-10-25T07:40:19Z"
+    },
+    {
+      "id": 12410080287,
+      "name": "universal-studio-android-arm64-development",
+      "sha256": "sha256:59bb5f2be9cf3dafc665a8921dcc61c352d3a7239124d78cb0c969a5aaf693d2",
+      "size": 90698462,
+      "expires_at": "2026-10-25T07:39:31Z"
+    }
+  ],
+  "limitations": [
+    "Development builds; real devices, printers, external viewers and screen readers remain unverified",
+    "No production-signing or durable installer delivery claim",
+    "Complete launch scope remains in REMAINING-WORK.md"
+  ]
+}
