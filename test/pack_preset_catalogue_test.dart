@@ -11,7 +11,15 @@ import 'package:universal_studio_toolkit/application/prepared_documents.dart';
 import 'package:universal_studio_toolkit/src/rust/api.dart' as core;
 import 'package:universal_studio_toolkit/src/rust/frb_generated.dart';
 
-import 'custom_pack_workflow_test.dart' show press, finish;
+import 'custom_pack_workflow_test.dart' show finish;
+
+Future<void> press(WidgetTester tester, String label) async {
+  final target = find.text(label);
+  await tester.ensureVisible(target);
+  await tester.pump();
+  await tester.tap(target);
+  await tester.pump();
+}
 
 void main() {
   setUpAll(() async {
