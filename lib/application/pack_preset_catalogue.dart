@@ -65,11 +65,12 @@ class _CatalogueState extends State<PackPresetCatalogue> {
       await core.deletePackPreset(directory: widget.directory, name: name);
       if (mounted) await load();
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           error = e.toString();
           busy = false;
         });
+      }
     }
   }
 
@@ -82,7 +83,7 @@ class _CatalogueState extends State<PackPresetCatalogue> {
         padding: const EdgeInsets.all(24),
         children: [
           const Text(
-            'Only requirements are saved here, including names and requirements-source text. Photos, signatures, PDFs and their selected source locations are not saved. Loading a preset replaces the editor settings and clears its selected sources; saved files stay unchanged.',
+            'Saved settings include names and requirements-source text. Source documents are excluded. Loading clears the editor’s selected sources; exported files stay unchanged.',
           ),
           const SizedBox(height: 16),
           if (busy) const LinearProgressIndicator(),

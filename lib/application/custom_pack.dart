@@ -252,11 +252,12 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
       );
     }
     await core.savePackPreset(directory: directory, presetJson: preset());
-    if (mounted)
+    if (mounted) {
       setState(
         () => catalogueNotice =
             'Preset saved on this device. No source documents were stored.',
       );
+    }
   }
 
   Future<void> openCatalogue() async {
