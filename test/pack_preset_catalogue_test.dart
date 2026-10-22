@@ -99,6 +99,7 @@ void main() {
           tester,
           () => find.text('Use $name').evaluate().isNotEmpty,
         );
+        await tester.pumpAndSettle();
         await press(tester, 'Use $name');
         await tester.pump(const Duration(milliseconds: 300));
         await finish(
@@ -111,6 +112,7 @@ void main() {
                       .text ==
                   name,
         );
+        await tester.pumpAndSettle();
         expect(
           tester.widget<TextFormField>(field('Revision date')).controller!.text,
           '2026-10-22',
@@ -123,6 +125,7 @@ void main() {
           tester,
           () => find.text('Delete $name').evaluate().isNotEmpty,
         );
+        await tester.pumpAndSettle();
         await press(tester, 'Delete $name');
         await tester.pumpAndSettle();
         await press(tester, 'Keep preset');
