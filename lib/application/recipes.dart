@@ -50,6 +50,8 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   };
   bool busy = false,
       crop = false,
+      flipHorizontal = false,
+      flipVertical = false,
       original = false,
       flexible = false,
       cover = false,
@@ -122,7 +124,9 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
   }
 
   String document() => jsonEncode({
-    'schema_version': flexible && !original
+    'schema_version': flipHorizontal || flipVertical
+        ? 4
+        : flexible && !original
         ? 3
         : crop
         ? 2
@@ -137,6 +141,12 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
           'y': number('y'),
           'width': number('cropWidth'),
           'height': number('cropHeight'),
+        },
+      if (flipHorizontal || flipVertical)
+        {
+          'type': 'flip',
+          'horizontal': flipHorizontal,
+          'vertical': flipVertical,
         },
       if (!original)
         {
@@ -172,6 +182,8 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
     setState(() {
       fields['name']!.text = r['name'];
       crop = false;
+      flipHorizontal = false;
+      flipVertical = false;
       original = true;
       flexible = false;
       fields['limit']!.clear();
@@ -186,6 +198,9 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
             }
             fields['cropWidth']!.text = '${step['width']}';
             fields['cropHeight']!.text = '${step['height']}';
+          case 'flip':
+            flipHorizontal = step['horizontal'] as bool;
+            flipVertical = step['vertical'] as bool;
           case 'resize':
             original = false;
             fields['width']!.text = '${step['width']}';
@@ -537,6 +552,19 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
                       ),
                     ],
                   ],
+                ),
+                toggle(
+                  'Mirror left to right',
+                  flipHorizontal,
+                  (v) => flipHorizontal = v,
+                ),
+                toggle(
+                  'Flip top to bottom',
+                  flipVertical,
+                  (v) => flipVertical = v,
+                ),
+                const Text(
+                  'Flips apply after cropping and before resizing. Review mirrored text and signatures before saving.',
                 ),
                 toggle(
                   'Keep original dimensions',

@@ -1,0 +1,43 @@
+name: Verify photo flip workflows
+on:
+  push:
+    branches: [main, work/photo-flip]
+    paths: ['lib/**', 'rust/**', 'test/photo_flip*', 'pubspec*', '.github/workflows/verify-photo-flip.yml']
+  pull_request:
+    branches: [main]
+    paths: ['lib/**', 'rust/**', 'test/photo_flip*', 'pubspec*', '.github/workflows/verify-photo-flip.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: photo-flip-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  workflows:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      UST_CORE_LIBRARY: ${{ github.workspace }}/rust/target/debug/libstudio_core.so
+      UST_PDFIUM_LIBRARY: ${{ github.workspace }}/native/linux-x64/libpdfium.so
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned development SDKs
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal --component rustfmt
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = abaf9c523780a608bd46686fd5e53740a07077f8
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Verify native reflected pixels and orientation
+        run: |
+          cargo fmt --manifest-path rust/Cargo.toml --check
+          cargo test --locked --manifest-path rust/Cargo.toml --test photo_flip
+          cargo build --locked --manifest-path rust/Cargo.toml
+      - name: Verify saved photo flips and versioned recipe settings
+        run: |
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          flutter test --no-pub --reporter expanded test/photo_flip_workflow_test.dart

@@ -9,6 +9,10 @@ pub enum Step {
         width: u32,
         height: u32,
     },
+    Flip {
+        horizontal: bool,
+        vertical: bool,
+    },
     Resize {
         width: u32,
         height: u32,
@@ -51,11 +55,11 @@ impl Recipe {
         Ok(r)
     }
     pub fn validate(&self) -> Result<()> {
-        if ![1, 2, 3].contains(&self.schema_version)
+        if ![1, 2, 3, 4].contains(&self.schema_version)
             || self.name.trim().is_empty()
             || self.name.len() > 128
             || self.steps.is_empty()
-            || self.steps.len() > 6
+            || self.steps.len() > 7
         {
             return Err(invalid("Unsupported or empty recipe."));
         }
@@ -76,10 +80,21 @@ impl Recipe {
                         || y.checked_add(*height).is_none_or(|v| v > 12000)
                     {
                         return Err(invalid(
-                            "Crop needs recipe version 2 or 3 and valid pixel coordinates.",
+                            "Crop needs recipe version 2 or later and valid pixel coordinates.",
                         ));
                     }
                     0
+                }
+                Step::Flip {
+                    horizontal,
+                    vertical,
+                } => {
+                    if self.schema_version != 4 || !(*horizontal || *vertical) {
+                        return Err(invalid(
+                            "Flipping needs recipe version 4 and at least one enabled direction.",
+                        ));
+                    }
+                    1
                 }
                 Step::Resize { width, height, .. } => {
                     if *width == 0
@@ -90,7 +105,7 @@ impl Recipe {
                     {
                         return Err(invalid("Invalid resize dimensions."));
                     }
-                    1
+                    2
                 }
                 Step::FlexibleResize {
                     width,
@@ -99,7 +114,7 @@ impl Recipe {
                     minimum_height,
                     ..
                 } => {
-                    if self.schema_version != 3
+                    if self.schema_version < 3
                         || *minimum_width == 0
                         || *minimum_height == 0
                         || minimum_width > width
@@ -109,24 +124,24 @@ impl Recipe {
                         || u64::from(*width) * u64::from(*height) > MAX_PIXELS
                     {
                         return Err(invalid(
-                            "Flexible resizing needs recipe version 3 and valid minimum/maximum pixels.",
+                            "Flexible resizing needs recipe version 3 or later and valid minimum/maximum pixels.",
                         ));
                     }
-                    1
+                    2
                 }
                 Step::Compress { limit, min_quality } => {
                     limit.bytes()?;
                     if !(1..=100).contains(min_quality) {
                         return Err(invalid("Invalid minimum quality."));
                     }
-                    2
+                    3
                 }
-                Step::RemoveMetadata => 3,
+                Step::RemoveMetadata => 4,
                 Step::Rename { filename } => {
                     crate::export::safe_name(filename)?;
-                    4
+                    5
                 }
-                Step::Export { .. } => 5,
+                Step::Export { .. } => 6,
             };
             if rank <= previous {
                 return Err(invalid("Recipe steps repeat or are out of order."));
@@ -144,7 +159,7 @@ impl Recipe {
         {
             return Err(invalid("Flexible resizing needs a maximum file size."));
         }
-        if previous != 5 {
+        if previous != 6 {
             return Err(invalid("A recipe must end with export."));
         }
         if let Some(Step::Export { format }) = self.steps.last() {
@@ -198,6 +213,15 @@ impl Recipe {
                     o.width = *width;
                     o.height = *height;
                     o.fit = *fit;
+                }
+                Step::Flip {
+                    horizontal,
+                    vertical,
+                } => {
+                    // Vertical reflection equals a half-turn followed by horizontal
+                    // reflection. prepare() applies both after the original-pixel crop.
+                    o.rotate_quarters = if *vertical { 2 } else { 0 };
+                    o.flip_horizontal = *horizontal ^ *vertical;
                 }
                 Step::FlexibleResize {
                     width,
