@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-22",
+  "pull_request": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/6",
+  "tested_source": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+  "merge_commit": "7a4666915c3451d762b5a731bf292be640e3d772",
+  "checks": [
+    {
+      "id": 39753980257,
+      "name": "Build Android development APK",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980330,
+      "name": "Generate typed Rust bridge",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980346,
+      "name": "Verify and build Windows",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980263,
+      "name": "Verify and build Linux",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980296,
+      "name": "Verify PDF split workflows",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980181,
+      "name": "Verify photo crop workflows",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980236,
+      "name": "Verify saved pack preset catalogue",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980167,
+      "name": "Verify custom pack workflows",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 39753980199,
+      "name": "Verify dependency notice provenance",
+      "sha": "b41e5d69be8c87ad72163f4e4d9d49a44a70323d",
+      "status": "completed",
+      "result": "success"
+    }
+  ],
+  "native_tests": {
+    "linux": 88,
+    "windows": 86
+  },
+  "focused_tests": {
+    "native": 4,
+    "flutter": 3
+  },
+  "generator": {
+    "run": 39752162381,
+    "artifact": 12413953094,
+    "sha256": "c03b37afef82ece39e9e731823cad65fb9665b0da962563a76cb259854036278",
+    "allowlisted_paths": 9
+  },
+  "artifacts": [
+    {
+      "platform": "linux",
+      "id": 12415575911,
+      "name": "universal-studio-linux-x64-development",
+      "digest": "sha256:3b5e46fe56a3a933a88a9e96b43fee5ee4bf6c2f180bdb07c4b872365b0f1c61",
+      "size": 21752719,
+      "expires_at": "2026-10-25T09:23:57Z"
+    },
+    {
+      "platform": "windows",
+      "id": 12414884601,
+      "name": "universal-studio-windows-x64-development",
+      "digest": "sha256:45c4b97e5bc687fb7d40ed5396c98367e8732ef3990d8657457d7eae43143d80",
+      "size": 21896275,
+      "expires_at": "2026-10-25T09:25:11Z"
+    },
+    {
+      "platform": "android",
+      "id": 12415885906,
+      "name": "universal-studio-android-arm64-development",
+      "digest": "sha256:9863084294299a8c8320e9926ea21800ea53012b59fc53fe3a0d2ff9120bca4c",
+      "size": 90751455,
+      "expires_at": "2026-10-25T09:26:07Z"
+    }
+  ],
+  "limitations": [
+    "Preset settings only; persistent source documents and signatures remain unimplemented",
+    "Exact names are identities; Unicode-equivalent normalization is not claimed",
+    "Logical deletion is not secure erasure",
+    "Development builds; clean-device, provider, viewer, screen-reader and printer acceptance remain outstanding"
+  ]
+}
