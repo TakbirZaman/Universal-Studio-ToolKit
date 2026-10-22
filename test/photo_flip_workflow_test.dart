@@ -95,7 +95,7 @@ void main() {
         await tester.tap(find.text('PNG').last);
         await tester.pumpAndSettle();
         await edit('Output filename including extension', 'reflected.png');
-        await tap(find.text('Export recipe'));
+        await tap(find.text('Export recipe file'));
         final recipeFile = File('${directory.path}/recipe.json');
         await finish(tester, () => recipeFile.existsSync());
         final json = await tester.runAsync(recipeFile.readAsString);

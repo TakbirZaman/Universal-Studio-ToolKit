@@ -104,3 +104,7 @@ The editor supports free, 1:1, 3:4, 4:3 and 35:45 selection, bounded undo/reset 
 ### Split a PDF
 
 In Combine PDFs, select a source (or prepare the combined result first), then choose **Split into separate PDFs**. Add a named part for each output and enter pages such as `1-3,5` or `3,1`. Preview the original and each prepared part before saving. **Prepare unfinished parts** preserves successful results while you correct other groups; each part has its own save and retry controls. Leaving the screen releases the session-only results. The original stays unchanged, and existing files are never overwritten.
+
+### Reuse application presets on this device
+
+In Custom application pack, choose **Save preset on this device** to keep the requirement settings, including the preset name and requirements-source text. Selected photos, signatures, PDFs and their locations are excluded. **Load saved preset** opens the catalogue and clears selected sources when you use a preset. Delete a saved preset from that catalogue when it is no longer needed; current editor settings and exported files stay unchanged. Existing names are never silently replaced: rename a changed preset or explicitly delete the saved version first. Up to 64 presets of at most 64 KiB each are retained until deletion. JSON import/export still works when local storage is unavailable.
