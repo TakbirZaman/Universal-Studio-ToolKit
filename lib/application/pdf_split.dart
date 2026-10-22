@@ -84,7 +84,7 @@ class _PdfSplitState extends State<PdfSplitScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           const Text('Create separate PDF copies from ordered page groups. Text and vectors are retained for supported PDFs. Forms, annotations, bookmarks, attachments and signatures are rejected. Your original stays unchanged.'),
           if (count != null) Text('Source: $count pages · ${parts.length}/32 parts'),
-          if (busy) const Semantics(liveRegion: true, child: LinearProgressIndicator()),
+          if (busy) Semantics(liveRegion: true, child: const LinearProgressIndicator()),
           if (error != null) Semantics(liveRegion: true, child: Text(error!)),
           if (!busy && count == null) TextButton(onPressed: read, child: const Text('Try opening PDF again')),
           if (count != null) ...[
