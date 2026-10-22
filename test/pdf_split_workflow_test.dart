@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -32,7 +33,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(MaterialApp(builder: (context, child) => MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)), child: child!), home: PdfSplitScreen(source: source)));
+      await tester.pumpWidget(ProviderScope(child: MaterialApp(builder: (context, child) => MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)), child: child!), home: PdfSplitScreen(source: source))));
       await waitFor(tester, () => find.textContaining('Source: 3 pages').evaluate().isNotEmpty);
       Finder fields(String label) => find.widgetWithText(TextField, label);
       Future<void> tap(String label) async { final target = find.text(label); await tester.ensureVisible(target); await tester.tap(target); await tester.pump(); }
