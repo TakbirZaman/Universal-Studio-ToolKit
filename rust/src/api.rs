@@ -642,6 +642,65 @@ pub fn create_custom_application_pack(
         .map_err(|error| error.to_string())
 }
 
+pub fn prepare_custom_pack_slot(
+    data: Vec<u8>,
+    preset_json: String,
+    slot_index: u32,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        crate::packs::PackPreset::parse(preset_json.as_bytes())?
+            .prepare_slot(slot_index as usize, data)?
+            .ok_or_else(|| {
+                invalid("Choose a source, or omit this optional document from the pack.")
+            })
+    })
+    .map(Into::into)
+    .map_err(|error| error.to_string())
+}
+
+/// Revalidate and archive prepared documents without recompressing successful slots.
+pub fn build_custom_application_pack(
+    outputs: Vec<Option<StudioOutput>>,
+    preset_json: String,
+) -> std::result::Result<StudioOutput, String> {
+    jobs::serial(|| {
+        let preset = crate::packs::PackPreset::parse(preset_json.as_bytes())?;
+        if outputs.len() != preset.slots.len()
+            || outputs
+                .iter()
+                .flatten()
+                .map(|o| o.bytes.len())
+                .sum::<usize>()
+                > MAX_INPUT_BYTES
+        {
+            return Err(invalid(
+                "Supply one prepared result per slot totalling at most 64 MiB.",
+            ));
+        }
+        let prepared = outputs
+            .into_iter()
+            .map(|o| {
+                o.map(|o| PreparedOutput {
+                    info: OutputInfo {
+                        bytes: o.bytes.len() as u64,
+                        format: o.format,
+                        width: o.width,
+                        height: o.height,
+                        pages: o.pages,
+                        quality: o.quality,
+                        print_density: o.print_density,
+                        findings: vec![],
+                    },
+                    data: o.bytes,
+                })
+            })
+            .collect();
+        preset.build(prepared)
+    })
+    .map(Into::into)
+    .map_err(|error| error.to_string())
+}
+
 pub fn validate_pack_preset(preset_json: String) -> std::result::Result<StudioOutput, String> {
     jobs::serial(|| {
         let preset = crate::packs::PackPreset::parse(preset_json.as_bytes())?;
