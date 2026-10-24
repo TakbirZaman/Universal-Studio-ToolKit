@@ -110,6 +110,7 @@ void main() {
         await tap(tester, find.text('Use prepared portrait.jpg'));
         await tap(tester, find.text('Add document slot'));
         await tap(tester, find.text('Use prepared broken.jpg').last);
+        await tap(tester, find.text('Required document').last);
         await tap(tester, find.text('Prepare and validate pack'));
         await finish(
           tester,
@@ -118,6 +119,7 @@ void main() {
               find.byType(LinearProgressIndicator).evaluate().isEmpty,
         );
         expect(processor.calls, [0, 1]);
+        expect(find.text('Save application ZIP'), findsNothing);
         expect(find.textContaining('Document ready'), findsOneWidget);
         final first = processor.results[0]!;
         await tap(tester, find.text('Retry document'));
@@ -154,6 +156,15 @@ void main() {
         );
         expect(processor.calls, [0, 1, 1, 1, 0]);
         expect(identical(processor.results[1], second), isTrue);
+        // An explicitly empty optional slot crosses the nullable native boundary.
+        await tap(tester, find.text('Add document slot'));
+        await tap(tester, find.text('Required document').last);
+        await tap(tester, find.text('Prepare and validate pack'));
+        await finish(
+          tester,
+          () => find.text('Save application ZIP').evaluate().isNotEmpty,
+        );
+        expect(processor.calls, [0, 1, 1, 1, 0]);
         await tap(tester, find.text('Save application ZIP'));
         final target = File('${destination.path}/application-pack.zip');
         await finish(
