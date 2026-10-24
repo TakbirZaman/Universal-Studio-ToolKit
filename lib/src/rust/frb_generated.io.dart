@@ -97,6 +97,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<StudioOutput?> dco_decode_list_opt_box_autoadd_studio_output(
+    dynamic raw,
+  );
+
+  @protected
   List<int> dco_decode_list_prim_u_32_loose(dynamic raw);
 
   @protected
@@ -119,6 +124,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PrintDensity? dco_decode_opt_box_autoadd_print_density(dynamic raw);
+
+  @protected
+  StudioOutput? dco_decode_opt_box_autoadd_studio_output(dynamic raw);
 
   @protected
   int? dco_decode_opt_box_autoadd_u_16(dynamic raw);
@@ -249,6 +257,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  List<StudioOutput?> sse_decode_list_opt_box_autoadd_studio_output(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   List<int> sse_decode_list_prim_u_32_loose(SseDeserializer deserializer);
 
   @protected
@@ -273,6 +286,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PrintDensity? sse_decode_opt_box_autoadd_print_density(
+    SseDeserializer deserializer,
+  );
+
+  @protected
+  StudioOutput? sse_decode_opt_box_autoadd_studio_output(
     SseDeserializer deserializer,
   );
 
@@ -420,6 +438,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  void sse_encode_list_opt_box_autoadd_studio_output(
+    List<StudioOutput?> self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_list_prim_u_32_loose(
     List<int> self,
     SseSerializer serializer,
@@ -455,6 +479,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_print_density(
     PrintDensity? self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void sse_encode_opt_box_autoadd_studio_output(
+    StudioOutput? self,
     SseSerializer serializer,
   );
 

@@ -14,6 +14,7 @@ import 'prepared_documents.dart';
 import 'saved_copy_actions.dart';
 import 'preferences.dart';
 import 'pack_preset_catalogue.dart';
+import 'pack_processor.dart';
 
 class CustomPackScreen extends ConsumerStatefulWidget {
   const CustomPackScreen({super.key});
@@ -33,6 +34,29 @@ class _Slot {
   String format = 'jpeg';
   String? sourceName;
   Uint8List? bytes;
+  core.StudioOutput? prepared;
+  String? cacheKey, issue;
+  Uint8List? cacheSource;
+  String get fingerprint => jsonEncode([
+    label.text,
+    filename.text,
+    width.text,
+    height.text,
+    limit.text,
+    minimumPages.text,
+    maximumPages.text,
+    required,
+    format,
+  ]);
+  void sync() {
+    if (cacheKey != fingerprint || !identical(cacheSource, bytes)) {
+      prepared = null;
+      issue = null;
+      cacheKey = null;
+      cacheSource = null;
+    }
+  }
+
   Map<String, dynamic> toJson() => {
     'label': label.text.trim(),
     'required': required,
@@ -47,6 +71,8 @@ class _Slot {
     'max_pages': format == 'pdf' ? int.parse(maximumPages.text) : null,
   };
   void dispose() {
+    prepared = null;
+    cacheSource = null;
     for (final field in [
       label,
       filename,
@@ -115,6 +141,8 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
   SavedCopyReceipt? presetReceipt;
   String? error, saved, catalogueNotice;
   bool busy = false;
+  bool preparing = false, stopRequested = false;
+  String? preparationNotice;
   @override
   void dispose() {
     for (final field in [name, revision, source, zipName]) {
@@ -128,11 +156,15 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
 
   void changed() {
     setState(() {
+      for (final slot in slots) {
+        slot.sync();
+      }
       output = null;
       saved = null;
       error = null;
       presetReceipt = null;
       catalogueNotice = null;
+      preparationNotice = null;
     });
   }
 
@@ -186,12 +218,9 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
       throw const FormatException('Pack sources must total at most 64 MiB.');
     }
     if (!mounted) return;
-    setState(() {
-      slot.bytes = bytes;
-      slot.sourceName = file.name;
-      output = null;
-      saved = null;
-    });
+    slot.bytes = bytes;
+    slot.sourceName = file.name;
+    changed();
   }
 
   Future<void> importPreset() async {
@@ -275,20 +304,104 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
     if (selected != null && mounted) await applyPreset(selected);
   }
 
-  Future<void> prepare() async {
-    if (!form.currentState!.validate()) return;
-    await task(() async {
-      final result = await core.createCustomApplicationPack(
-        inputs: slots.map((slot) => slot.bytes ?? Uint8List(0)).toList(),
-        presetJson: preset(),
-      );
-      if (mounted) {
-        setState(() {
-          output = result;
-          saved = null;
-        });
-      }
+  Future<void> prepare({_Slot? only}) async {
+    if (busy || preparing || !form.currentState!.validate()) return;
+    setState(() {
+      preparing = true;
+      stopRequested = false;
+      output = null;
+      saved = null;
+      preparationNotice = null;
     });
+    try {
+      await task(() async {
+        final settings = preset();
+        await core.validatePackPreset(presetJson: settings);
+        final processor = ref.read(packProcessorProvider);
+        for (var index = 0; index < slots.length; index++) {
+          if (!mounted || stopRequested) break;
+          final slot = slots[index];
+          slot.sync();
+          if (slot.prepared != null ||
+              (only != null && !identical(only, slot))) {
+            continue;
+          }
+          slot.cacheKey = slot.fingerprint;
+          slot.cacheSource = slot.bytes;
+          if (slot.bytes == null) {
+            setState(
+              () => slot.issue = slot.required
+                  ? '${slot.label.text}: choose a source for this required slot.'
+                  : null,
+            );
+            continue;
+          }
+          try {
+            final attemptKey = slot.fingerprint;
+            final attemptSource = slot.bytes!;
+            final result = await processor.prepare(
+              attemptSource,
+              settings,
+              index,
+            );
+            if (!mounted) return;
+            if (slot.fingerprint != attemptKey ||
+                !identical(slot.bytes, attemptSource)) {
+              slot.sync();
+              continue;
+            }
+            final total = slots.fold<int>(
+              0,
+              (n, s) => n + (s.prepared?.bytes.length ?? 0),
+            );
+            if (total + result.bytes.length > PreparedDocuments.maximumBytes) {
+              throw const FormatException(
+                'Prepared documents exceed 64 MiB. Clear or remove a prepared document before retrying.',
+              );
+            }
+            setState(() {
+              slot.prepared = result;
+              slot.issue = null;
+            });
+          } catch (e) {
+            if (mounted) setState(() => slot.issue = e.toString());
+          }
+        }
+        if (!mounted) return;
+        if (stopRequested) {
+          setState(
+            () => preparationNotice = 'Stopped after the active operation. Ready documents are retained; prepare again to continue.',
+          );
+          return;
+        }
+        if (slots.any(
+          (s) => (s.required || s.bytes != null) && s.prepared == null,
+        )) {
+          return;
+        }
+        if (preset() != settings) {
+          setState(
+            () => preparationNotice = 'Settings changed during preparation. Prepare again to validate the current settings.',
+          );
+          return;
+        }
+        final result = await processor.build(
+          slots.map((s) => s.prepared).toList(),
+          settings,
+        );
+        if (mounted) {
+          setState(() {
+            if (stopRequested) {
+              preparationNotice = 'Stopped after the active operation. Ready documents are retained; prepare again to continue.';
+            } else {
+              output = result;
+            }
+          });
+        }
+      });
+    } finally {
+      if (mounted) setState(() => preparing = false);
+    }
   }
 
   String? positive(String? value, {bool optional = false}) {
@@ -347,16 +460,19 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
             ],
             onChanged: busy
                 ? null
-                : (value) => setState(() {
-                    presetReceipt = null;
-                    slot.format = value!;
-                    slot.bytes = null;
-                    slot.sourceName = null;
-                    slot.filename.text =
-                        'document${index + 1}.${value == 'jpeg' ? 'jpg' : value}';
-                    output = null;
-                    saved = null;
-                  }),
+                : (value) {
+                    setState(() {
+                      presetReceipt = null;
+                      slot.format = value!;
+                      slot.bytes = null;
+                      slot.sourceName = null;
+                      slot.filename.text =
+                          'document${index + 1}.${value == 'jpeg' ? 'jpg' : value}';
+                      output = null;
+                      saved = null;
+                    });
+                    changed();
+                  },
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
@@ -392,6 +508,40 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
             slot.sourceName == null
                 ? 'No source selected'
                 : '${slot.sourceName} · ${slot.bytes!.length} bytes',
+          ),
+          if (slot.issue != null)
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                slot.issue!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          if (slot.prepared != null) ...[
+            Text('Document ready · ${slot.prepared!.bytes.length} bytes'),
+            ExpansionTile(
+              title: const Text('Review prepared document'),
+              children: [
+                slot.prepared!.format == 'pdf'
+                    ? PdfPreview(
+                        data: slot.prepared!.bytes,
+                        pageCount: slot.prepared!.pages,
+                      )
+                    : SafeImagePreview(
+                        bytes: slot.prepared!.bytes,
+                        height: 220,
+                        semanticLabel: 'Prepared ${slot.label.text}',
+                      ),
+              ],
+            ),
+          ],
+          OutlinedButton(
+            onPressed: busy || slot.bytes == null || slot.prepared != null
+                ? null
+                : () => prepare(only: slot),
+            child: Text(
+              slot.issue == null ? 'Prepare document' : 'Retry document',
+            ),
           ),
           if (slot.bytes != null)
             ExpansionTile(
@@ -493,156 +643,182 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
     ),
   );
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Custom application pack')),
-    body: SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: Form(
-              key: form,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Your requirements, not official acceptance rules. Originals stay unchanged. Presets store settings only; source documents are never included in preset JSON.',
-                  ),
-                  if (busy) const LinearProgressIndicator(),
-                  field(name, 'Preset name'),
-                  field(revision, 'Revision date'),
-                  TextFormField(
-                    controller: source,
-                    enabled: !busy,
-                    decoration: const InputDecoration(
-                      labelText: 'Requirements source (optional)',
+  Widget build(BuildContext context) => PopScope(
+    canPop: !preparing,
+    child: Scaffold(
+      appBar: AppBar(title: const Text('Custom application pack')),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: Form(
+                key: form,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Your requirements, not official acceptance rules. Originals stay unchanged. Presets store settings only; source documents are never included in preset JSON.',
                     ),
-                    onChanged: (_) => changed(),
-                  ),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      OutlinedButton(
-                        onPressed: busy ? null : () => task(importPreset),
-                        child: const Text('Import preset'),
+                    if (busy) const LinearProgressIndicator(),
+                    field(name, 'Preset name'),
+                    field(revision, 'Revision date'),
+                    TextFormField(
+                      controller: source,
+                      enabled: !busy,
+                      decoration: const InputDecoration(
+                        labelText: 'Requirements source (optional)',
                       ),
-                      OutlinedButton(
-                        onPressed: busy ? null : () => task(savePresetLocally),
-                        child: const Text('Save preset on this device'),
+                      onChanged: (_) => changed(),
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton(
+                          onPressed: busy ? null : () => task(importPreset),
+                          child: const Text('Import preset'),
+                        ),
+                        OutlinedButton(
+                          onPressed: busy
+                              ? null
+                              : () => task(savePresetLocally),
+                          child: const Text('Save preset on this device'),
+                        ),
+                        OutlinedButton(
+                          onPressed: busy ? null : () => task(openCatalogue),
+                          child: const Text('Load saved preset'),
+                        ),
+                        OutlinedButton(
+                          onPressed: busy
+                              ? null
+                              : () {
+                                  if (!form.currentState!.validate()) return;
+                                  task(() async {
+                                    final result = await core
+                                        .validatePackPreset(
+                                          presetJson: preset(),
+                                        );
+                                    final location =
+                                        await ExportService.saveCopy(
+                                          result,
+                                          'application-preset.json',
+                                        );
+                                    if (mounted && location != null) {
+                                      setState(
+                                        () => presetReceipt = SavedCopyReceipt(
+                                          location,
+                                          'json',
+                                          result.bytes,
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
+                          child: const Text('Export preset'),
+                        ),
+                      ],
+                    ),
+                    if (presetReceipt != null) ...[
+                      SelectableText(
+                        'Preset saved and verified\n${presetReceipt!.location}',
                       ),
-                      OutlinedButton(
-                        onPressed: busy ? null : () => task(openCatalogue),
-                        child: const Text('Load saved preset'),
-                      ),
-                      OutlinedButton(
-                        onPressed: busy
-                            ? null
-                            : () {
-                                if (!form.currentState!.validate()) return;
-                                task(() async {
-                                  final result = await core.validatePackPreset(
-                                    presetJson: preset(),
-                                  );
-                                  final location = await ExportService.saveCopy(
-                                    result,
-                                    'application-preset.json',
-                                  );
-                                  if (mounted && location != null) {
-                                    setState(
-                                      () => presetReceipt = SavedCopyReceipt(
-                                        location,
-                                        'json',
-                                        result.bytes,
-                                      ),
-                                    );
-                                  }
-                                });
-                              },
-                        child: const Text('Export preset'),
-                      ),
+                      SavedCopyActions.receipt(presetReceipt!),
                     ],
-                  ),
-                  if (presetReceipt != null) ...[
-                    SelectableText(
-                      'Preset saved and verified\n${presetReceipt!.location}',
+                    const Text(
+                      'Device presets are kept until you delete them. Up to 64 presets, each at most 64 KiB. Existing names are never replaced automatically; rename a changed preset or delete its saved copy first.',
                     ),
-                    SavedCopyActions.receipt(presetReceipt!),
-                  ],
-                  const Text(
-                    'Device presets are kept until you delete them. Up to 64 presets, each at most 64 KiB. Existing names are never replaced automatically; rename a changed preset or delete its saved copy first.',
-                  ),
-                  if (catalogueNotice != null)
-                    Semantics(liveRegion: true, child: Text(catalogueNotice!)),
-                  for (var i = 0; i < slots.length; i++) slotCard(slots[i], i),
-                  OutlinedButton.icon(
-                    onPressed: busy || slots.length >= 32
-                        ? null
-                        : () => setState(() {
-                            final slot = _Slot();
-                            var number = slots.length + 1;
-                            while (slots.any(
-                              (s) =>
-                                  s.filename.text.toLowerCase() ==
-                                  'document$number.jpg',
-                            )) {
-                              number++;
-                            }
-                            slot.filename.text = 'document$number.jpg';
-                            slots.add(slot);
-                            presetReceipt = null;
-                            output = null;
-                            saved = null;
-                          }),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add document slot'),
-                  ),
-                  if (error != null)
-                    Semantics(
-                      liveRegion: true,
-                      child: Text(
-                        error!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
+                    if (catalogueNotice != null)
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(catalogueNotice!),
+                      ),
+                    for (var i = 0; i < slots.length; i++)
+                      slotCard(slots[i], i),
+                    OutlinedButton.icon(
+                      onPressed: busy || slots.length >= 32
+                          ? null
+                          : () => setState(() {
+                              final slot = _Slot();
+                              var number = slots.length + 1;
+                              while (slots.any(
+                                (s) =>
+                                    s.filename.text.toLowerCase() ==
+                                    'document$number.jpg',
+                              )) {
+                                number++;
+                              }
+                              slot.filename.text = 'document$number.jpg';
+                              slots.add(slot);
+                              presetReceipt = null;
+                              output = null;
+                              saved = null;
+                            }),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add document slot'),
+                    ),
+                    if (error != null)
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(
+                          error!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                         ),
                       ),
+                    FilledButton(
+                      onPressed: busy ? null : () => prepare(),
+                      child: const Text('Prepare and validate pack'),
                     ),
-                  FilledButton(
-                    onPressed: busy ? null : prepare,
-                    child: const Text('Prepare and validate pack'),
-                  ),
-                  if (output != null) ...[
-                    SelectableText(
-                      '${output!.bytes.length} bytes\n${output!.validation}',
+                    Text(
+                      '${slots.where((s) => s.prepared != null).length} of ${slots.where((s) => s.required || s.bytes != null).length} documents ready. Successful results are reused; changing a document invalidates only that document.',
                     ),
-                    field(zipName, 'ZIP filename', invalidatesOutput: false),
-                    FilledButton.icon(
-                      onPressed: busy
-                          ? null
-                          : () => task(() async {
-                              final location = await ExportService.saveCopy(
-                                output!,
-                                zipName.text,
-                              );
-                              if (mounted && location != null) {
-                                setState(() => saved = location);
-                              }
-                            }),
-                      icon: const Icon(Icons.save_alt),
-                      label: const Text('Save application ZIP'),
-                    ),
-                    if (saved != null) ...[
-                      SelectableText('Saved and verified\n$saved'),
-                      SavedCopyActions(
-                        location: saved!,
-                        format: output!.format,
-                        bytes: output!.bytes,
+                    if (preparing)
+                      TextButton(
+                        onPressed: stopRequested
+                            ? null
+                            : () => setState(() => stopRequested = true),
+                        child: const Text('Stop after current operation'),
                       ),
+                    if (preparationNotice != null)
+                      Semantics(
+                        liveRegion: true,
+                        child: Text(preparationNotice!),
+                      ),
+                    if (output != null) ...[
+                      SelectableText(
+                        '${output!.bytes.length} bytes\n${output!.validation}',
+                      ),
+                      field(zipName, 'ZIP filename', invalidatesOutput: false),
+                      FilledButton.icon(
+                        onPressed: busy
+                            ? null
+                            : () => task(() async {
+                                final location = await ExportService.saveCopy(
+                                  output!,
+                                  zipName.text,
+                                );
+                                if (mounted && location != null) {
+                                  setState(() => saved = location);
+                                }
+                              }),
+                        icon: const Icon(Icons.save_alt),
+                        label: const Text('Save application ZIP'),
+                      ),
+                      if (saved != null) ...[
+                        SelectableText('Saved and verified\n$saved'),
+                        SavedCopyActions(
+                          location: saved!,
+                          format: output!.format,
+                          bytes: output!.bytes,
+                        ),
+                      ],
                     ],
                   ],
-                ],
+                ),
               ),
             ),
           ),

@@ -32,8 +32,62 @@ impl PackPreset {
         preset.validate()?;
         Ok(preset)
     }
-    /// Process original sources with explicit slot settings, then reopen and validate outputs.
-    /// Empty bytes mean an intentionally omitted optional slot.
+    /// Prepare one selected source independently. Omitted optional slots return None.
+    pub fn prepare_slot(&self, index: usize, bytes: Vec<u8>) -> Result<Option<PreparedOutput>> {
+        self.validate()?;
+        let slot = self
+            .slots
+            .get(index)
+            .ok_or_else(|| invalid("Choose a valid document slot."))?;
+        if bytes.len() > MAX_INPUT_BYTES {
+            return Err(invalid("Pack source exceeds 64 MiB."));
+        }
+        if bytes.is_empty() {
+            return if slot.required {
+                Err(invalid(&format!(
+                    "{}: choose a source for this required slot.",
+                    slot.label
+                )))
+            } else {
+                Ok(None)
+            };
+        }
+        let prepare = || -> Result<PreparedOutput> {
+            if slot.formats.len() != 1 {
+                return Err(invalid(
+                    "Choose one output format for automatic preparation.",
+                ));
+            }
+            if slot.formats[0] == "pdf" {
+                crate::pdf::arrange(&[bytes], None, 0)
+            } else {
+                let (Some(width), Some(height)) = (slot.width, slot.height) else {
+                    return Err(invalid(
+                        "Set both output pixel dimensions for image preparation.",
+                    ));
+                };
+                crate::photo::process(
+                    &bytes,
+                    &PhotoOptions {
+                        width,
+                        height,
+                        format: if slot.formats[0] == "png" {
+                            OutputFormat::Png
+                        } else {
+                            OutputFormat::Jpeg
+                        },
+                        max_bytes: slot.max_bytes,
+                        ..Default::default()
+                    },
+                )
+            }
+        };
+        let output = prepare().map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
+        validate_slot_output(slot, &output)?;
+        Ok(Some(output))
+    }
+
+    /// Process all original sources; callers needing selective retries use prepare_slot/build.
     pub fn prepare(&self, inputs: Vec<Vec<u8>>) -> Result<PreparedOutput> {
         self.validate()?;
         if inputs.len() != self.slots.len()
@@ -44,53 +98,14 @@ impl PackPreset {
             ));
         }
         let mut outputs = Vec::new();
-        let mut output_bytes = 0usize;
-        for (slot, bytes) in self.slots.iter().zip(inputs) {
-            if bytes.is_empty() {
-                if slot.required {
-                    return Err(invalid(&format!(
-                        "{}: choose a source for this required slot.",
-                        slot.label
-                    )));
-                }
-                outputs.push(None);
-                continue;
-            }
-            let prepare = || -> Result<PreparedOutput> {
-                if slot.formats.len() != 1 {
-                    return Err(invalid(
-                        "Choose one output format for automatic preparation.",
-                    ));
-                }
-                if slot.formats[0] == "pdf" {
-                    crate::pdf::arrange(&[bytes], None, 0)
-                } else {
-                    let (Some(width), Some(height)) = (slot.width, slot.height) else {
-                        return Err(invalid(
-                            "Set both output pixel dimensions for image preparation.",
-                        ));
-                    };
-                    crate::photo::process(
-                        &bytes,
-                        &PhotoOptions {
-                            width,
-                            height,
-                            format: if slot.formats[0] == "png" {
-                                OutputFormat::Png
-                            } else {
-                                OutputFormat::Jpeg
-                            },
-                            max_bytes: slot.max_bytes,
-                            ..Default::default()
-                        },
-                    )
-                }
-            };
-            let output = prepare().map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
-            output_bytes = output_bytes.checked_add(output.data.len())
-                .filter(|total| *total <= MAX_INPUT_BYTES)
-                .ok_or_else(|| invalid(&format!("{}: prepared pack documents exceed 64 MiB combined. Reduce the output dimensions or limits.", slot.label)))?;
-            outputs.push(Some(output));
+        let mut total = 0usize;
+        for (index, bytes) in inputs.into_iter().enumerate() {
+            let output = self.prepare_slot(index, bytes)?;
+            total = total
+                .checked_add(output.as_ref().map_or(0, |o| o.data.len()))
+                .filter(|n| *n <= MAX_INPUT_BYTES)
+                .ok_or_else(|| invalid("Prepared pack documents exceed 64 MiB combined."))?;
+            outputs.push(output);
         }
         self.build(outputs)
     }
@@ -180,6 +195,15 @@ impl PackPreset {
                 "Supply one output or an explicit empty value for every slot.",
             ));
         }
+        if outputs
+            .iter()
+            .flatten()
+            .map(|o| o.data.len())
+            .sum::<usize>()
+            > MAX_INPUT_BYTES
+        {
+            return Err(invalid("Prepared pack documents exceed 64 MiB combined."));
+        }
         let mut items = Vec::new();
         for (slot, output) in self.slots.iter().zip(outputs) {
             let Some(mut o) = output else {
@@ -188,26 +212,7 @@ impl PackPreset {
                 }
                 continue;
             };
-            let matches = slot.formats.contains(&o.info.format)
-                && slot.width.is_none_or(|v| Some(v) == o.info.width)
-                && slot.height.is_none_or(|v| Some(v) == o.info.height)
-                && slot
-                    .min_pages
-                    .is_none_or(|v| o.info.pages.is_some_and(|n| n >= v))
-                && slot
-                    .max_pages
-                    .is_none_or(|v| o.info.pages.is_some_and(|n| n <= v))
-                && slot
-                    .max_bytes
-                    .map(|v| v.accepts(o.data.len()))
-                    .transpose()?
-                    .unwrap_or(true);
-            if !matches {
-                return Err(invalid(&format!(
-                    "{}: the prepared document does not meet its format, pixel, byte or page requirements. Adjust this slot before exporting.",
-                    slot.label
-                )));
-            }
+            validate_slot_output(slot, &o)?;
             let extension = std::path::Path::new(&slot.filename)
                 .extension()
                 .and_then(|x| x.to_str())
@@ -231,4 +236,37 @@ impl PackPreset {
         }
         crate::export::pack(items)
     }
+}
+
+fn validate_slot_output(slot: &PackSlot, output: &PreparedOutput) -> Result<()> {
+    crate::export::verify_output(output)
+        .map_err(|error| invalid(&format!("{}: {error}", slot.label)))?;
+    let info = &output.info;
+    if (info.format == "pdf"
+        && (info.width.is_some() || info.height.is_some() || info.quality.is_some()))
+        || (["jpeg", "png"].contains(&info.format.as_str()) && info.pages.is_some())
+    {
+        return Err(invalid("Prepared pack document has inconsistent metadata."));
+    }
+    if !slot.formats.contains(&info.format)
+        || !slot.width.is_none_or(|n| Some(n) == info.width)
+        || !slot.height.is_none_or(|n| Some(n) == info.height)
+        || !slot
+            .min_pages
+            .is_none_or(|n| info.pages.is_some_and(|pages| pages >= n))
+        || !slot
+            .max_pages
+            .is_none_or(|n| info.pages.is_some_and(|pages| pages <= n))
+        || !slot
+            .max_bytes
+            .map(|limit| limit.accepts(output.data.len()))
+            .transpose()?
+            .unwrap_or(true)
+    {
+        return Err(invalid(&format!(
+            "{}: the prepared document does not meet its format, pixel, byte or page requirements. Adjust this slot before exporting.",
+            slot.label
+        )));
+    }
+    Ok(())
 }
