@@ -319,6 +319,25 @@ Future<StudioOutput> createCustomApplicationPack({
   presetJson: presetJson,
 );
 
+Future<StudioOutput> prepareCustomPackSlot({
+  required List<int> data,
+  required String presetJson,
+  required int slotIndex,
+}) => RustLib.instance.api.crateApiPrepareCustomPackSlot(
+  data: data,
+  presetJson: presetJson,
+  slotIndex: slotIndex,
+);
+
+/// Revalidate and archive prepared documents without recompressing successful slots.
+Future<StudioOutput> buildCustomApplicationPack({
+  required List<StudioOutput?> outputs,
+  required String presetJson,
+}) => RustLib.instance.api.crateApiBuildCustomApplicationPack(
+  outputs: outputs,
+  presetJson: presetJson,
+);
+
 Future<StudioOutput> validatePackPreset({required String presetJson}) =>
     RustLib.instance.api.crateApiValidatePackPreset(presetJson: presetJson);
 

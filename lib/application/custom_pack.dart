@@ -305,7 +305,7 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
   }
 
   Future<void> prepare({_Slot? only}) async {
-    if (!form.currentState!.validate()) return;
+    if (busy || preparing || !form.currentState!.validate()) return;
     setState(() {
       preparing = true;
       stopRequested = false;
@@ -322,8 +322,10 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
           if (!mounted || stopRequested) break;
           final slot = slots[index];
           slot.sync();
-          if (slot.prepared != null || (only != null && !identical(only, slot)))
+          if (slot.prepared != null ||
+              (only != null && !identical(only, slot))) {
             continue;
+          }
           slot.cacheKey = slot.fingerprint;
           slot.cacheSource = slot.bytes;
           if (slot.bytes == null) {
@@ -335,12 +337,19 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
             continue;
           }
           try {
+            final attemptKey = slot.fingerprint;
+            final attemptSource = slot.bytes!;
             final result = await processor.prepare(
-              slot.bytes!,
+              attemptSource,
               settings,
               index,
             );
             if (!mounted) return;
+            if (slot.fingerprint != attemptKey ||
+                !identical(slot.bytes, attemptSource)) {
+              slot.sync();
+              continue;
+            }
             final total = slots.fold<int>(
               0,
               (n, s) => n + (s.prepared?.bytes.length ?? 0),
@@ -367,8 +376,15 @@ class _CustomPackState extends ConsumerState<CustomPackScreen> {
         }
         if (slots.any(
           (s) => (s.required || s.bytes != null) && s.prepared == null,
-        ))
+        )) {
           return;
+        }
+        if (preset() != settings) {
+          setState(
+            () => preparationNotice = 'Settings changed during preparation. Prepare again to validate the current settings.',
+          );
+          return;
+        }
         final result = await processor.build(
           slots.map((s) => s.prepared).toList(),
           settings,
