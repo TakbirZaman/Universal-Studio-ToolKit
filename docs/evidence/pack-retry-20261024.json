@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-24",
+  "pull_request": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/8",
+  "tested_source": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+  "merge_commit": "d54f121fd822bd85b51a3843b6f97867fc87bdc7",
+  "checks": [
+    {
+      "id": 40114334273,
+      "name": "Verify custom pack workflows",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334221,
+      "name": "Generate typed Rust bridge",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334284,
+      "name": "Verify photo crop workflows",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334255,
+      "name": "Verify photo flip workflows",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334333,
+      "name": "Verify PDF split workflows",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334335,
+      "name": "Verify and build Windows",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334235,
+      "name": "Verify selective pack retries",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334268,
+      "name": "Verify saved pack preset catalogue",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334248,
+      "name": "Verify dependency notice provenance",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334351,
+      "name": "Verify and build Linux",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    },
+    {
+      "id": 40114334229,
+      "name": "Build Android development APK",
+      "sha": "27e69518cfd31d6800a98804f9c705fd5c2b752d",
+      "status": "completed",
+      "result": "success"
+    }
+  ],
+  "native_tests": {
+    "linux": 95,
+    "windows": 93,
+    "local_passed": 92,
+    "local_vision_ignored": 3
+  },
+  "focused_retry_tests": {
+    "native": 4,
+    "flutter": 3
+  },
+  "bindings": {
+    "generator_run": 40113519835,
+    "artifact": 12567831607,
+    "sha256": "1e6a4c414b8c996a919773a47323fa31df1e102eb5e82c05d2a8be52284d2779",
+    "allowlisted_paths": 9
+  },
+  "packages": [
+    {
+      "filename": "Universal-Studio-Toolkit-27e69518-Windows.zip",
+      "bytes": 22497955,
+      "sha256": "eb86035e690c34cdb8d02610e850317bfd8b366c7ebf518095fc75a193557523"
+    },
+    {
+      "filename": "Universal-Studio-Toolkit-27e69518-Linux.tar.gz",
+      "bytes": 21830426,
+      "sha256": "2fdbd73eb62fbf53ed7c8232f9c937109727a91459061a2a27426a1cff6da7e1"
+    },
+    {
+      "filename": "Universal-Studio-Toolkit-27e69518-Android.apk",
+      "bytes": 35795037,
+      "sha256": "f4faf95cb327f94070f14cf96b0add2d4918f8839de22263a61cb9d9432af82d"
+    }
+  ],
+  "artifacts": [
+    {
+      "platform": "linux",
+      "id": 12568092450,
+      "name": "universal-studio-linux-x64-development",
+      "digest": "sha256:6bf981cac14f31365f5613045656c77a0a5c738c969c7dcbc751031902206fd2",
+      "size": 21768157,
+      "expires_at": "2026-10-27T17:12:56Z"
+    },
+    {
+      "platform": "windows",
+      "id": 12567189512,
+      "name": "universal-studio-windows-x64-development",
+      "digest": "sha256:907e264adcf73481fe28b8a7fdcae1c1500c4054faf542919b1ec3a33fb5d64f",
+      "size": 21909775,
+      "expires_at": "2026-10-27T17:14:20Z"
+    },
+    {
+      "platform": "android",
+      "id": 12568028061,
+      "name": "universal-studio-android-arm64-development",
+      "digest": "sha256:6d34636413f28e7de5edd08b1c5bd36e253ebde6860c7ac1d050dddfe1cef164",
+      "size": 90797128,
+      "expires_at": "2026-10-27T17:13:30Z"
+    }
+  ],
+  "delivery": {
+    "development_builds_supplied": true,
+    "guide": "Universal-Studio-Toolkit-27e69518-Install.txt",
+    "production_signing": false
+  },
+  "limits": {
+    "source_bytes": 67108864,
+    "prepared_bytes": 67108864,
+    "max_slots": 32,
+    "session_only": true,
+    "process_isolation": false
+  },
+  "verified_behaviors": [
+    "Failed selected optional documents block ZIP until repaired or explicitly cleared",
+    "Ready peers are not prepared again during failed retry or repair",
+    "Editing one slot prepares only that slot",
+    "Empty optional slots cross nullable bindings and remain omitted",
+    "Saved ZIP bytes match native archive and reopen for verification",
+    "Stop retains active success and resume skips it",
+    "Native cached builder rejects stale constraints, corrupt bytes, false metadata and oversized inputs before decode"
+  ]
+}

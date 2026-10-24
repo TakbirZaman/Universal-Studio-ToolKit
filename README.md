@@ -112,3 +112,7 @@ In Custom application pack, choose **Save preset on this device** to keep the re
 ### Mirror or flip a photo
 
 Open **Photo recipes**, select a JPEG/PNG, and enable **Mirror left to right**, **Flip top to bottom**, or both. Flips apply after orientation correction and optional cropping, before resizing and compression. Choose **Keep original dimensions** when you want no resize, prepare the preview, inspect text/signatures and save a copy. Exported, saved and batch recipes capture these settings as version4; recipes without flips retain their previous schema versions. Changing a flip invalidates the old prepared result.
+
+### Recover an application pack without repeating successful documents
+
+**Prepare and validate pack** prepares unfinished documents independently. A failed document shows its own error and **Retry document** action; ready documents are retained. Replace a failed source or edit its settings, then prepare again. Only changed or failed documents are processed again; the final ZIP reopens and checks every retained result before assembly. Selected optional documents that fail are never silently dropped: repair them or clear their source explicitly. An empty optional slot is omitted. **Stop after current operation** waits for the active native operation, keeps its successful result, and skips later work. Prepare again to resume. These results last only for the editor session, with a 64 MiB aggregate prepared-byte quota separate from the 64 MiB source quota; they are not persistent document storage or a process-wide memory limit.
