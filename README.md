@@ -1,8 +1,8 @@
 # Universal Studio Toolkit
 
-**Direct downloads:** [Windows ZIP](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Windows.zip) · [Linux bundle](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Linux.tar.gz) · [Android APK](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Android.apk)
+**Direct downloads:** [Windows ZIP](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Windows.zip) · [Linux bundle](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Linux.tar.gz) · [Android APK](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Android.apk)
 
-Development preview · [Install / Android upgrade notes](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/INSTALL.txt) · [SHA-256 checksums](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/SHA256SUMS)
+Development preview · [Install / Android upgrade notes](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/INSTALL.txt) · [SHA-256 checksums](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/SHA256SUMS)
 
 **Prepare photos, signatures, scans, PDFs and application packs locally on Windows, Linux and Android.**
 
@@ -20,11 +20,11 @@ These direct links download the verified **`dev-1f50491c`** development builds f
 
 | Platform | Architecture | Direct download | Installation |
 | --- | --- | --- | --- |
-| Windows | x64 | [Download Windows ZIP](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Windows.zip) | Extract the complete ZIP; run `universal_studio_toolkit.exe`. |
-| Linux | x64 · Ubuntu 24.04 build | [Download Linux bundle](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Linux.tar.gz) | Extract; run `./universal_studio_toolkit` with its adjacent `lib` and `data` folders. Requires a compatible GTK3 runtime. |
-| Android | ARM64 | [Download Android APK](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Android.apk) | Install the development APK on a compatible ARM64 device. |
+| Windows | x64 | [Download Windows ZIP](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Windows.zip) | Extract the complete ZIP; run `universal_studio_toolkit.exe`. |
+| Linux | x64 · Ubuntu 24.04 build | [Download Linux bundle](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Linux.tar.gz) | Extract; run `./universal_studio_toolkit` with its adjacent `lib` and `data` folders. Requires a compatible GTK3 runtime. |
+| Android | ARM64 | [Download Android APK](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Android.apk) | Install the development APK on a compatible ARM64 device. |
 
-[Release notes](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/tag/dev-1f50491c) · [Installation guide](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/INSTALL.txt) · [SHA-256 checksums](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/SHA256SUMS)
+[Release notes](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/tag/dev-1f50491c) · [Installation guide](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/INSTALL.txt) · [SHA-256 checksums](https://github.com/TakbirZaman/Universal-Studio-ToolKit-Downloads/releases/download/dev-1f50491c/SHA256SUMS)
 
 **Android upgrade note:** development builds use disposable signing identities. If an older install cannot be updated in place, export saved presets as JSON and scan drafts as PDFs before uninstalling it. Uninstalling removes app-local data. Stable production signing and update distribution remain unfinished.
 
