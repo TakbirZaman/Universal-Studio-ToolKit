@@ -116,3 +116,10 @@ Open **Photo recipes**, select a JPEG/PNG, and enable **Mirror left to right**, 
 ### Recover an application pack without repeating successful documents
 
 **Prepare and validate pack** prepares unfinished documents independently. A failed document shows its own error and **Retry document** action; ready documents are retained. Replace a failed source or edit its settings, then prepare again. Only changed or failed documents are processed again; the final ZIP reopens and checks every retained result before assembly. Selected optional documents that fail are never silently dropped: repair them or clear their source explicitly. An empty optional slot is omitted. **Stop after current operation** waits for the active native operation, keeps its successful result, and skips later work. Prepare again to resume. These results last only for the editor session, with a 64 MiB aggregate prepared-byte quota separate from the 64 MiB source quota; they are not persistent document storage or a process-wide memory limit.
+
+
+### Compare and inspect images
+
+After preparing a photo, signature or photo recipe, choose **Compare images**. Switch between **Original** and **Prepared**; each side starts fitted to its own geometry. Pinch to zoom, drag when enlarged, or use the focusable **Zoom in**, **Zoom out** and **Reset zoom** controls. Transparency backgrounds remain display-only.
+
+Previews are bounded to 1200 pixels and zoom is limited to 8×; this enlarges the preview rather than decoding full-resolution pixels. Comparison does not change the source or saved output. See [ADR-028](docs/ADR-028-image-inspection.md).

@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-10-27",
+  "timezone": "Asia/Dhaka",
+  "repository": "TakbirZaman/Universal-Studio-ToolKit",
+  "source_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+  "merge_sha": "a8c7bd4b1547100063436f67f5f38db16509c820",
+  "pull_request": 9,
+  "workflows": [
+    {
+      "id": 40333020678,
+      "name": "Verify PDF split workflows",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020678"
+    },
+    {
+      "id": 40333020221,
+      "name": "Verify photo crop workflows",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020221"
+    },
+    {
+      "id": 40333020472,
+      "name": "Verify saved pack preset catalogue",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020472"
+    },
+    {
+      "id": 40333020638,
+      "name": "Verify photo flip workflows",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020638"
+    },
+    {
+      "id": 40333020997,
+      "name": "Verify selective pack retries",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020997"
+    },
+    {
+      "id": 40333020621,
+      "name": "Verify custom pack workflows",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020621"
+    },
+    {
+      "id": 40333020482,
+      "name": "Generate typed Rust bridge",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020482"
+    },
+    {
+      "id": 40333020630,
+      "name": "Verify and build Linux",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020630"
+    },
+    {
+      "id": 40333020501,
+      "name": "Build Android development APK",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020501"
+    },
+    {
+      "id": 40333020554,
+      "name": "Verify and build Windows",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020554"
+    },
+    {
+      "id": 40333020580,
+      "name": "Verify dependency notice provenance",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020580"
+    },
+    {
+      "id": 40333020187,
+      "name": "Verify image comparison workflows",
+      "head_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "conclusion": "success",
+      "url": "https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/runs/40333020187"
+    }
+  ],
+  "suites": {
+    "native": {
+      "linux": 95,
+      "windows": 93
+    },
+    "flutter": {
+      "linux_passed": 75,
+      "windows_passed": 72,
+      "windows_platform_skips": 3
+    },
+    "home_capture_tests": {
+      "passed": 2,
+      "baseline_review_pending": true
+    },
+    "new_real_engine_widget_tests": 3
+  },
+  "coverage": [
+    "Original/prepared side selection with fitted view reset",
+    "Zoom bounds, real panning and clamped button zoom at edges",
+    "Reset and replacement-image state",
+    "Native invalid-source rejection before image decoding",
+    "Unchanged source/output bytes and actual recipe PNG saving",
+    "390-pixel layouts at 100% and 200% text",
+    "Full existing pack, preset, crop, flip, split and OCR regressions"
+  ],
+  "artifacts": {
+    "windows": {
+      "artifact_id": 12655982267,
+      "run_id": 40333020554,
+      "source_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "artifact_sha256": "0f9aca337078f116c6627631b225a2e812284377957f6974bedf9ba43cb1f02c",
+      "artifact_crc_verified": true
+    },
+    "linux": {
+      "artifact_id": 12657110846,
+      "run_id": 40333020630,
+      "source_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "artifact_sha256": "173c8e351e393b8a2be72b9c15f54aaa737ef384ca0826a10d162aaf8541a1bb",
+      "artifact_crc_verified": true
+    },
+    "android": {
+      "artifact_id": 12657031094,
+      "run_id": 40333020501,
+      "source_sha": "1f50491c5cbf0f92c89e8a76e9387b2824e39b7d",
+      "artifact_sha256": "b1d15515f8e974cec49043108e6ed4c7febc070c2c69c7bf32654d2cee3a9480",
+      "artifact_crc_verified": true
+    }
+  },
+  "downloads": {
+    "windows": {
+      "filename": "Universal-Studio-Toolkit-1f50491c-Windows.zip",
+      "bytes": 22530683,
+      "sha256": "322808083ef5ee9db21dcaf6197330d720ee53723078798239da7d255fc56102"
+    },
+    "linux": {
+      "filename": "Universal-Studio-Toolkit-1f50491c-Linux.tar.gz",
+      "bytes": 21866128,
+      "sha256": "3dbe520d83dfdbec01ecc8f7d0487e3f738b20c7fae8c782498c087ea5df31ce"
+    },
+    "android": {
+      "filename": "Universal-Studio-Toolkit-1f50491c-Android.apk",
+      "bytes": 35795037,
+      "sha256": "7bec53ffab92c56ca7009d4daacd9ec847d86f6b402e092aa56eaa2722e6a364"
+    }
+  },
+  "installation_guide": "Universal-Studio-Toolkit-1f50491c-Install.txt",
+  "downloads_saved": true,
+  "limitations": [
+    "Preview conversion is bounded to 1200 pixels; zoom enlarges that preview, not full-resolution pixels.",
+    "No synchronized geometry alignment or image difference measurement.",
+    "Real device, screen reader, printer and provider acceptance remain outstanding.",
+    "Development APK signing is disposable; stable production distribution remains unfinished.",
+    "The full product remains in active development; see REMAINING-WORK.md."
+  ]
+}
