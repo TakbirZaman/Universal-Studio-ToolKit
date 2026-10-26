@@ -94,6 +94,8 @@ void main() {
             .onPressed,
         isNull,
       );
+      await tester.ensureVisible(find.byType(InteractiveViewer));
+      await tester.pump();
       final beforePan = controller.value.clone();
       await tester.drag(
         find.byType(InteractiveViewer),
@@ -101,6 +103,20 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(controller.value, isNot(beforePan));
+      await tester.ensureVisible(find.byTooltip('Zoom out'));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Zoom out'));
+      await tester.pump();
+      expect(controller.value.getMaxScaleOnAxis(), 4);
+      final viewport = tester.getSize(find.byType(InteractiveViewer));
+      expect(
+        controller.value.entry(0, 3),
+        inInclusiveRange(-3 * viewport.width, 0),
+      );
+      expect(
+        controller.value.entry(1, 3),
+        inInclusiveRange(-3 * viewport.height, 0),
+      );
       await tester.ensureVisible(find.text('Reset zoom'));
       await tester.pump();
       await tester.tap(find.text('Reset zoom'));
