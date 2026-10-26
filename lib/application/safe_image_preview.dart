@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../src/rust/api.dart' as core;
 import '../src/rust/scanner.dart';
 import 'transparency_preview.dart';
+import 'zoomable_image.dart';
 
 /// Only canonical, bounded engine output reaches the Flutter image decoder.
 /// One request runs at a time; rapid edits coalesce into the latest request.
@@ -115,12 +116,15 @@ class _SafeImagePreviewState extends State<SafeImagePreview> {
         if (widget.transparency)
           TransparencyPreview(bytes: bytes)
         else
-          Image.memory(
-            bytes,
+          ZoomableImage(
+            imageIdentity: bytes,
             height: widget.height,
-            fit: BoxFit.contain,
-            semanticLabel: widget.semanticLabel,
-            errorBuilder: (_, _, _) => const Text('Image preview unavailable.'),
+            child: Image.memory(
+              bytes,
+              fit: BoxFit.contain,
+              semanticLabel: widget.semanticLabel,
+              errorBuilder: (_, _, _) => const Text('Image preview unavailable.'),
+            ),
           ),
         if (validation?.isNotEmpty == true) Text(validation!),
       ],

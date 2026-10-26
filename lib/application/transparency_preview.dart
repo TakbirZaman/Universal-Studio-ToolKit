@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'zoomable_image.dart';
 
 /// Preview backgrounds never modify encoded output pixels.
 class TransparencyPreview extends StatefulWidget {
@@ -35,7 +36,9 @@ class _TransparencyPreviewState extends State<TransparencyPreview> {
         onChanged: (value) => setState(() => background = value!),
       ),
       const SizedBox(height: 12),
-      ClipRRect(
+      ZoomableImage(
+        imageIdentity: widget.bytes,
+        child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: CustomPaint(
           painter: _Background(background),
@@ -51,6 +54,7 @@ class _TransparencyPreviewState extends State<TransparencyPreview> {
             ),
           ),
         ),
+      ),
       ),
       const Text(
         'Preview background only. Transparent pixels stay transparent in the saved PNG.',
