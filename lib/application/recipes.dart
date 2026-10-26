@@ -2,6 +2,7 @@ import 'photo_crop_editor.dart';
 import 'photo_crop_geometry.dart';
 import 'prepared_documents.dart';
 import 'safe_image_preview.dart';
+import 'image_inspector.dart';
 
 import 'dart:convert';
 import 'dart:typed_data';
@@ -718,6 +719,20 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
             Semantics(liveRegion: true, child: Text(message!)),
           if (savedCopy != null) SavedCopyActions.receipt(savedCopy!),
           if (output != null) ...[
+            if (source != null)
+              OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => ImageInspector(
+                      original: source!,
+                      prepared: output!.bytes,
+                      transparency: output!.format == 'png',
+                    ),
+                  ),
+                ),
+                icon: const Icon(Icons.compare),
+                label: const Text('Compare images'),
+              ),
             SafeImagePreview(
               bytes: output!.bytes,
               height: 320,

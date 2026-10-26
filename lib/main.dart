@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'application/scan_drafts.dart';
 import 'application/scan_draft_picker.dart';
 import 'application/safe_image_preview.dart';
+import 'application/image_inspector.dart';
 import 'src/rust/scanner.dart';
 
 import 'dart:io';
@@ -1486,10 +1487,19 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               label: const Text('Read selectable text'),
             ),
             OutlinedButton.icon(
-              onPressed: busy || sources.isEmpty ? null : () {
-                final data = output?.format == 'pdf' ? output!.bytes : sources[previewIndex.clamp(0, sources.length - 1)].bytes;
-                Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => PdfSplitScreen(source: data)));
-              },
+              onPressed: busy || sources.isEmpty
+                  ? null
+                  : () {
+                      final data = output?.format == 'pdf'
+                          ? output!.bytes
+                          : sources[previewIndex.clamp(0, sources.length - 1)]
+                                .bytes;
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (_) => PdfSplitScreen(source: data),
+                        ),
+                      );
+                    },
               icon: const Icon(Icons.call_split),
               label: const Text('Split into separate PDFs'),
             ),
@@ -1689,6 +1699,20 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                 '3  Preview',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
+              if (imageTool && output != null && sources.isNotEmpty)
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ImageInspector(
+                        original: sources.first.bytes,
+                        prepared: output!.bytes,
+                        transparency: output!.format == 'png',
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.compare),
+                  label: const Text('Compare images'),
+                ),
               if (imageTool && output != null)
                 TextButton(
                   onPressed: () => setState(() => showOriginal = !showOriginal),

@@ -8,6 +8,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 import 'package:universal_studio_toolkit/application/recipes.dart';
+import 'package:universal_studio_toolkit/application/image_inspector.dart';
+import 'package:universal_studio_toolkit/application/safe_image_preview.dart';
 import 'package:universal_studio_toolkit/src/rust/api.dart' as core;
 import 'package:universal_studio_toolkit/src/rust/frb_generated.dart';
 
@@ -114,6 +116,23 @@ void main() {
           tester,
           () => find.text('Save a copy').evaluate().isNotEmpty,
         );
+        await tap(find.text('Compare images'));
+        await finish(
+          tester,
+          () => find.byType(ImageInspector).evaluate().isNotEmpty,
+        );
+        await tester.pumpAndSettle();
+        await tap(find.text('Original'));
+        expect(
+          tester
+              .widget<SafeImagePreview>(
+                find.byType(SafeImagePreview).hitTestable(),
+              )
+              .bytes,
+          orderedEquals(source),
+        );
+        await tester.pageBack();
+        await tester.pumpAndSettle();
         await tap(find.text('Save a copy'));
         final target = File('${directory.path}/reflected.png');
         await finish(
