@@ -1,5 +1,9 @@
 # Universal Studio Toolkit
 
+**Direct downloads:** [Windows ZIP](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Windows.zip) · [Linux bundle](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Linux.tar.gz) · [Android APK](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/Universal-Studio-Toolkit-1f50491c-Android.apk)
+
+Development preview · [Install / Android upgrade notes](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/INSTALL.txt) · [SHA-256 checksums](https://github.com/TakbirZaman/Universal-Studio-ToolKit/releases/download/dev-1f50491c/SHA256SUMS)
+
 **Prepare photos, signatures, scans, PDFs and application packs locally on Windows, Linux and Android.**
 
 [![Linux CI](https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/workflows/verify-linux.yml/badge.svg)](https://github.com/TakbirZaman/Universal-Studio-ToolKit/actions/workflows/verify-linux.yml)
