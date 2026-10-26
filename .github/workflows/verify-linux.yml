@@ -29,6 +29,10 @@ jobs:
           persist-credentials: false
       - name: Install Linux build prerequisites
         run: |
+          # Avoid the hosted image's slow Azure package mirror. Keep APT signature checks.
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            echo 'https://archive.ubuntu.com/ubuntu' | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+          fi
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev xvfb x11-utils tesseract-ocr python3-pil libraqm0
           rustup toolchain install 1.99.0 --profile minimal --component rustfmt
