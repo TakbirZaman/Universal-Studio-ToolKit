@@ -44,8 +44,22 @@ class _ZoomableImageState extends State<ZoomableImage> {
     final transform = Matrix4.identity()
       ..setEntry(0, 0, next)
       ..setEntry(1, 1, next)
-      ..setEntry(0, 3, x - (x - old.entry(0, 3)) * ratio)
-      ..setEntry(1, 3, y - (y - old.entry(1, 3)) * ratio);
+      ..setEntry(
+        0,
+        3,
+        (x - (x - old.entry(0, 3)) * ratio).clamp(
+          viewport.width * (1 - next),
+          0.0,
+        ),
+      )
+      ..setEntry(
+        1,
+        3,
+        (y - (y - old.entry(1, 3)) * ratio).clamp(
+          viewport.height * (1 - next),
+          0.0,
+        ),
+      );
     setState(() {
       controller.value = transform;
       scale = next;

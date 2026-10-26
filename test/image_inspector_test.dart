@@ -95,7 +95,10 @@ void main() {
         isNull,
       );
       final beforePan = controller.value.clone();
-      await tester.drag(find.byType(InteractiveViewer), const Offset(30, 20));
+      await tester.drag(
+        find.byType(InteractiveViewer),
+        const Offset(-5000, -5000),
+      );
       await tester.pumpAndSettle();
       expect(controller.value, isNot(beforePan));
       await tester.ensureVisible(find.text('Reset zoom'));
