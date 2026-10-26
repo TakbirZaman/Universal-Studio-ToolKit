@@ -85,7 +85,13 @@ void main() {
       }
       expect(controller.value.getMaxScaleOnAxis(), 8);
       expect(
-        tester.widget<IconButton>(find.byTooltip('Zoom in')).onPressed,
+        tester
+            .widget<IconButton>(
+              find.byWidgetPredicate(
+                (w) => w is IconButton && w.tooltip == 'Zoom in',
+              ),
+            )
+            .onPressed,
         isNull,
       );
       final beforePan = controller.value.clone();
@@ -98,7 +104,13 @@ void main() {
       await tester.pump();
       expect(controller.value, Matrix4.identity());
       expect(
-        tester.widget<IconButton>(find.byTooltip('Zoom out')).onPressed,
+        tester
+            .widget<IconButton>(
+              find.byWidgetPredicate(
+                (w) => w is IconButton && w.tooltip == 'Zoom out',
+              ),
+            )
+            .onPressed,
         isNull,
       );
       await tester.ensureVisible(find.text('Original'));

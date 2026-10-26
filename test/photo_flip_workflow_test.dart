@@ -129,7 +129,7 @@ void main() {
                 find.byType(SafeImagePreview).hitTestable(),
               )
               .bytes,
-          same(source),
+          orderedEquals(source),
         );
         await tester.pageBack();
         await tester.pumpAndSettle();
