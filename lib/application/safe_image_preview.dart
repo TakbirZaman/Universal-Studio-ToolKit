@@ -13,6 +13,7 @@ class SafeImagePreview extends StatefulWidget {
   final Uint8List bytes;
   final ScanOptions? scanOptions;
   final bool transparency;
+  final bool showValidation;
   final double height;
   final String semanticLabel;
   const SafeImagePreview({
@@ -20,6 +21,7 @@ class SafeImagePreview extends StatefulWidget {
     required this.bytes,
     this.scanOptions,
     this.transparency = false,
+    this.showValidation = true,
     this.height = 360,
     required this.semanticLabel,
   });
@@ -126,7 +128,8 @@ class _SafeImagePreviewState extends State<SafeImagePreview> {
                   const Text('Image preview unavailable.'),
             ),
           ),
-        if (validation?.isNotEmpty == true) Text(validation!),
+        if (widget.showValidation && validation?.isNotEmpty == true)
+          Text(validation!),
       ],
     );
   }

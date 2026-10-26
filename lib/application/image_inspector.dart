@@ -50,6 +50,7 @@ class _ImageInspectorState extends State<ImageInspector> {
           key: ValueKey(original),
           bytes: original ? widget.original : widget.prepared,
           transparency: !original && widget.transparency,
+          showValidation: false,
           semanticLabel: original ? 'Original image' : 'Prepared image',
         ),
         const SizedBox(height: 12),

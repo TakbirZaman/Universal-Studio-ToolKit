@@ -140,6 +140,18 @@ void main() {
             .onPressed,
         isNull,
       );
+      tester
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byType(ImageInspector),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position
+          .jumpTo(0);
+      await tester.pump();
       await tester.ensureVisible(find.text('Original'));
       await tester.pump();
       await tester.tap(find.text('Original'));
