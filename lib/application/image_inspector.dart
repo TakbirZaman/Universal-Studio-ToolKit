@@ -62,4 +62,3 @@ class _ImageInspectorState extends State<ImageInspector> {
     ),
   );
 }
-

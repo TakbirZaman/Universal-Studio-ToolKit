@@ -23,46 +23,60 @@ void main() {
     source = await File('rust/tests/fixtures/orientation-6.jpg').readAsBytes();
     prepared = (await core.runRecipe(
       data: source,
-      recipeJson: '{"schema_version":1,"name":"Preview test",'
+      recipeJson:
+          '{"schema_version":1,"name":"Preview test",'
           '"revision_date":"2026-10-26",'
           '"steps":[{"type":"export","format":"png"}]}',
     )).bytes;
   });
 
   for (final textScale in [1.0, 2.0]) {
-    testWidgets('compare real images and reset view at text scale $textScale',
-        (tester) async {
+    testWidgets('compare real images and reset view at text scale $textScale', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 1200);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       final sourceCopy = Uint8List.fromList(source);
       final outputCopy = Uint8List.fromList(prepared);
-      await tester.pumpWidget(MaterialApp(
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(textScale),
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.linear(textScale)),
+            child: child!,
           ),
-          child: child!,
-        ),
-        home: Builder(builder: (context) => Scaffold(
-          body: TextButton(
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
-              builder: (_) => ImageInspector(
-                original: source,
-                prepared: prepared,
-                transparency: true,
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => ImageInspector(
+                      original: source,
+                      prepared: prepared,
+                      transparency: true,
+                    ),
+                  ),
+                ),
+                child: const Text('Inspect'),
               ),
-            )),
-            child: const Text('Inspect'),
+            ),
           ),
-        )),
-      ));
+        ),
+      );
       await tester.tap(find.text('Inspect'));
-      await finish(tester, () => find.byType(InteractiveViewer).evaluate().isNotEmpty);
-      expect(tester.widget<SafeImagePreview>(find.byType(SafeImagePreview)).bytes,
-          same(prepared));
-      final viewer = tester.widget<InteractiveViewer>(find.byType(InteractiveViewer));
+      await finish(
+        tester,
+        () => find.byType(InteractiveViewer).evaluate().isNotEmpty,
+      );
+      expect(
+        tester.widget<SafeImagePreview>(find.byType(SafeImagePreview)).bytes,
+        same(prepared),
+      );
+      final viewer = tester.widget<InteractiveViewer>(
+        find.byType(InteractiveViewer),
+      );
       final controller = viewer.transformationController!;
       for (var i = 0; i < 3; i++) {
         await tester.ensureVisible(find.byTooltip('Zoom in'));
@@ -71,7 +85,10 @@ void main() {
         await tester.pump();
       }
       expect(controller.value.getMaxScaleOnAxis(), 8);
-      expect(tester.widget<IconButton>(find.byTooltip('Zoom in')).onPressed, isNull);
+      expect(
+        tester.widget<IconButton>(find.byTooltip('Zoom in')).onPressed,
+        isNull,
+      );
       final beforePan = controller.value.clone();
       await tester.drag(find.byType(InteractiveViewer), const Offset(30, 20));
       await tester.pumpAndSettle();
@@ -81,15 +98,28 @@ void main() {
       await tester.tap(find.text('Reset zoom'));
       await tester.pump();
       expect(controller.value, Matrix4.identity());
-      expect(tester.widget<IconButton>(find.byTooltip('Zoom out')).onPressed, isNull);
+      expect(
+        tester.widget<IconButton>(find.byTooltip('Zoom out')).onPressed,
+        isNull,
+      );
       await tester.ensureVisible(find.text('Original'));
       await tester.pump();
       await tester.tap(find.text('Original'));
-      await finish(tester, () => find.byType(InteractiveViewer).evaluate().isNotEmpty);
-      expect(tester.widget<SafeImagePreview>(find.byType(SafeImagePreview)).bytes,
-          same(source));
-      expect(tester.widget<InteractiveViewer>(find.byType(InteractiveViewer))
-          .transformationController!.value, Matrix4.identity());
+      await finish(
+        tester,
+        () => find.byType(InteractiveViewer).evaluate().isNotEmpty,
+      );
+      expect(
+        tester.widget<SafeImagePreview>(find.byType(SafeImagePreview)).bytes,
+        same(source),
+      );
+      expect(
+        tester
+            .widget<InteractiveViewer>(find.byType(InteractiveViewer))
+            .transformationController!
+            .value,
+        Matrix4.identity(),
+      );
       expect(source, orderedEquals(sourceCopy));
       expect(prepared, orderedEquals(outputCopy));
       expect(tester.takeException(), isNull);
@@ -99,29 +129,55 @@ void main() {
     });
   }
 
-  testWidgets('replacement image resets zoom and stale unsupported input fails closed',
-      (tester) async {
-    final first = Object();
-    Future<void> mount(Object identity) => tester.pumpWidget(MaterialApp(
-      home: Scaffold(body: ZoomableImage(
-        imageIdentity: identity,
-        child: const ColoredBox(color: Colors.red),
-      )),
-    ));
-    await mount(first);
-    await tester.tap(find.byTooltip('Zoom in'));
-    await tester.pump();
-    expect(tester.widget<InteractiveViewer>(find.byType(InteractiveViewer))
-        .transformationController!.value.getMaxScaleOnAxis(), 2);
-    await mount(Object());
-    expect(tester.widget<InteractiveViewer>(find.byType(InteractiveViewer))
-        .transformationController!.value, Matrix4.identity());
-    await tester.pumpWidget(MaterialApp(home: Scaffold(body: SafeImagePreview(
-      bytes: Uint8List.fromList([1, 2, 3]),
-      semanticLabel: 'Invalid image',
-    ))));
-    await finish(tester, () => find.textContaining('Could not preview').evaluate().isNotEmpty);
-    expect(find.byType(InteractiveViewer), findsNothing);
-    expect(find.byType(Image), findsNothing);
-  });
+  testWidgets(
+    'replacement image resets zoom and stale unsupported input fails closed',
+    (tester) async {
+      final first = Object();
+      Future<void> mount(Object identity) => tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ZoomableImage(
+              imageIdentity: identity,
+              child: const ColoredBox(color: Colors.red),
+            ),
+          ),
+        ),
+      );
+      await mount(first);
+      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.pump();
+      expect(
+        tester
+            .widget<InteractiveViewer>(find.byType(InteractiveViewer))
+            .transformationController!
+            .value
+            .getMaxScaleOnAxis(),
+        2,
+      );
+      await mount(Object());
+      expect(
+        tester
+            .widget<InteractiveViewer>(find.byType(InteractiveViewer))
+            .transformationController!
+            .value,
+        Matrix4.identity(),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SafeImagePreview(
+              bytes: Uint8List.fromList([1, 2, 3]),
+              semanticLabel: 'Invalid image',
+            ),
+          ),
+        ),
+      );
+      await finish(
+        tester,
+        () => find.textContaining('Could not preview').evaluate().isNotEmpty,
+      );
+      expect(find.byType(InteractiveViewer), findsNothing);
+      expect(find.byType(Image), findsNothing);
+    },
+  );
 }

@@ -1487,10 +1487,19 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               label: const Text('Read selectable text'),
             ),
             OutlinedButton.icon(
-              onPressed: busy || sources.isEmpty ? null : () {
-                final data = output?.format == 'pdf' ? output!.bytes : sources[previewIndex.clamp(0, sources.length - 1)].bytes;
-                Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => PdfSplitScreen(source: data)));
-              },
+              onPressed: busy || sources.isEmpty
+                  ? null
+                  : () {
+                      final data = output?.format == 'pdf'
+                          ? output!.bytes
+                          : sources[previewIndex.clamp(0, sources.length - 1)]
+                                .bytes;
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (_) => PdfSplitScreen(source: data),
+                        ),
+                      );
+                    },
               icon: const Icon(Icons.call_split),
               label: const Text('Split into separate PDFs'),
             ),

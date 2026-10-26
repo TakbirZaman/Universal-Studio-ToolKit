@@ -73,9 +73,8 @@ class _ZoomableImageState extends State<ZoomableImage> {
               minScale: 1,
               maxScale: 8,
               panEnabled: scale > 1,
-              onInteractionUpdate: (_) => setState(
-                () => scale = controller.value.getMaxScaleOnAxis(),
-              ),
+              onInteractionUpdate: (_) =>
+                  setState(() => scale = controller.value.getMaxScaleOnAxis()),
               child: SizedBox.expand(child: widget.child),
             ),
           ),

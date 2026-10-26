@@ -89,8 +89,7 @@ class _SafeImagePreviewState extends State<SafeImagePreview> {
       } catch (_) {
         if (mounted && token == revision) {
           setState(
-            () => failure =
-                'Could not preview this image. Choose a supported JPEG or PNG within the processing limits.',
+            () => failure = 'Could not preview this image. Choose a supported JPEG or PNG within the processing limits.',
           );
         }
       }
@@ -123,7 +122,8 @@ class _SafeImagePreviewState extends State<SafeImagePreview> {
               bytes,
               fit: BoxFit.contain,
               semanticLabel: widget.semanticLabel,
-              errorBuilder: (_, _, _) => const Text('Image preview unavailable.'),
+              errorBuilder: (_, _, _) =>
+                  const Text('Image preview unavailable.'),
             ),
           ),
         if (validation?.isNotEmpty == true) Text(validation!),
