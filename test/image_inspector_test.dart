@@ -98,10 +98,15 @@ void main() {
       await tester.pump();
       final beforePan = controller.value.clone();
       for (var pan = 0; pan < 16; pan++) {
-        await tester.drag(
-          find.byType(InteractiveViewer),
-          const Offset(-120, -60),
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.byType(InteractiveViewer)),
         );
+        // Establish the pan before moving diagonally in the scrollable page.
+        await gesture.moveBy(const Offset(-60, 0));
+        await tester.pump();
+        await gesture.moveBy(const Offset(-120, -60));
+        await tester.pump();
+        await gesture.up();
         await tester.pumpAndSettle();
       }
       await tester.pumpAndSettle();
