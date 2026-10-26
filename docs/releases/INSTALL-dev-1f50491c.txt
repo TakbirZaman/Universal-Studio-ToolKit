@@ -1,0 +1,32 @@
+Universal Studio Toolkit — development builds
+27 October 2026
+
+Source: 1f50491c5cbf0f92c89e8a76e9387b2824e39b7d
+Merged PR #9: https://github.com/TakbirZaman/Universal-Studio-ToolKit/pull/9
+Merge: a8c7bd4b1547100063436f67f5f38db16509c820
+
+Windows x64
+Extract the complete Windows ZIP into a new folder. Run universal_studio_toolkit.exe from that folder. Keep the bundled DLLs and data folders beside it.
+
+Linux x64
+Extract the tar.gz into a new folder. Open the directory containing universal_studio_toolkit and run ./universal_studio_toolkit. This build was tested on Ubuntu 24.04 x64 and needs a compatible GTK3 runtime. Clean-system and AppImage acceptance remain unfinished.
+
+Android ARM64
+Install the Android APK. It is an optimized development build with a disposable signing identity. An older development install may use a different key and may need to be removed first. Export saved presets as JSON and save scan drafts as PDFs BEFORE removing an older install: uninstalling removes local app data. Stable production signing and update distribution remain unfinished.
+
+What changed
+After preparing a photo, signature or photo recipe, choose Compare images. Switch Original/Prepared; zoom, pan and Reset zoom inspect the bounded preview without changing saved bytes. Preview conversion is limited to 1200 pixels and zoom to 8x; full-resolution comparison remains future work. Switching sides resets the fitted view. The OCR preview now grows to accommodate its controls and enlarged text.
+
+Application packs retain ready results when another document fails. Retry the affected document or prepare unfinished documents. Stop waits for the current operation and preserves its successful result; resume reuses ready results. Repair a selected optional source or explicitly clear it to omit that slot. Sources and prepared results have separate 64 MiB encoded-byte quotas and remain session-only.
+
+Validation
+All twelve workflows passed on this source. Native suites: 95 Linux / 93 Windows. Flutter suites: 75 Linux / 72 Windows, with three platform-specific Windows skips; Linux visual captures also pass. Packaging and hosted desktop launch checks passed. Real-device/provider/printer/screen-reader acceptance remains outstanding.
+
+The full requested product is not launch-complete. Remaining work includes broader pack policies/recipes/folder export, advanced PDF/signature tools, persistent managed documents, Windows/Android OCR and searchable PDF geometry, localization/accessibility, process isolation and complete distribution obligations. See:
+https://github.com/TakbirZaman/Universal-Studio-ToolKit/blob/main/docs/REMAINING-WORK.md
+
+SHA-256 (the extracted download files)
+322808083ef5ee9db21dcaf6197330d720ee53723078798239da7d255fc56102  Universal-Studio-Toolkit-1f50491c-Windows.zip
+3dbe520d83dfdbec01ecc8f7d0487e3f738b20c7fae8c782498c087ea5df31ce  Universal-Studio-Toolkit-1f50491c-Linux.tar.gz
+7bec53ffab92c56ca7009d4daacd9ec847d86f6b402e092aa56eaa2722e6a364  Universal-Studio-Toolkit-1f50491c-Android.apk
+

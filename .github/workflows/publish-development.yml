@@ -1,0 +1,101 @@
+name: Publish verified development preview
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-development.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: publish-dev-1f50491c
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SOURCE_SHA: 1f50491c5cbf0f92c89e8a76e9387b2824e39b7d
+      RELEASE_TAG: dev-1f50491c
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify source checks and stage original CI packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import shutil
+          import subprocess
+          from pathlib import Path
+
+          repo = os.environ['GH_REPO']
+          source = os.environ['SOURCE_SHA']
+          evidence = json.loads(Path('docs/evidence/image-inspection-20261027.json').read_text())
+          assert evidence['repository'] == repo and evidence['source_sha'] == source
+          assert len(evidence['workflows']) == 12
+
+          def api(path):
+              return json.loads(subprocess.check_output(['gh', 'api', f'repos/{repo}/{path}']))
+
+          for check in evidence['workflows']:
+              run = api(f"actions/runs/{check['id']}")
+              assert run['head_sha'] == source and run['conclusion'] == 'success', check['name']
+
+          tag = os.environ['RELEASE_TAG']
+          refs = api(f'git/matching-refs/tags/{tag}')
+          for ref in refs:
+              if ref['ref'] == 'refs/tags/' + tag:
+                  assert ref['object']['type'] == 'commit' and ref['object']['sha'] == source
+
+          stage = Path(os.environ['RUNNER_TEMP']) / 'ust-release'
+          stage.mkdir()
+          inner_names = {
+              'windows': 'universal-studio-windows-x64.zip',
+              'linux': 'universal-studio-linux-x64.tar.gz',
+              'android': 'universal-studio-android-arm64-development-release.apk',
+          }
+          for platform, record in evidence['artifacts'].items():
+              artifact = api(f"actions/artifacts/{record['artifact_id']}")
+              assert not artifact['expired']
+              assert artifact['workflow_run']['head_sha'] == source
+              assert artifact['digest'] == 'sha256:' + record['artifact_sha256']
+              directory = Path(os.environ['RUNNER_TEMP']) / ('ust-input-' + platform)
+              subprocess.run([
+                  'gh', 'run', 'download', str(record['run_id']),
+                  '--repo', repo, '--name', artifact['name'], '--dir', str(directory),
+              ], check=True)
+              package = directory / inner_names[platform]
+              expected = evidence['downloads'][platform]
+              assert package.stat().st_size == expected['bytes']
+              with package.open('rb') as stream:
+                  assert hashlib.file_digest(stream, 'sha256').hexdigest() == expected['sha256']
+              assert Path(expected['filename']).name == expected['filename']
+              shutil.copyfile(package, stage / expected['filename'])
+          shutil.copyfile('docs/releases/INSTALL-dev-1f50491c.txt', stage / 'INSTALL.txt')
+          lines = []
+          for package in sorted(stage.iterdir()):
+              with package.open('rb') as stream:
+                  digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+              lines.append(f'{digest}  {package.name}\n')
+          (stage / 'SHA256SUMS').write_text(''.join(lines))
+          print('All twelve source checks and three original package hashes verified.')
+          PY
+      - name: Publish development prerelease with verified assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          # gh uploads assets through a draft before publishing the release.
+          # An existing tag/release is never overwritten by this publisher.
+          gh release create "$RELEASE_TAG" "$RUNNER_TEMP/ust-release/"* \
+            --repo "$GH_REPO" --target "$SOURCE_SHA" \
+            --prerelease --latest=false \
+            --title 'Development preview — 1f50491c' \
+            --notes-file docs/releases/dev-1f50491c.md
