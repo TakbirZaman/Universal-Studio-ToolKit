@@ -97,10 +97,13 @@ void main() {
       await tester.ensureVisible(find.byType(InteractiveViewer));
       await tester.pump();
       final beforePan = controller.value.clone();
-      await tester.drag(
-        find.byType(InteractiveViewer),
-        const Offset(-5000, -5000),
-      );
+      for (var pan = 0; pan < 16; pan++) {
+        await tester.drag(
+          find.byType(InteractiveViewer),
+          const Offset(-120, -60),
+        );
+        await tester.pumpAndSettle();
+      }
       await tester.pumpAndSettle();
       expect(controller.value, isNot(beforePan));
       await tester.ensureVisible(find.byTooltip('Zoom out'));
