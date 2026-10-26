@@ -179,7 +179,7 @@ class _RecognizedTextState extends State<RecognizedTextScreen> {
                   label: 'Selected scan page with current adjustments',
                   image: true,
                   child: Container(
-                    height: 300,
+                    constraints: const BoxConstraints(minHeight: 300),
                     padding: const EdgeInsets.all(12),
                     color: Theme.of(context).colorScheme.surfaceContainer,
                     child: SafeImagePreview(
