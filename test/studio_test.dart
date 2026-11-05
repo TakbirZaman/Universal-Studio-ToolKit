@@ -16,16 +16,16 @@ void main() {
     expect(find.text('Prepare Application'), findsWidgets);
     await tester.enterText(find.byType(TextField), 'smaller');
     await tester.pump();
-    expect(find.text('Get started'), findsOneWidget);
+    expect(find.byType(Card), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'straighten');
     await tester.pump();
-    expect(find.text('Get started'), findsOneWidget);
+    expect(find.byType(Card), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'flexible');
     await tester.pump();
-    expect(find.text('Get started'), findsOneWidget);
+    expect(find.byType(Card), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'OCR');
     await tester.pump();
-    expect(find.text('Get started'), findsOneWidget);
+    expect(find.byType(Card), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   testWidgets(
@@ -131,6 +131,10 @@ void main() {
       expect(find.text('Use 1–2400 DPI.'), findsOneWidget);
       await tester.ensureVisible(find.text('Set a print size in millimetres'));
       await tester.tap(find.text('Set a print size in millimetres'));
+      await tester.pumpAndSettle();
+      expect(find.text('Width (pixels)'), findsNothing);
+      await tester.ensureVisible(find.text('Set custom pixel dimensions'));
+      await tester.tap(find.text('Set custom pixel dimensions'));
       await tester.pumpAndSettle();
       final pixels = find.widgetWithText(TextFormField, 'Width (pixels)');
       expect(tester.widget<TextFormField>(pixels).controller!.text, '300');

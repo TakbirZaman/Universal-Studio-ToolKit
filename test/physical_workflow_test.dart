@@ -102,6 +102,17 @@ void main() {
           }
         }
         expect(find.text('synthetic-orientation.jpg'), findsOneWidget);
+        await tester.ensureVisible(find.text('Prepare preview'));
+        await tester.tap(find.text('Prepare preview'));
+        final originalSize = find.textContaining('20 × 40 pixels');
+        for (var attempt = 0; attempt < 100; attempt++) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 50)),
+          );
+          await tester.pump();
+          if (originalSize.evaluate().isNotEmpty) break;
+        }
+        expect(originalSize, findsOneWidget);
         await tester.ensureVisible(
           find.text('Set a print size in millimetres'),
         );

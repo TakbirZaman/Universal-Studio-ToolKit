@@ -159,7 +159,6 @@ void main() {
         await press(tester, 'Use crop');
         await tester.pumpAndSettle();
         expect(find.text('Crop photo'), findsNothing);
-        await press(tester, 'Keep original dimensions');
         await press(tester, 'Prepare preview');
         await finish(
           tester,

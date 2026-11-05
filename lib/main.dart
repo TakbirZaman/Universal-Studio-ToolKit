@@ -224,7 +224,14 @@ class StudioHome extends StatefulWidget {
 
 class _StudioHomeState extends State<StudioHome> {
   Tool? selected;
-  String search = '';
+  final search = TextEditingController();
+
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= 960;
@@ -293,7 +300,7 @@ class _StudioHomeState extends State<StudioHome> {
   }
 
   Widget home() {
-    final words = search
+    final words = search.text
         .toLowerCase()
         .split(RegExp(r'\s+'))
         .where(
@@ -316,46 +323,25 @@ class _StudioHomeState extends State<StudioHome> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 24),
-              const Chip(
-                avatar: Icon(Icons.lock_outline, size: 18),
-                label: Text('Private by design · Works offline'),
-              ),
-              const SizedBox(height: 20),
               Text(
-                'Your documents.\nReady for what’s next.',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -1.2,
-                ),
+                'Choose a tool',
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 16),
-              Text(
-                'Prepare your photos, signatures, scans, and PDFs in one place—privately, offline, and with confidence.',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 20),
-              if (MediaQuery.sizeOf(context).width < 700)
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [Tool.scan, Tool.photo, Tool.merge, Tool.pack]
-                      .map(
-                        (t) => OutlinedButton.icon(
-                          onPressed: () => setState(() => selected = t),
-                          icon: Icon(t.icon, size: 20),
-                          label: Text(t.label),
-                        ),
-                      )
-                      .toList(),
-                ),
-              const SizedBox(height: 20),
               TextField(
-                onChanged: (s) => setState(() => search = s),
-                decoration: const InputDecoration(
-                  labelText: 'What would you like to do?',
-                  hintText: 'Try “make my photo smaller” or “merge”',
-                  prefixIcon: Icon(Icons.search),
+                controller: search,
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(
+                  labelText: 'Search tools',
+                  hintText: 'Try “resize photo” or “merge PDF”',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: search.text.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Clear search',
+                          icon: const Icon(Icons.clear),
+                          onPressed: () => setState(search.clear),
+                        ),
                 ),
               ),
               const SizedBox(height: 28),
@@ -379,42 +365,16 @@ class _StudioHomeState extends State<StudioHome> {
                           (t) => SizedBox(
                             width: width,
                             child: Card(
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () => setState(() => selected = t),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(22),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        t.icon,
-                                        size: 32,
-                                        color: t.accent(
-                                          Theme.of(context).brightness,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      Text(
-                                        t.label,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(t.description),
-                                      const SizedBox(height: 22),
-                                      const Row(
-                                        children: [
-                                          Expanded(child: Text('Get started')),
-                                          SizedBox(width: 12),
-                                          Icon(Icons.arrow_forward, size: 20),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(16),
+                                leading: Icon(
+                                  t.icon,
+                                  color: t.accent(Theme.of(context).brightness),
                                 ),
+                                title: Text(t.label),
+                                subtitle: Text(t.description),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap: () => setState(() => selected = t),
                               ),
                             ),
                           ),
@@ -496,11 +456,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   int previewIndex = 0, draftDays = 7;
   String? draftMessage;
   Future<bool>? textRecognitionAvailable, geometryAvailable;
+  bool customPhotoSize = false, formatChosen = false;
+  bool get keepPhotoSize =>
+      widget.tool == Tool.photo && !physicalSize && !customPhotoSize;
   bool get imageTool =>
       widget.tool == Tool.photo || widget.tool == Tool.signature;
   @override
   void initState() {
     super.initState();
+    if (widget.tool == Tool.photo) {
+      limit.clear();
+      quality = 90;
+    }
     if (widget.tool == Tool.signature) {
       png = true;
       height.text = '100';
@@ -613,6 +580,15 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         } else if (widget.tool == Tool.merge || widget.tool == Tool.scan) {
           sources.addAll(incoming);
         } else {
+          if (widget.tool == Tool.photo && !formatChosen) {
+            final usesSuggestedName = filename.text == suggestedName;
+            png = incoming.first.bytes.length >= 4 &&
+                incoming.first.bytes[0] == 0x89 &&
+                incoming.first.bytes[1] == 0x50 &&
+                incoming.first.bytes[2] == 0x4e &&
+                incoming.first.bytes[3] == 0x47;
+            if (usesSuggestedName) filename.text = suggestedName;
+          }
           sources = incoming;
         }
         output = null;
@@ -763,7 +739,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         : null;
   }
 
-  Future<StudioOutput> preparePhoto(StudioService service, Uint8List input) {
+  Future<StudioOutput> preparePhoto(StudioService service, Uint8List input) async {
     if (physicalSize) {
       return service.physicalPhoto(
         input,
@@ -779,10 +755,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         threshold: widget.tool == Tool.signature ? threshold : null,
       );
     }
+    final dimensions = keepPhotoSize
+        ? await photoSourceDimensions(data: input)
+        : null;
+    final swapAxes = rotation.isOdd;
     return service.photo(
       input,
-      width: int.parse(width.text),
-      height: int.parse(height.text),
+      width: dimensions?[swapAxes ? 1 : 0] ?? int.parse(width.text),
+      height: dimensions?[swapAxes ? 0 : 1] ?? int.parse(height.text),
       png: png,
       cover: cover,
       limit: limit.text.isEmpty ? null : int.parse(limit.text),
@@ -1236,7 +1216,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               contentPadding: EdgeInsets.zero,
               title: const Text('Set a print size in millimetres'),
               subtitle: const Text(
-                'Off: set pixel dimensions. Originals stay unchanged.',
+                'Use a physical size and print resolution.',
               ),
               value: physicalSize,
               onChanged: busy
@@ -1246,7 +1226,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                       changed();
                     },
             ),
-          if (imageTool || widget.tool == Tool.print) ...[
+          if (widget.tool == Tool.photo && !physicalSize)
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Set custom pixel dimensions'),
+              subtitle: const Text('Leave off to keep the original resolution.'),
+              value: customPhotoSize,
+              onChanged: busy ? null : (value) {
+                customPhotoSize = value;
+                changed();
+              },
+            ),
+          if ((imageTool && !keepPhotoSize) || widget.tool == Tool.print) ...[
             Row(
               children: [
                 Expanded(
@@ -1322,9 +1313,12 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                   s!.isEmpty && widget.tool != Tool.pack ? null : positive(s),
               onChanged: (_) => changed(),
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Maximum file size (KiB)',
-                helperText: 'Strictly below this limit. 1 KiB = 1024 bytes.',
+                helperText: widget.tool == Tool.pack
+                    ? 'Strictly below this limit. 1 KiB = 1024 bytes.'
+                    : 'Optional. Leave blank for the highest quality.',
+                helperMaxLines: 2,
               ),
             ),
             const SizedBox(height: 12),
@@ -1332,6 +1326,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           if (imageTool) ...[
             if (widget.tool == Tool.photo)
               DropdownButtonFormField<bool>(
+                key: ValueKey(png),
                 initialValue: png,
                 decoration: const InputDecoration(labelText: 'Save format'),
                 items: const [
@@ -1342,13 +1337,15 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     ? null
                     : (v) {
                         setState(() {
+                          formatChosen = true;
                           png = v!;
                           output = null;
                           filename.text = suggestedName;
                         });
                       },
               ),
-            SwitchListTile(
+            if (!keepPhotoSize)
+              SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Fill and crop edges'),
               subtitle: const Text('Off: fit whole image with padding.'),
@@ -1972,6 +1969,15 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           .toList();
       if (mounted) {
         setState(() {
+          if (widget.tool == Tool.photo && !formatChosen) {
+            final usesSuggestedName = filename.text == suggestedName;
+            png = incoming.first.bytes.length >= 4 &&
+                incoming.first.bytes[0] == 0x89 &&
+                incoming.first.bytes[1] == 0x50 &&
+                incoming.first.bytes[2] == 0x4e &&
+                incoming.first.bytes[3] == 0x47;
+            if (usesSuggestedName) filename.text = suggestedName;
+          }
           sources = incoming;
           previewIndex = 0;
           output = null;
