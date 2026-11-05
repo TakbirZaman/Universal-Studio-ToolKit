@@ -26,6 +26,14 @@ void main() {
     await tester.enterText(find.byType(TextField), 'OCR');
     await tester.pump();
     expect(find.byType(Card), findsOneWidget);
+    expect(find.text('Copy text from a photo'), findsOneWidget);
+    await tester.tap(find.byTooltip('Clear search'));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(ChoiceChip, 'PDFs'));
+    await tester.pump();
+    expect(find.text('Split a PDF'), findsOneWidget);
+    expect(find.text('Watermark a PDF'), findsOneWidget);
+    expect(find.text('Crop a photo'), findsNothing);
     expect(tester.takeException(), isNull);
   });
   testWidgets(

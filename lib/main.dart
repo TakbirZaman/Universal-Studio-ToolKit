@@ -208,14 +208,7 @@ extension ToolLabel on Tool {
           Tool.print => const Color(0xff9bd0ff),
           _ => StudioTokens.darkPhoto,
         };
-  String get synonyms => switch (this) {
-    Tool.photo => 'smaller compress image picture passport resize crop flexible dimensions recipe batch',
-    Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
-    Tool.scan => 'scan certificate pages document camera corners perspective straighten tilted deskew ocr text recognize printed english bangla',
-    Tool.signature => 'signature transparent background png',
-    Tool.pack => 'application job documents bundle zip',
-    Tool.print => 'print sheet printing copies paper a4 letter dpi',
-  };
+
 }
 
 class _ToolIcon extends StatelessWidget {
@@ -251,8 +244,8 @@ class StudioHome extends StatefulWidget {
 }
 
 class _StudioHomeState extends State<StudioHome> {
-  Tool? selected;
   final search = TextEditingController();
+  String category = 'All';
 
   @override
   void dispose() {
@@ -260,171 +253,159 @@ class _StudioHomeState extends State<StudioHome> {
     super.dispose();
   }
 
+  Future<void> open(StudioTask task) async {
+    final needsPdf = task == StudioTask.split || task == StudioTask.readPdf;
+    final needsPhoto = task == StudioTask.crop || task == StudioTask.ocr;
+    Widget page;
+    try {
+      if (needsPdf || needsPhoto) {
+        if (task == StudioTask.ocr && !await ocrAvailable()) {
+          throw const FormatException('Text recognition is unavailable in this build.');
+        }
+        if (!mounted) return;
+        final file = await openFile(acceptedTypeGroups: [
+          XTypeGroup(
+            label: needsPdf ? 'PDF documents' : 'Photos',
+            extensions: needsPdf ? ['pdf'] : ['jpg', 'jpeg', 'png'],
+          ),
+        ]);
+        if (file == null || !mounted) return;
+        if (await file.length() > 64 * 1024 * 1024) {
+          throw const FormatException('Choose a file smaller than 64 MiB.');
+        }
+        final bytes = await file.readAsBytes();
+        page = switch (task) {
+          StudioTask.split => PdfSplitScreen(source: bytes),
+          StudioTask.readPdf => PdfTextScreen(source: bytes),
+          StudioTask.ocr => RecognizedTextScreen(page: bytes),
+          _ => RecipesScreen(initialSource: bytes, initialSourceName: file.name, openCrop: true),
+        };
+      } else if (task == StudioTask.recipe) {
+        page = const RecipesScreen();
+      } else if (task == StudioTask.customPack) {
+        page = const CustomPackScreen();
+      } else {
+        page = Scaffold(
+          appBar: AppBar(title: Text(task.label)),
+          body: ToolWorkspace(tool: task.tool, entry: task),
+        );
+      }
+      if (mounted) {
+        await Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => page));
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(
+          error is FormatException ? error.message : 'Could not open this file. Try another copy.',
+        )));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final wide = MediaQuery.sizeOf(context).width >= 960;
-    final content = selected == null
-        ? home()
-        : ToolWorkspace(key: ValueKey(selected), tool: selected!);
+    final query = search.text.toLowerCase().trim();
+    final words = query.split(RegExp(r'\s+')).where(
+      (word) => !['make', 'my', 'a', 'the', 'to', 'file'].contains(word),
+    );
+    final tasks = StudioTask.values.where((task) =>
+      (task != StudioTask.camera || Platform.isAndroid) &&
+      (category == 'All' || task.group == category) &&
+      words.every((word) => task.matches(word)),
+    ).toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Universal Studio'),
         actions: [
           if (widget.onSettings != null)
-            IconButton(
-              tooltip: 'Appearance and privacy',
-              onPressed: () => widget.onSettings!(context),
-              icon: const Icon(Icons.settings_outlined),
-            ),
-          IconButton(
-            tooltip: 'Switch light or dark theme',
-            onPressed: widget.onTheme,
-            icon: const Icon(Icons.contrast),
-          ),
-          const SizedBox(width: 12),
+            IconButton(tooltip: 'Settings', icon: const Icon(Icons.settings_outlined),
+              onPressed: () => widget.onSettings!(context)),
+          IconButton(tooltip: 'Switch light or dark theme', icon: const Icon(Icons.contrast),
+            onPressed: widget.onTheme),
         ],
       ),
-      body: Row(
-        children: [
-          if (wide)
-            NavigationRail(
-              extended: true,
-              minExtendedWidth: 232,
-              selectedIndex: selected == null
-                  ? 0
-                  : Tool.values.indexOf(selected!) + 1,
-              onDestinationSelected: (i) =>
-                  setState(() => selected = i == 0 ? null : Tool.values[i - 1]),
-              leading: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Icon(Icons.auto_awesome_mosaic_outlined, size: 32),
-              ),
-              destinations: [
-                const NavigationRailDestination(
-                  icon: Icon(Icons.home_outlined),
-                  label: Text('Start here'),
-                ),
-                ...Tool.values.map(
-                  (t) => NavigationRailDestination(
-                    icon: Icon(t.icon, color: t.accent(Theme.of(context).brightness)),
-                    label: Text(t.label),
-                  ),
-                ),
-              ],
-            ),
-          Expanded(child: content),
-        ],
-      ),
-      bottomNavigationBar: wide || selected == null
-          ? null
-          : SafeArea(
-              child: TextButton.icon(
-                onPressed: () => setState(() => selected = null),
-                icon: const Icon(Icons.home_outlined),
-                label: const Text('Back to all tools'),
-              ),
-            ),
-    );
-  }
-
-  Widget home() {
-    final words = search.text
-        .toLowerCase()
-        .split(RegExp(r'\s+'))
-        .where(
-          (w) =>
-              w.isNotEmpty &&
-              !['make', 'my', 'a', 'the', 'to', 'file'].contains(w),
-        );
-    final tools = Tool.values
-        .where(
-          (t) => words.every(
-            (w) => '${t.label} ${t.synonyms}'.toLowerCase().contains(w),
-          ),
-        )
-        .toList();
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1100),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'What would you like to do?',
-                style: Theme.of(context).textTheme.headlineMedium,
+      body: SafeArea(child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Center(child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 980),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            if (query.isEmpty && category == 'All') ...[
+              FilledButton.icon(
+                onPressed: () => open(Platform.isAndroid ? StudioTask.camera : StudioTask.scan),
+                icon: Icon(Platform.isAndroid ? Icons.camera_alt : Icons.add_photo_alternate),
+                label: Text(Platform.isAndroid ? 'Scan with camera' : 'Make a PDF from photos'),
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: search,
-                onChanged: (_) => setState(() {}),
-                decoration: InputDecoration(
-                  labelText: 'Search tools',
-                  hintText: 'Try “resize photo” or “merge PDF”',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: search.text.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Clear search',
-                          icon: const Icon(Icons.clear),
-                          onPressed: () => setState(search.clear),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 28),
-              if (tools.isEmpty)
-                const Text(
-                  'No matching tools. Try “photo”, “PDF”, “signature” or “application”.',
-                ),
-              LayoutBuilder(
-                builder: (context, c) {
-                  final cols = c.maxWidth > 760
-                      ? 3
-                      : c.maxWidth > 480
-                      ? 2
-                      : 1;
-                  final width = (c.maxWidth - (cols - 1) * 16) / cols;
-                  return Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: tools
-                        .map(
-                          (t) => SizedBox(
-                            width: width,
-                            child: Card(
-                              clipBehavior: Clip.antiAlias,
-                              color: Color.alphaBlend(
-                                t.accent(Theme.of(context).brightness)
-                                    .withValues(alpha: 0.10),
-                                Theme.of(context).colorScheme.surface,
-                              ),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(16),
-                                leading: _ToolIcon(t),
-                                title: Text(t.label),
-                                subtitle: Text(t.description),
-                                trailing: const Icon(Icons.chevron_right),
-                                onTap: () => setState(() => selected = t),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  );
-                },
-              ),
-              const SizedBox(height: 28),
-              const Text(
-                'Your files stay on this device. Each tool saves a separate copy.',
-              ),
-              const SizedBox(height: 24),
             ],
-          ),
-        ),
-      ),
+            TextField(controller: search, onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(labelText: 'Find a tool',
+                hintText: 'Try “crop”, “split” or “signature”',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: query.isEmpty ? null : IconButton(tooltip: 'Clear search',
+                  onPressed: () => setState(search.clear), icon: const Icon(Icons.clear)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Wrap(spacing: 6, children: [
+              for (final group in ['All', ...StudioTask.groups])
+                ChoiceChip(label: Text(group), selected: group == category,
+                  onSelected: (_) => setState(() => category = group)),
+            ]),
+            for (final group in StudioTask.groups)
+              if (tasks.any((t) => t.group == group)) ...[
+                Padding(padding: const EdgeInsets.only(top: 18, bottom: 6),
+                  child: Semantics(header: true, child: Text(group,
+                    style: Theme.of(context).textTheme.titleLarge))),
+                LayoutBuilder(builder: (context, size) {
+                  final cols = size.maxWidth >= 700 ? 3 : size.maxWidth >= 480 ? 2 : 1;
+                  return Wrap(spacing: 8, runSpacing: 6, children: [
+                    for (final task in tasks.where((t) => t.group == group))
+                      SizedBox(width: (size.maxWidth - (cols - 1) * 8) / cols,
+                        child: Card(clipBehavior: Clip.antiAlias,
+                          color: Color.alphaBlend(task.tool.accent(Theme.of(context).brightness)
+                            .withValues(alpha: 0.10), Theme.of(context).colorScheme.surface),
+                          child: ListTile(leading: Icon(task.icon, color: task.tool.accent(Theme.of(context).brightness)),
+                            title: Text(task.label), trailing: const Icon(Icons.chevron_right),
+                            onTap: () => open(task)),
+                        )),
+                  ]);
+                }),
+              ],
+            if (tasks.isEmpty)
+              TextButton(onPressed: () => setState(() { search.clear(); category = 'All'; }),
+                child: const Text('No matches. Show all tools')),
+          ]),
+        )),
+      )),
     );
   }
+}
+
+enum StudioTask {
+  camera('Scan with camera', 'Scan', Tool.scan, Icons.camera_alt_outlined, 'capture photograph'),
+  scan('Import page photos', 'Scan', Tool.scan, Icons.photo_library_outlined, 'scan documents straighten deskew images to pdf'),
+  draft('Open a saved scan', 'Scan', Tool.scan, Icons.history, 'restore draft'),
+  ocr('Copy text from a photo', 'Scan', Tool.scan, Icons.document_scanner_outlined, 'ocr recognize bangla english'),
+  merge('Combine PDFs', 'PDFs', Tool.merge, Icons.picture_as_pdf_outlined, 'merge join reorder rotate'),
+  optimize('Reduce a PDF’s file size', 'PDFs', Tool.merge, Icons.compress, 'compress optimize'),
+  numbers('Number PDF pages', 'PDFs', Tool.merge, Icons.format_list_numbered, 'add page numbers'),
+  watermark('Watermark a PDF', 'PDFs', Tool.merge, Icons.branding_watermark_outlined, 'stamp mark'),
+  split('Split a PDF', 'PDFs', Tool.merge, Icons.call_split, 'separate extract pages'),
+  readPdf('Copy text from a PDF', 'PDFs', Tool.merge, Icons.text_snippet_outlined, 'read selectable extract'),
+  photo('Resize Photo', 'Photos', Tool.photo, Icons.photo_size_select_large, 'smaller compress dimensions passport'),
+  crop('Crop a photo', 'Photos', Tool.photo, Icons.crop, 'trim edges'),
+  signature('Clean up a signature', 'Photos', Tool.signature, Icons.draw_outlined, 'remove background transparent png'),
+  print('Print photo copies', 'Photos', Tool.print, Icons.print_outlined, 'sheet paper'),
+  recipe('Reuse photo settings', 'Photos', Tool.photo, Icons.tune, 'recipes batch flexible'),
+  pack('Prepare Application', 'Applications', Tool.pack, Icons.inventory_2_outlined, 'job documents bundle zip'),
+  customPack('Create a custom pack', 'Applications', Tool.pack, Icons.create_new_folder_outlined, 'preset checklist');
+
+  const StudioTask(this.label, this.group, this.tool, this.icon, this.keywords);
+  final String label, group, keywords;
+  final Tool tool;
+  final IconData icon;
+  static const groups = ['Scan', 'PDFs', 'Photos', 'Applications'];
+  bool matches(String word) => '$label $group $keywords'.toLowerCase().contains(word);
 }
 
 class SelectedSource {
@@ -446,7 +427,8 @@ class SelectedSource {
 
 class ToolWorkspace extends ConsumerStatefulWidget {
   final Tool tool;
-  const ToolWorkspace({super.key, required this.tool});
+  final StudioTask? entry;
+  const ToolWorkspace({super.key, required this.tool, this.entry});
   @override
   ConsumerState<ToolWorkspace> createState() => _ToolWorkspaceState();
 }
@@ -488,6 +470,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   String? draftMessage;
   Future<bool>? textRecognitionAvailable, geometryAvailable;
   bool customPhotoSize = false, formatChosen = false;
+  bool settingsOpen = false;
   bool get keepPhotoSize =>
       widget.tool == Tool.photo && !physicalSize && !customPhotoSize;
   bool get imageTool =>
@@ -508,6 +491,41 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     if (widget.tool == Tool.print) {
       width.text = '30';
       height.text = '30';
+    }
+    optimizePdfStructures = widget.entry == StudioTask.optimize;
+    pageNumbers = widget.entry == StudioTask.numbers;
+    watermarkEnabled = widget.entry == StudioTask.watermark;
+    settingsOpen = widget.entry == null || widget.entry == StudioTask.photo || watermarkEnabled;
+    if (widget.entry != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        switch (widget.entry) {
+          case StudioTask.camera:
+            if (await cameraAvailable) {
+              if (mounted) await capturePage();
+            } else if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Camera unavailable. Choose page photos instead.'),
+              ));
+              await select();
+            }
+          case StudioTask.draft:
+            await restoreDraft();
+          case StudioTask.watermark:
+            pdfAdvanced.expand();
+            await select();
+          case StudioTask.optimize:
+          case StudioTask.numbers:
+          case StudioTask.scan:
+          case StudioTask.photo:
+          case StudioTask.signature:
+          case StudioTask.merge:
+          case StudioTask.print:
+            await select();
+          default:
+            break;
+        }
+      });
     }
     filename.text = suggestedName;
     if (widget.tool == Tool.scan) {
@@ -806,6 +824,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
 
   Future<void> process() async {
     if (!form.currentState!.validate()) {
+      setState(() => settingsOpen = true);
       if (widget.tool == Tool.print) {
         printAdvanced.expand();
         setState(() => error = 'Check the highlighted print settings.');
@@ -950,7 +969,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          if (widget.entry == null) Row(
             children: [
               _ToolIcon(widget.tool),
               const SizedBox(width: 12),
@@ -965,14 +984,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
-          if (Platform.isWindows || Platform.isLinux)
+          if (widget.entry == null && (Platform.isWindows || Platform.isLinux))
             const Padding(
               padding: EdgeInsets.only(top: 8),
               child: Text(
                 'Keyboard: Ctrl+O choose files · Ctrl+Enter preview · Ctrl+S save a copy.',
               ),
             ),
-          if (widget.tool == Tool.photo)
+          if (widget.entry == null && widget.tool == Tool.photo)
             TextButton.icon(
               onPressed: busy
                   ? null
@@ -988,6 +1007,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           LayoutBuilder(
             builder: (context, c) {
               final controls = controlPanel();
+              if (widget.entry != null && sources.isEmpty) return controls;
               final preview = previewPanel();
               return c.maxWidth >= 850
                   ? Row(
@@ -1244,6 +1264,16 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               child: const Text('Clear selection'),
             ),
           ],
+          if (widget.entry != null && sources.isNotEmpty)
+            TextButton.icon(
+              icon: Icon(settingsOpen ? Icons.expand_less : Icons.tune),
+              label: Text(settingsOpen ? 'Hide settings' : 'Adjust settings'),
+              onPressed: busy ? null : () => setState(() => settingsOpen = !settingsOpen),
+            ),
+          Visibility(
+            visible: settingsOpen,
+            maintainState: true,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           const Divider(height: 32),
           const Text(
             '2. Choose your settings',
@@ -1566,7 +1596,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ],
           if (widget.tool == Tool.scan) ...[
             const Text(
-              'Import page images, select a page by its filename, adjust it, then prepare the PDF. On Android, you can also capture pages with the device camera app. Save a draft before capturing to protect against Android closing the app. Perspective correction is still pending.',
+              'Tap a page to adjust it. When the pages look right, prepare your PDF.',
             ),
             ExpansionTile(
               title: const Text('Save or restore a scan draft'),
@@ -1677,8 +1707,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               },
             ),
           ],
+            ]),
+          ),
+          if (widget.entry == StudioTask.draft && !settingsOpen && draftMessage != null)
+            Text(draftMessage!),
+          if (widget.entry == StudioTask.draft && sources.isEmpty)
+            OutlinedButton(onPressed: busy ? null : restoreDraft, child: const Text('Open a draft')),
           const SizedBox(height: 20),
-          FilledButton.icon(
+          if (widget.entry == null || sources.isNotEmpty) FilledButton.icon(
             onPressed: busy ? null : process,
             icon: busy
                 ? const SizedBox(
