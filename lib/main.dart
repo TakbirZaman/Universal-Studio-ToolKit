@@ -175,12 +175,12 @@ extension ToolLabel on Tool {
     Tool.print => 'Photo Print Sheet',
   };
   String get description => switch (this) {
-    Tool.photo => 'A smaller file. The exact dimensions you need.',
-    Tool.signature => 'Remove a plain background and save a transparent PNG.',
-    Tool.merge => 'Combine, arrange, number, and watermark supported PDFs.',
-    Tool.scan => 'Turn imported page images into one organised PDF.',
-    Tool.pack => 'Prepare a photo, signature and certificate together.',
-    Tool.print => 'Arrange photo copies for actual-size printing.',
+    Tool.photo => 'Keep your photo at full size, or resize it to fit a form.',
+    Tool.signature => 'Remove the background so you can place your signature on a form.',
+    Tool.merge => 'Put your PDFs in order and save them as one file.',
+    Tool.scan => 'Turn photos of your pages into a single PDF.',
+    Tool.pack => 'Get your photo, signature and certificate ready to submit.',
+    Tool.print => 'Fit several copies of your photo on one sheet.',
   };
   IconData get icon => switch (this) {
     Tool.photo => Icons.photo_size_select_large_outlined,
@@ -194,6 +194,8 @@ extension ToolLabel on Tool {
     Tool.merge => StudioTokens.pdf,
     Tool.scan => StudioTokens.scan,
     Tool.pack => StudioTokens.pack,
+    Tool.signature => const Color(0xff963773),
+    Tool.print => const Color(0xff215e96),
     _ => StudioTokens.photo,
   };
   Color accent(Brightness brightness) => brightness == Brightness.light
@@ -202,6 +204,8 @@ extension ToolLabel on Tool {
           Tool.merge => StudioTokens.darkPdf,
           Tool.scan => StudioTokens.darkScan,
           Tool.pack => StudioTokens.darkPack,
+          Tool.signature => const Color(0xffffadd7),
+          Tool.print => const Color(0xff9bd0ff),
           _ => StudioTokens.darkPhoto,
         };
   String get synonyms => switch (this) {
@@ -212,6 +216,30 @@ extension ToolLabel on Tool {
     Tool.pack => 'application job documents bundle zip',
     Tool.print => 'print sheet printing copies paper a4 letter dpi',
   };
+}
+
+class _ToolIcon extends StatelessWidget {
+  final Tool tool;
+  const _ToolIcon(this.tool);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = tool.accent(theme.brightness);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Color.alphaBlend(
+          accent.withValues(alpha: 0.16),
+          theme.colorScheme.surface,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Icon(tool.icon, color: accent),
+      ),
+    );
+  }
 }
 
 class StudioHome extends StatefulWidget {
@@ -278,7 +306,7 @@ class _StudioHomeState extends State<StudioHome> {
                 ),
                 ...Tool.values.map(
                   (t) => NavigationRailDestination(
-                    icon: Icon(t.icon),
+                    icon: Icon(t.icon, color: t.accent(Theme.of(context).brightness)),
                     label: Text(t.label),
                   ),
                 ),
@@ -324,7 +352,7 @@ class _StudioHomeState extends State<StudioHome> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Choose a tool',
+                'What would you like to do?',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 16),
@@ -365,12 +393,15 @@ class _StudioHomeState extends State<StudioHome> {
                           (t) => SizedBox(
                             width: width,
                             child: Card(
+                              clipBehavior: Clip.antiAlias,
+                              color: Color.alphaBlend(
+                                t.accent(Theme.of(context).brightness)
+                                    .withValues(alpha: 0.10),
+                                Theme.of(context).colorScheme.surface,
+                              ),
                               child: ListTile(
                                 contentPadding: const EdgeInsets.all(16),
-                                leading: Icon(
-                                  t.icon,
-                                  color: t.accent(Theme.of(context).brightness),
-                                ),
+                                leading: _ToolIcon(t),
                                 title: Text(t.label),
                                 subtitle: Text(t.description),
                                 trailing: const Icon(Icons.chevron_right),
@@ -385,7 +416,7 @@ class _StudioHomeState extends State<StudioHome> {
               ),
               const SizedBox(height: 28),
               const Text(
-                'Your original files stay unchanged. No account, uploads or advertising. Processing stays on this device.',
+                'Your files stay on this device. Each tool saves a separate copy.',
               ),
               const SizedBox(height: 24),
             ],
@@ -919,10 +950,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.tool.label,
-            style: Theme.of(context).textTheme.headlineLarge
-                ?.copyWith(fontWeight: FontWeight.w700),
+          Row(
+            children: [
+              _ToolIcon(widget.tool),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  widget.tool.label,
+                  style: Theme.of(context).textTheme.headlineLarge
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
@@ -975,7 +1014,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            '1  Select',
+            '1. Choose your files',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -1207,7 +1246,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ],
           const Divider(height: 32),
           const Text(
-            '2  Adjust',
+            '2. Choose your settings',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
@@ -1229,8 +1268,8 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           if (widget.tool == Tool.photo && !physicalSize)
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Set custom pixel dimensions'),
-              subtitle: const Text('Leave off to keep the original resolution.'),
+              title: const Text('Choose a different photo size'),
+              subtitle: const Text('Leave this off to keep every pixel.'),
               value: customPhotoSize,
               onChanged: busy ? null : (value) {
                 customPhotoSize = value;
@@ -1348,7 +1387,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Fill and crop edges'),
-              subtitle: const Text('Off: fit whole image with padding.'),
+              subtitle: const Text('Leave this off to fit the whole picture inside the frame.'),
               value: cover,
               onChanged: busy
                   ? null
@@ -1648,7 +1687,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.auto_fix_high_outlined),
-            label: Text(busy ? 'Preparing locally…' : 'Prepare preview'),
+            label: Text(busy ? 'Getting your preview ready…' : 'Prepare preview'),
           ),
           if (busy)
             const Padding(
@@ -1693,7 +1732,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             runSpacing: 8,
             children: [
               Text(
-                '3  Preview',
+                '3. Check your result',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               if (imageTool && output != null && sources.isNotEmpty)

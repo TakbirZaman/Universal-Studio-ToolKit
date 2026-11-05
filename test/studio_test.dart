@@ -133,8 +133,8 @@ void main() {
       await tester.tap(find.text('Set a print size in millimetres'));
       await tester.pumpAndSettle();
       expect(find.text('Width (pixels)'), findsNothing);
-      await tester.ensureVisible(find.text('Set custom pixel dimensions'));
-      await tester.tap(find.text('Set custom pixel dimensions'));
+      await tester.ensureVisible(find.text('Choose a different photo size'));
+      await tester.tap(find.text('Choose a different photo size'));
       await tester.pumpAndSettle();
       final pixels = find.widgetWithText(TextFormField, 'Width (pixels)');
       expect(tester.widget<TextFormField>(pixels).controller!.text, '300');
