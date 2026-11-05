@@ -76,6 +76,8 @@ class _RecipesState extends ConsumerState<RecipesScreen> {
     }
     load();
     if (widget.openCrop && source != null) {
+      original = true;
+      fields['limit']!.clear();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) editCrop();
       });

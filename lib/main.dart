@@ -175,12 +175,12 @@ extension ToolLabel on Tool {
     Tool.print => 'Photo Print Sheet',
   };
   String get description => switch (this) {
-    Tool.photo => 'A smaller file. The exact dimensions you need.',
-    Tool.signature => 'Remove a plain background and save a transparent PNG.',
-    Tool.merge => 'Combine, arrange, number, and watermark supported PDFs.',
-    Tool.scan => 'Turn imported page images into one organised PDF.',
-    Tool.pack => 'Prepare a photo, signature and certificate together.',
-    Tool.print => 'Arrange photo copies for actual-size printing.',
+    Tool.photo => 'Keep your photo at full size, or resize it to fit a form.',
+    Tool.signature => 'Remove the background so you can place your signature on a form.',
+    Tool.merge => 'Put your PDFs in order and save them as one file.',
+    Tool.scan => 'Turn photos of your pages into a single PDF.',
+    Tool.pack => 'Get your photo, signature and certificate ready to submit.',
+    Tool.print => 'Fit several copies of your photo on one sheet.',
   };
   IconData get icon => switch (this) {
     Tool.photo => Icons.photo_size_select_large_outlined,
@@ -194,6 +194,8 @@ extension ToolLabel on Tool {
     Tool.merge => StudioTokens.pdf,
     Tool.scan => StudioTokens.scan,
     Tool.pack => StudioTokens.pack,
+    Tool.signature => const Color(0xff963773),
+    Tool.print => const Color(0xff215e96),
     _ => StudioTokens.photo,
   };
   Color accent(Brightness brightness) => brightness == Brightness.light
@@ -202,16 +204,35 @@ extension ToolLabel on Tool {
           Tool.merge => StudioTokens.darkPdf,
           Tool.scan => StudioTokens.darkScan,
           Tool.pack => StudioTokens.darkPack,
+          Tool.signature => const Color(0xffffadd7),
+          Tool.print => const Color(0xff9bd0ff),
           _ => StudioTokens.darkPhoto,
         };
-  String get synonyms => switch (this) {
-    Tool.photo => 'smaller compress image picture passport resize crop flexible dimensions recipe batch',
-    Tool.merge => 'merge join combine extract delete split reorder compress optimize pdf watermark page numbers number text extract selectable',
-    Tool.scan => 'scan certificate pages document camera corners perspective straighten tilted deskew ocr text recognize printed english bangla',
-    Tool.signature => 'signature transparent background png',
-    Tool.pack => 'application job documents bundle zip',
-    Tool.print => 'print sheet printing copies paper a4 letter dpi',
-  };
+
+}
+
+class _ToolIcon extends StatelessWidget {
+  final Tool tool;
+  const _ToolIcon(this.tool);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = tool.accent(theme.brightness);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Color.alphaBlend(
+          accent.withValues(alpha: 0.16),
+          theme.colorScheme.surface,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Icon(tool.icon, color: accent),
+      ),
+    );
+  }
 }
 
 class StudioHome extends StatefulWidget {
@@ -223,217 +244,168 @@ class StudioHome extends StatefulWidget {
 }
 
 class _StudioHomeState extends State<StudioHome> {
-  Tool? selected;
-  String search = '';
+  final search = TextEditingController();
+  String category = 'All';
+
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
+  Future<void> open(StudioTask task) async {
+    final needsPdf = task == StudioTask.split || task == StudioTask.readPdf;
+    final needsPhoto = task == StudioTask.crop || task == StudioTask.ocr;
+    Widget page;
+    try {
+      if (needsPdf || needsPhoto) {
+        if (task == StudioTask.ocr && !await ocrAvailable()) {
+          throw const FormatException('Text recognition is unavailable in this build.');
+        }
+        if (!mounted) return;
+        final file = await openFile(acceptedTypeGroups: [
+          XTypeGroup(
+            label: needsPdf ? 'PDF documents' : 'Photos',
+            extensions: needsPdf ? ['pdf'] : ['jpg', 'jpeg', 'png'],
+          ),
+        ]);
+        if (file == null || !mounted) return;
+        if (await file.length() > 64 * 1024 * 1024) {
+          throw const FormatException('Choose a file smaller than 64 MiB.');
+        }
+        final bytes = await file.readAsBytes();
+        page = switch (task) {
+          StudioTask.split => PdfSplitScreen(source: bytes),
+          StudioTask.readPdf => PdfTextScreen(source: bytes),
+          StudioTask.ocr => RecognizedTextScreen(page: bytes),
+          _ => RecipesScreen(initialSource: bytes, initialSourceName: file.name, openCrop: true),
+        };
+      } else if (task == StudioTask.recipe) {
+        page = const RecipesScreen();
+      } else if (task == StudioTask.customPack) {
+        page = const CustomPackScreen();
+      } else {
+        page = Scaffold(
+          appBar: AppBar(title: Text(task.label)),
+          body: ToolWorkspace(tool: task.tool, entry: task),
+        );
+      }
+      if (mounted) {
+        await Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => page));
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(
+          error is FormatException ? error.message : 'Could not open this file. Try another copy.',
+        )));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final wide = MediaQuery.sizeOf(context).width >= 960;
-    final content = selected == null
-        ? home()
-        : ToolWorkspace(key: ValueKey(selected), tool: selected!);
+    final query = search.text.toLowerCase().trim();
+    final words = query.split(RegExp(r'\s+')).where(
+      (word) => !['make', 'my', 'a', 'the', 'to', 'file'].contains(word),
+    );
+    final tasks = StudioTask.values.where((task) =>
+      (task != StudioTask.camera || Platform.isAndroid) &&
+      (category == 'All' || task.group == category) &&
+      words.every((word) => task.matches(word)),
+    ).toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Universal Studio'),
         actions: [
           if (widget.onSettings != null)
-            IconButton(
-              tooltip: 'Appearance and privacy',
-              onPressed: () => widget.onSettings!(context),
-              icon: const Icon(Icons.settings_outlined),
-            ),
-          IconButton(
-            tooltip: 'Switch light or dark theme',
-            onPressed: widget.onTheme,
-            icon: const Icon(Icons.contrast),
-          ),
-          const SizedBox(width: 12),
+            IconButton(tooltip: 'Settings', icon: const Icon(Icons.settings_outlined),
+              onPressed: () => widget.onSettings!(context)),
+          IconButton(tooltip: 'Switch light or dark theme', icon: const Icon(Icons.contrast),
+            onPressed: widget.onTheme),
         ],
       ),
-      body: Row(
-        children: [
-          if (wide)
-            NavigationRail(
-              extended: true,
-              minExtendedWidth: 232,
-              selectedIndex: selected == null
-                  ? 0
-                  : Tool.values.indexOf(selected!) + 1,
-              onDestinationSelected: (i) =>
-                  setState(() => selected = i == 0 ? null : Tool.values[i - 1]),
-              leading: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Icon(Icons.auto_awesome_mosaic_outlined, size: 32),
-              ),
-              destinations: [
-                const NavigationRailDestination(
-                  icon: Icon(Icons.home_outlined),
-                  label: Text('Start here'),
-                ),
-                ...Tool.values.map(
-                  (t) => NavigationRailDestination(
-                    icon: Icon(t.icon),
-                    label: Text(t.label),
-                  ),
-                ),
-              ],
-            ),
-          Expanded(child: content),
-        ],
-      ),
-      bottomNavigationBar: wide || selected == null
-          ? null
-          : SafeArea(
-              child: TextButton.icon(
-                onPressed: () => setState(() => selected = null),
-                icon: const Icon(Icons.home_outlined),
-                label: const Text('Back to all tools'),
-              ),
-            ),
-    );
-  }
-
-  Widget home() {
-    final words = search
-        .toLowerCase()
-        .split(RegExp(r'\s+'))
-        .where(
-          (w) =>
-              w.isNotEmpty &&
-              !['make', 'my', 'a', 'the', 'to', 'file'].contains(w),
-        );
-    final tools = Tool.values
-        .where(
-          (t) => words.every(
-            (w) => '${t.label} ${t.synonyms}'.toLowerCase().contains(w),
-          ),
-        )
-        .toList();
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1100),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 24),
-              const Chip(
-                avatar: Icon(Icons.lock_outline, size: 18),
-                label: Text('Private by design · Works offline'),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Your documents.\nReady for what’s next.',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -1.2,
-                ),
+      body: SafeArea(child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Center(child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 980),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            if (query.isEmpty && category == 'All') ...[
+              FilledButton.icon(
+                onPressed: () => open(Platform.isAndroid ? StudioTask.camera : StudioTask.scan),
+                icon: Icon(Platform.isAndroid ? Icons.camera_alt : Icons.add_photo_alternate),
+                label: Text(Platform.isAndroid ? 'Scan with camera' : 'Make a PDF from photos'),
               ),
               const SizedBox(height: 16),
-              Text(
-                'Prepare your photos, signatures, scans, and PDFs in one place—privately, offline, and with confidence.',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 20),
-              if (MediaQuery.sizeOf(context).width < 700)
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [Tool.scan, Tool.photo, Tool.merge, Tool.pack]
-                      .map(
-                        (t) => OutlinedButton.icon(
-                          onPressed: () => setState(() => selected = t),
-                          icon: Icon(t.icon, size: 20),
-                          label: Text(t.label),
-                        ),
-                      )
-                      .toList(),
-                ),
-              const SizedBox(height: 20),
-              TextField(
-                onChanged: (s) => setState(() => search = s),
-                decoration: const InputDecoration(
-                  labelText: 'What would you like to do?',
-                  hintText: 'Try “make my photo smaller” or “merge”',
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-              const SizedBox(height: 28),
-              if (tools.isEmpty)
-                const Text(
-                  'No matching tools. Try “photo”, “PDF”, “signature” or “application”.',
-                ),
-              LayoutBuilder(
-                builder: (context, c) {
-                  final cols = c.maxWidth > 760
-                      ? 3
-                      : c.maxWidth > 480
-                      ? 2
-                      : 1;
-                  final width = (c.maxWidth - (cols - 1) * 16) / cols;
-                  return Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    children: tools
-                        .map(
-                          (t) => SizedBox(
-                            width: width,
-                            child: Card(
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () => setState(() => selected = t),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(22),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        t.icon,
-                                        size: 32,
-                                        color: t.accent(
-                                          Theme.of(context).brightness,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      Text(
-                                        t.label,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(t.description),
-                                      const SizedBox(height: 22),
-                                      const Row(
-                                        children: [
-                                          Expanded(child: Text('Get started')),
-                                          SizedBox(width: 12),
-                                          Icon(Icons.arrow_forward, size: 20),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  );
-                },
-              ),
-              const SizedBox(height: 28),
-              const Text(
-                'Your original files stay unchanged. No account, uploads or advertising. Processing stays on this device.',
-              ),
-              const SizedBox(height: 24),
             ],
-          ),
-        ),
-      ),
+            TextField(controller: search, onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(labelText: 'Find a tool',
+                hintText: 'Try “crop”, “split” or “signature”',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: query.isEmpty ? null : IconButton(tooltip: 'Clear search',
+                  onPressed: () => setState(search.clear), icon: const Icon(Icons.clear)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Wrap(spacing: 6, children: [
+              for (final group in ['All', ...StudioTask.groups])
+                ChoiceChip(label: Text(group), selected: group == category,
+                  onSelected: (_) => setState(() => category = group)),
+            ]),
+            for (final group in StudioTask.groups)
+              if (tasks.any((t) => t.group == group)) ...[
+                Padding(padding: const EdgeInsets.only(top: 18, bottom: 6),
+                  child: Semantics(header: true, child: Text(group,
+                    style: Theme.of(context).textTheme.titleLarge))),
+                LayoutBuilder(builder: (context, size) {
+                  final cols = size.maxWidth >= 700 ? 3 : size.maxWidth >= 480 ? 2 : 1;
+                  return Wrap(spacing: 8, runSpacing: 6, children: [
+                    for (final task in tasks.where((t) => t.group == group))
+                      SizedBox(width: (size.maxWidth - (cols - 1) * 8) / cols,
+                        child: Card(clipBehavior: Clip.antiAlias,
+                          color: Color.alphaBlend(task.tool.accent(Theme.of(context).brightness)
+                            .withValues(alpha: 0.10), Theme.of(context).colorScheme.surface),
+                          child: ListTile(leading: Icon(task.icon, color: task.tool.accent(Theme.of(context).brightness)),
+                            title: Text(task.label), trailing: const Icon(Icons.chevron_right),
+                            onTap: () => open(task)),
+                        )),
+                  ]);
+                }),
+              ],
+            if (tasks.isEmpty)
+              TextButton(onPressed: () => setState(() { search.clear(); category = 'All'; }),
+                child: const Text('No matches. Show all tools')),
+          ]),
+        )),
+      )),
     );
   }
+}
+
+enum StudioTask {
+  camera('Scan with camera', 'Scan', Tool.scan, Icons.camera_alt_outlined, 'capture photograph'),
+  scan('Import page photos', 'Scan', Tool.scan, Icons.photo_library_outlined, 'scan documents straighten deskew images to pdf'),
+  draft('Open a saved scan', 'Scan', Tool.scan, Icons.history, 'restore draft'),
+  ocr('Copy text from a photo', 'Scan', Tool.scan, Icons.document_scanner_outlined, 'ocr recognize bangla english'),
+  merge('Combine PDFs', 'PDFs', Tool.merge, Icons.picture_as_pdf_outlined, 'merge join reorder rotate'),
+  optimize('Reduce a PDF’s file size', 'PDFs', Tool.merge, Icons.compress, 'compress optimize'),
+  numbers('Number PDF pages', 'PDFs', Tool.merge, Icons.format_list_numbered, 'add page numbers'),
+  watermark('Watermark a PDF', 'PDFs', Tool.merge, Icons.branding_watermark_outlined, 'stamp mark'),
+  split('Split a PDF', 'PDFs', Tool.merge, Icons.call_split, 'separate extract pages'),
+  readPdf('Copy text from a PDF', 'PDFs', Tool.merge, Icons.text_snippet_outlined, 'read selectable extract'),
+  photo('Resize Photo', 'Photos', Tool.photo, Icons.photo_size_select_large, 'smaller compress dimensions passport'),
+  crop('Crop a photo', 'Photos', Tool.photo, Icons.crop, 'trim edges'),
+  signature('Clean up a signature', 'Photos', Tool.signature, Icons.draw_outlined, 'remove background transparent png'),
+  print('Print photo copies', 'Photos', Tool.print, Icons.print_outlined, 'sheet paper'),
+  recipe('Reuse photo settings', 'Photos', Tool.photo, Icons.tune, 'recipes batch flexible'),
+  pack('Prepare Application', 'Applications', Tool.pack, Icons.inventory_2_outlined, 'job documents bundle zip'),
+  customPack('Create a custom pack', 'Applications', Tool.pack, Icons.create_new_folder_outlined, 'preset checklist');
+
+  const StudioTask(this.label, this.group, this.tool, this.icon, this.keywords);
+  final String label, group, keywords;
+  final Tool tool;
+  final IconData icon;
+  static const groups = ['Scan', 'PDFs', 'Photos', 'Applications'];
+  bool matches(String word) => '$label $group $keywords'.toLowerCase().contains(word);
 }
 
 class SelectedSource {
@@ -455,7 +427,8 @@ class SelectedSource {
 
 class ToolWorkspace extends ConsumerStatefulWidget {
   final Tool tool;
-  const ToolWorkspace({super.key, required this.tool});
+  final StudioTask? entry;
+  const ToolWorkspace({super.key, required this.tool, this.entry});
   @override
   ConsumerState<ToolWorkspace> createState() => _ToolWorkspaceState();
 }
@@ -496,11 +469,19 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
   int previewIndex = 0, draftDays = 7;
   String? draftMessage;
   Future<bool>? textRecognitionAvailable, geometryAvailable;
+  bool customPhotoSize = false, formatChosen = false;
+  bool settingsOpen = false;
+  bool get keepPhotoSize =>
+      widget.tool == Tool.photo && !physicalSize && !customPhotoSize;
   bool get imageTool =>
       widget.tool == Tool.photo || widget.tool == Tool.signature;
   @override
   void initState() {
     super.initState();
+    if (widget.tool == Tool.photo) {
+      limit.clear();
+      quality = 90;
+    }
     if (widget.tool == Tool.signature) {
       png = true;
       height.text = '100';
@@ -510,6 +491,41 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
     if (widget.tool == Tool.print) {
       width.text = '30';
       height.text = '30';
+    }
+    optimizePdfStructures = widget.entry == StudioTask.optimize;
+    pageNumbers = widget.entry == StudioTask.numbers;
+    watermarkEnabled = widget.entry == StudioTask.watermark;
+    settingsOpen = widget.entry == null || widget.entry == StudioTask.photo || watermarkEnabled;
+    if (widget.entry != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        switch (widget.entry) {
+          case StudioTask.camera:
+            if (await cameraAvailable) {
+              if (mounted) await capturePage();
+            } else if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Camera unavailable. Choose page photos instead.'),
+              ));
+              await select();
+            }
+          case StudioTask.draft:
+            await restoreDraft();
+          case StudioTask.watermark:
+            pdfAdvanced.expand();
+            await select();
+          case StudioTask.optimize:
+          case StudioTask.numbers:
+          case StudioTask.scan:
+          case StudioTask.photo:
+          case StudioTask.signature:
+          case StudioTask.merge:
+          case StudioTask.print:
+            await select();
+          default:
+            break;
+        }
+      });
     }
     filename.text = suggestedName;
     if (widget.tool == Tool.scan) {
@@ -613,6 +629,15 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         } else if (widget.tool == Tool.merge || widget.tool == Tool.scan) {
           sources.addAll(incoming);
         } else {
+          if (widget.tool == Tool.photo && !formatChosen) {
+            final usesSuggestedName = filename.text == suggestedName;
+            png = incoming.first.bytes.length >= 4 &&
+                incoming.first.bytes[0] == 0x89 &&
+                incoming.first.bytes[1] == 0x50 &&
+                incoming.first.bytes[2] == 0x4e &&
+                incoming.first.bytes[3] == 0x47;
+            if (usesSuggestedName) filename.text = suggestedName;
+          }
           sources = incoming;
         }
         output = null;
@@ -763,7 +788,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         : null;
   }
 
-  Future<StudioOutput> preparePhoto(StudioService service, Uint8List input) {
+  Future<StudioOutput> preparePhoto(StudioService service, Uint8List input) async {
     if (physicalSize) {
       return service.physicalPhoto(
         input,
@@ -779,10 +804,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         threshold: widget.tool == Tool.signature ? threshold : null,
       );
     }
+    final dimensions = keepPhotoSize
+        ? await photoSourceDimensions(data: input)
+        : null;
+    final swapAxes = rotation.isOdd;
     return service.photo(
       input,
-      width: int.parse(width.text),
-      height: int.parse(height.text),
+      width: dimensions?[swapAxes ? 1 : 0] ?? int.parse(width.text),
+      height: dimensions?[swapAxes ? 0 : 1] ?? int.parse(height.text),
       png: png,
       cover: cover,
       limit: limit.text.isEmpty ? null : int.parse(limit.text),
@@ -795,6 +824,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
 
   Future<void> process() async {
     if (!form.currentState!.validate()) {
+      setState(() => settingsOpen = true);
       if (widget.tool == Tool.print) {
         printAdvanced.expand();
         setState(() => error = 'Check the highlighted print settings.');
@@ -939,21 +969,29 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.tool.label,
-            style: Theme.of(context).textTheme.headlineLarge
-                ?.copyWith(fontWeight: FontWeight.w700),
+          if (widget.entry == null) Row(
+            children: [
+              _ToolIcon(widget.tool),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  widget.tool.label,
+                  style: Theme.of(context).textTheme.headlineLarge
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           Text(widget.tool.description),
-          if (Platform.isWindows || Platform.isLinux)
+          if (widget.entry == null && (Platform.isWindows || Platform.isLinux))
             const Padding(
               padding: EdgeInsets.only(top: 8),
               child: Text(
                 'Keyboard: Ctrl+O choose files · Ctrl+Enter preview · Ctrl+S save a copy.',
               ),
             ),
-          if (widget.tool == Tool.photo)
+          if (widget.entry == null && widget.tool == Tool.photo)
             TextButton.icon(
               onPressed: busy
                   ? null
@@ -969,6 +1007,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           LayoutBuilder(
             builder: (context, c) {
               final controls = controlPanel();
+              if (widget.entry != null && sources.isEmpty) return controls;
               final preview = previewPanel();
               return c.maxWidth >= 850
                   ? Row(
@@ -995,7 +1034,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            '1  Select',
+            '1. Choose your files',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -1225,9 +1264,19 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               child: const Text('Clear selection'),
             ),
           ],
+          if (widget.entry != null && sources.isNotEmpty)
+            TextButton.icon(
+              icon: Icon(settingsOpen ? Icons.expand_less : Icons.tune),
+              label: Text(settingsOpen ? 'Hide settings' : 'Adjust settings'),
+              onPressed: busy ? null : () => setState(() => settingsOpen = !settingsOpen),
+            ),
+          Visibility(
+            visible: settingsOpen,
+            maintainState: true,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           const Divider(height: 32),
           const Text(
-            '2  Adjust',
+            '2. Choose your settings',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
@@ -1236,7 +1285,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               contentPadding: EdgeInsets.zero,
               title: const Text('Set a print size in millimetres'),
               subtitle: const Text(
-                'Off: set pixel dimensions. Originals stay unchanged.',
+                'Use a physical size and print resolution.',
               ),
               value: physicalSize,
               onChanged: busy
@@ -1246,7 +1295,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                       changed();
                     },
             ),
-          if (imageTool || widget.tool == Tool.print) ...[
+          if (widget.tool == Tool.photo && !physicalSize)
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Choose a different photo size'),
+              subtitle: const Text('Leave this off to keep every pixel.'),
+              value: customPhotoSize,
+              onChanged: busy ? null : (value) {
+                customPhotoSize = value;
+                changed();
+              },
+            ),
+          if ((imageTool && !keepPhotoSize) || widget.tool == Tool.print) ...[
             Row(
               children: [
                 Expanded(
@@ -1322,9 +1382,12 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                   s!.isEmpty && widget.tool != Tool.pack ? null : positive(s),
               onChanged: (_) => changed(),
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Maximum file size (KiB)',
-                helperText: 'Strictly below this limit. 1 KiB = 1024 bytes.',
+                helperText: widget.tool == Tool.pack
+                    ? 'Strictly below this limit. 1 KiB = 1024 bytes.'
+                    : 'Optional. Leave blank for the highest quality.',
+                helperMaxLines: 2,
               ),
             ),
             const SizedBox(height: 12),
@@ -1332,6 +1395,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           if (imageTool) ...[
             if (widget.tool == Tool.photo)
               DropdownButtonFormField<bool>(
+                key: ValueKey(png),
                 initialValue: png,
                 decoration: const InputDecoration(labelText: 'Save format'),
                 items: const [
@@ -1342,16 +1406,18 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     ? null
                     : (v) {
                         setState(() {
+                          formatChosen = true;
                           png = v!;
                           output = null;
                           filename.text = suggestedName;
                         });
                       },
               ),
-            SwitchListTile(
+            if (!keepPhotoSize)
+              SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Fill and crop edges'),
-              subtitle: const Text('Off: fit whole image with padding.'),
+              subtitle: const Text('Leave this off to fit the whole picture inside the frame.'),
               value: cover,
               onChanged: busy
                   ? null
@@ -1530,7 +1596,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           ],
           if (widget.tool == Tool.scan) ...[
             const Text(
-              'Import page images, select a page by its filename, adjust it, then prepare the PDF. On Android, you can also capture pages with the device camera app. Save a draft before capturing to protect against Android closing the app. Perspective correction is still pending.',
+              'Tap a page to adjust it. When the pages look right, prepare your PDF.',
             ),
             ExpansionTile(
               title: const Text('Save or restore a scan draft'),
@@ -1641,8 +1707,14 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
               },
             ),
           ],
+            ]),
+          ),
+          if (widget.entry == StudioTask.draft && !settingsOpen && draftMessage != null)
+            Text(draftMessage!),
+          if (widget.entry == StudioTask.draft && sources.isEmpty)
+            OutlinedButton(onPressed: busy ? null : restoreDraft, child: const Text('Open a draft')),
           const SizedBox(height: 20),
-          FilledButton.icon(
+          if (widget.entry == null || sources.isNotEmpty) FilledButton.icon(
             onPressed: busy ? null : process,
             icon: busy
                 ? const SizedBox(
@@ -1651,7 +1723,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.auto_fix_high_outlined),
-            label: Text(busy ? 'Preparing locally…' : 'Prepare preview'),
+            label: Text(busy ? 'Getting your preview ready…' : 'Prepare preview'),
           ),
           if (busy)
             const Padding(
@@ -1696,7 +1768,7 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
             runSpacing: 8,
             children: [
               Text(
-                '3  Preview',
+                '3. Check your result',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               if (imageTool && output != null && sources.isNotEmpty)
@@ -1972,6 +2044,15 @@ class _ToolWorkspaceState extends ConsumerState<ToolWorkspace> {
           .toList();
       if (mounted) {
         setState(() {
+          if (widget.tool == Tool.photo && !formatChosen) {
+            final usesSuggestedName = filename.text == suggestedName;
+            png = incoming.first.bytes.length >= 4 &&
+                incoming.first.bytes[0] == 0x89 &&
+                incoming.first.bytes[1] == 0x50 &&
+                incoming.first.bytes[2] == 0x4e &&
+                incoming.first.bytes[3] == 0x47;
+            if (usesSuggestedName) filename.text = suggestedName;
+          }
           sources = incoming;
           previewIndex = 0;
           output = null;
